@@ -17,7 +17,7 @@ using Aid = Id;
 
 #ifndef HDB_TIME_POINT_TYPE
 using TimePoint = std::chrono::
-    time_point<std::chrono::system_clock, std::chrono::microseconds>;
+    time_point<std::chrono::system_clock, std::chrono::milliseconds>;
 #else
 using TimePoint = HDB_TIME_POINT_TYPE;
 #endif
