@@ -35,7 +35,7 @@ HDB는 그 연결의 한 점이다.
 core/include/
 ├── hdb.hpp                        # umbrella include
 └── hdb/
-    ├── types.hpp                  # Id 계열 + 인지 연산 결과 타입
+    ├── types.hpp                  # Id / TimePoint / Scalar — CMake 교체 가능
     ├── store/                     # 스키마 + 순수 가상 인터페이스
     │   ├── ineuron_table.hpp
     │   ├── isynapse_table.hpp
@@ -55,7 +55,7 @@ core/include/
 types.hpp → store/ → atom/ → molecule/
 ```
 
-`types.hpp`는 store/에 의존하지 않는다 — Id 계열 alias만 정의하므로.
+`types.hpp`는 store/에 의존하지 않는다 — `Id/Nid/Sid/Aid`, `TimePoint`, `Scalar`만 정의하므로.
 `Engram`은 `hippocampus.hpp`에 정의된다 — store/의 Record 타입에 의존하기 때문에 types.hpp에 두면 순환이 생긴다.
 `Cortex`는 `Hippocampus`를 생성자에서 받지 않는다 — Engram을 직접 받아 순수한 시뮬레이터로 동작한다.
 
@@ -63,23 +63,27 @@ types.hpp → store/ → atom/ → molecule/
 
 ## 타입 시스템
 
+세 타입 모두 CMake 옵션으로 컴파일 시점에 교체할 수 있다.
+
+| CMake 옵션            | 기본값                        | alias               |
+| --------------------- | ----------------------------- | ------------------- |
+| `HDB_ID_TYPE`         | `std::string`                 | `Nid`, `Sid`, `Aid` |
+| `HDB_TIME_POINT_TYPE` | `system_clock / microseconds` | —                   |
+| `HDB_SCALAR_TYPE`     | `float`                       | —                   |
+
 ### Id
 
-```cpp
-#ifndef HDB_ID_TYPE
-    using Id = std::string;
-#else
-    using Id = HDB_ID_TYPE;
-#endif
-
-using Nid = Id;  // Neuron ID
-using Sid = Id;  // Synapse ID
-using Aid = Id;  // Abstract ID
-```
-
-기본값은 `std::string`이다. 성능이 중요한 환경에서는 CMake에서 `HDB_ID_TYPE=uint64_t`로 교체할 수 있다. `Nid/Sid/Aid`는 컴파일러 입장에서 같은 타입이지만, 코드를 읽는 사람에게 어떤 테이블의 ID인지 즉시 알려준다.
+기본값은 `std::string`이다. 성능이 중요한 환경에서는 `-DHDB_ID_TYPE=uint64_t`로 교체할 수 있다. `Nid/Sid/Aid`는 컴파일러 입장에서 같은 타입이지만, 코드를 읽는 사람에게 어떤 테이블의 ID인지 즉시 알려준다.
 
 철학적으로 각 레코드의 진짜 primary key는 `timestamp`다. `nid/sid/aid`는 편의상 존재한다 — 사람이 ID 기반 조회에 익숙하기 때문에. 하지만 HDB에서 동일한 사건은 없다. 모든 사고는 발생한 시점에 의해 고유하게 정의된다.
+
+### TimePoint
+
+기본값은 `system_clock / microseconds`다. 더 높은 정밀도가 필요하면 `-DHDB_TIME_POINT_TYPE="std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>"`로 교체할 수 있다.
+
+### Scalar
+
+기본값은 `float`다. `-DHDB_SCALAR_TYPE=double`로 교체하면 `Impulse` 가중치, `Resonance.fidelity`, `Thought.flux`, `Cortex` creativity 파라미터의 정밀도가 통째로 바뀐다.
 
 ### 모든 가변 데이터 — `std::vector<std::byte>`
 
@@ -96,7 +100,7 @@ using Aid = Id;  // Abstract ID
 | `nid: Nid`                     | 뉴런의 고유 식별자.                                                                                                                                              |
 | `actor: vector<byte>`          | 이 뉴런을 발화한 주체. 누가 이 생각을 했는가. 출처가 없으면 사고는 부유한다 — actor가 새겨질 때 비로소 사고는 누군가의 것이 된다.                                |
 | `payload: vector<byte>`        | 사고의 실제 내용. 코어는 형식을 강제하지 않는다. 같은 payload라도 timestamp가 다르면 별개의 뉴런이다 — 같은 생각이 다른 시점에 다시 떠오른 것은 새로운 사건이다. |
-| `timestamp: time_point`        | 사고가 발생한 시각. epoch μs 정밀도. 철학적으로 이것이 진짜 primary key다 — nid는 편의상 존재한다.                                                               |
+| `timestamp: TimePoint`         | 사고가 발생한 시각. 기본 정밀도 μs. 철학적으로 이것이 진짜 primary key다 — nid는 편의상 존재한다.                                                                |
 | `meta: optional<vector<byte>>` | 부가 정보. 없어도 되며, 있으면 외부 레이어가 해석한다.                                                                                                           |
 
 ### SynapseRecord
@@ -107,7 +111,7 @@ using Aid = Id;  // Abstract ID
 | `actor: vector<byte>`          | 이 연결을 확정한 주체. 누가 이 시냅스를 발화했는가. 사고의 연결도 누가 만든 것인지가 코어에 남는다.                                                                                                                                                                                                                       |
 | `from_nid: Nid`                | 발화를 시작한 뉴런.                                                                                                                                                                                                                                                                                                       |
 | `to_nid: Nid`                  | 발화를 받은 뉴런.                                                                                                                                                                                                                                                                                                         |
-| `timestamp: time_point`        | 연결이 확정된 시각. 같은 두 뉴런 사이라도 시점이 다르면 별도의 시냅스다. 예를 들어 `Awaken`으로 오랜 기억을 다시 꺼냈을 때 누군가 그 연결을 다시 발화했다면, 그것은 새로운 시냅스다 — 같은 관계의 재확인이 아니라, 그 시점에 다시 일어난 독립적인 사건이다. 철학적으로 이것이 진짜 primary key다 — sid는 편의상 존재한다. |
+| `timestamp: TimePoint`         | 연결이 확정된 시각. 같은 두 뉴런 사이라도 시점이 다르면 별도의 시냅스다. 예를 들어 `Awaken`으로 오랜 기억을 다시 꺼냈을 때 누군가 그 연결을 다시 발화했다면, 그것은 새로운 시냅스다 — 같은 관계의 재확인이 아니라, 그 시점에 다시 일어난 독립적인 사건이다. 철학적으로 이것이 진짜 primary key다 — sid는 편의상 존재한다. |
 | `meta: optional<vector<byte>>` | 부가 정보.                                                                                                                                                                                                                                                                                                                |
 
 시냅스 타입(EdgeType)은 의도적으로 제거했다. 이 연결은 "인간이 확정한 사고의 연결"이라는 의미 하나다. 타입을 나누는 순간 코어가 의미론을 강제하기 시작한다.
@@ -120,7 +124,7 @@ using Aid = Id;  // Abstract ID
 | `actor: vector<byte>`          | 이 추상화를 생성한 주체. 누가 이 임베딩을 만들었는가. 같은 뉴런에서 비롯된 추상화라도 만든 주체가 다르면 다른 관점이다.                                                                                                                                                                                             |
 | `nid: Nid`                     | 이 추상화가 어떤 뉴런에서 온 것인지.                                                                                                                                                                                                                                                                                |
 | `payload: vector<byte>`        | 의미 벡터(임베딩) raw bytes. sqlite-vec이 이 필드에서 ANN 검색을 수행한다.                                                                                                                                                                                                                                          |
-| `timestamp: time_point`        | 이 추상화가 탄생한 시각. 잠을 자고 꿈을 꾸고 나서의 나, 술에 취해 가장 순수한 나에 닿아 있을 때의 나 — 그때마다 timestamp가 다르다면 그것은 새로운 나다. 인간의 뇌는 과거의 자신을 온전히 기억하지 못한다. HDB는 그 각각의 나를 덮어쓰지 않고 쌓는다. 철학적으로 이것이 진짜 primary key다 — aid는 편의상 존재한다. |
+| `timestamp: TimePoint`         | 이 추상화가 탄생한 시각. 잠을 자고 꿈을 꾸고 나서의 나, 술에 취해 가장 순수한 나에 닿아 있을 때의 나 — 그때마다 timestamp가 다르다면 그것은 새로운 나다. 인간의 뇌는 과거의 자신을 온전히 기억하지 못한다. HDB는 그 각각의 나를 덮어쓰지 않고 쌓는다. 철학적으로 이것이 진짜 primary key다 — aid는 편의상 존재한다. |
 | `meta: optional<vector<byte>>` | 임베딩 모델 정보 등 부가 정보. 코어는 읽지 않는다.                                                                                                                                                                                                                                                                  |
 
 임베딩 생성은 코어의 책임이 아니다. Python 레이어가 생성한 벡터를 `Thalamus::Consolidate()`로 전달하면 코어는 저장만 한다. Consolidate는 기억을 공고화하는 것이 아니라, 지금 이 순간의 나를 영구히 새기는 행위다.
@@ -178,7 +182,7 @@ AbstractTable을 **읽기 전담**으로 조회한다. 쓰기는 Thalamus가 전
 ### Cortex — molecule
 
 ```
-using Impulse = std::function<float(const SynapseRecord&)>
+using Impulse = std::function<Scalar(const SynapseRecord&)>
 Imagine(engram, params, impulse) → Imagination
 ```
 
