@@ -19,7 +19,7 @@ struct Abstract {
 
 struct Resonance {
   Nid neuron;
-  Scalar fidelity;
+  Real fidelity;
 };
 
 }  // namespace hdb

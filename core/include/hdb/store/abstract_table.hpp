@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <optional>
 #include <span>
 #include <vector>
@@ -16,7 +15,7 @@ class AbstractTable {
   virtual std::optional<Abstract> insert(const Abstract&) = 0;
   virtual std::vector<Resonance> find(
       std::span<const std::byte> payload,
-      const std::size_t limit) const = 0;
+      const Natural limit) const = 0;
 };
 
 }  // namespace hdb

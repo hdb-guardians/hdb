@@ -16,9 +16,12 @@ set(HDB_ID_TYPE "" CACHE STRING "Override Id type (default: std::string)")
 # Override example: -DHDB_TIME_POINT_TYPE="std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>"
 set(HDB_TIME_POINT_TYPE "" CACHE STRING "Override TimePoint type (default: system_clock / microseconds)")
 
-# Scalar type: default float. Override example: -DHDB_SCALAR_TYPE=double
+# Real type: default float. Override example: -DHDB_REAL_TYPE=double
 # Affects: Impulse weight, Resonance.fidelity, Thought.flux, Cortex creativity parameter.
-set(HDB_SCALAR_TYPE "" CACHE STRING "Override scalar type (default: float)")
+set(HDB_REAL_TYPE "" CACHE STRING "Override real type (default: float)")
+
+# Natural type: default std::size_t. Override example: -DHDB_NATURAL_TYPE=uint32_t
+set(HDB_NATURAL_TYPE "" CACHE STRING "Override natural type (default: std::size_t)")
 
 # Draft target: start as INTERFACE until concrete sources are added.
 add_library(hdb_core INTERFACE)
@@ -36,8 +39,11 @@ endif()
 if(HDB_TIME_POINT_TYPE)
     target_compile_definitions(hdb_core INTERFACE HDB_TIME_POINT_TYPE=${HDB_TIME_POINT_TYPE})
 endif()
-if(HDB_SCALAR_TYPE)
-    target_compile_definitions(hdb_core INTERFACE HDB_SCALAR_TYPE=${HDB_SCALAR_TYPE})
+if(HDB_REAL_TYPE)
+    target_compile_definitions(hdb_core INTERFACE HDB_REAL_TYPE=${HDB_REAL_TYPE})
+endif()
+if(HDB_NATURAL_TYPE)
+    target_compile_definitions(hdb_core INTERFACE HDB_NATURAL_TYPE=${HDB_NATURAL_TYPE})
 endif()
 
 # Prefer strict diagnostics when using clang.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <cstddef>
 #include <string>
 
 namespace hdb {
@@ -22,10 +23,16 @@ using TimePoint = std::chrono::
 using TimePoint = HDB_TIME_POINT_TYPE;
 #endif
 
-#ifndef HDB_SCALAR_TYPE
-using Scalar = float;
+#ifndef HDB_REAL_TYPE
+using Real = float;
 #else
-using Scalar = HDB_SCALAR_TYPE;
+using Real = HDB_REAL_TYPE;
+#endif
+
+#ifndef HDB_NATURAL_TYPE
+using Natural = std::size_t;
+#else
+using Natural = HDB_NATURAL_TYPE;
 #endif
 
 }  // namespace hdb

@@ -35,7 +35,7 @@ HDB는 그 연결의 한 점이다.
 core/include/
 ├── hdb.hpp                        # umbrella include
 └── hdb/
-    ├── types.hpp                  # Id / TimePoint / Scalar — CMake 교체 가능
+    ├── types.hpp                  # Id / TimePoint / Real / Natural — CMake 교체 가능
     ├── atom/                      # 순수 값 객체 — 자기 자신만 안다
     │   ├── neuron.hpp
     │   ├── synapse.hpp
@@ -63,13 +63,14 @@ types.hpp → atom/ → store/ → molecule/
 
 ## 타입 시스템
 
-세 타입 모두 CMake 옵션으로 컴파일 시점에 교체할 수 있다.
+네 타입 모두 CMake 옵션으로 컴파일 시점에 교체할 수 있다.
 
 | CMake 옵션            | 기본값                        | alias               |
 | --------------------- | ----------------------------- | ------------------- |
 | `HDB_ID_TYPE`         | `std::string`                 | `Nid`, `Sid`, `Aid` |
 | `HDB_TIME_POINT_TYPE` | `system_clock / milliseconds` | —                   |
-| `HDB_SCALAR_TYPE`     | `float`                       | —                   |
+| `HDB_REAL_TYPE`       | `float`                       | —                   |
+| `HDB_NATURAL_TYPE`    | `std::size_t`                 | —                   |
 
 ### Id
 
@@ -83,9 +84,13 @@ types.hpp → atom/ → store/ → molecule/
 
 "무한한 과거에서 무한한 미래까지"를 진지하게 구현해야 하는 누군가가 있다면 `-DHDB_TIME_POINT_TYPE`으로 더 넓은 duration을 교체하면 된다. 표준 chrono에는 그런 타입이 없으므로 직접 정의해야 한다. 나는 굳이 필요 없다 — 어차피 내가 죽기 전에 그걸 경험하지 못한다.
 
-### Scalar
+### Real
 
-기본값은 `float`다. `-DHDB_SCALAR_TYPE=double`로 교체하면 `Impulse` 가중치, `Resonance.fidelity`, `Thought.flux`, `Cortex` creativity 파라미터의 정밀도가 통째로 바뀐다.
+부동소수점 실수. 기본값은 `float`다. `-DHDB_REAL_TYPE=double`로 교체하면 `Impulse` 가중치, `Resonance.fidelity`, `Thought.flux`, `Cortex` creativity 파라미터의 정밀도가 통째로 바뀐다.
+
+### Natural
+
+0을 포함하는 정수 — ISO 80000-2 기준 자연수. 기본값은 `std::size_t`다. `limit`, `epochs` 등 개수·횟수를 표현하는 모든 파라미터에 쓰인다. `-DHDB_NATURAL_TYPE=uint32_t`로 교체할 수 있다.
 
 ### 가변 데이터 — `std::vector<std::byte>`
 
@@ -179,7 +184,7 @@ Reminisce(since, until)     → optional<Engram>
 ### Cortex
 
 ```
-using Impulse = std::function<Scalar(const Synapse&)>
+using Impulse = std::function<Real(const Synapse&)>
 Imagine(engram, params, impulse) → Imagination
 ```
 
@@ -241,3 +246,10 @@ Cortex는 생성자 의존성이 없다.
 | `Resonance.fidelity` | Quantum fidelity `⟨ψ\|φ⟩²` | 두 상태(자극 vs 기억)의 겹침 정도          |
 | `Thought.flux`       | Probability flux           | 확률 선속 — 그 스텝에서 선택된 확률의 흐름 |
 | `Abstract.neuron`    | 뉴런 참조                  | 지금 이 추상화가 어떤 뉴런에서 비롯됐는지  |
+
+### 타입 어휘
+
+| 타입      | 차용 개념      | 의미                                                       |
+| --------- | -------------- | ---------------------------------------------------------- |
+| `Real`    | Real number    | 실수(부동소수점) — fidelity, flux, creativity 등 연속적 값 |
+| `Natural` | Natural number | ISO 80000-2 자연수(0 포함) — 개수와 횟수                   |

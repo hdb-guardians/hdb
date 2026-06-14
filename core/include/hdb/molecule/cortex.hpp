@@ -10,19 +10,19 @@
 
 namespace hdb {
 
-using Impulse = std::function<Scalar(const Synapse&)>;
+using Impulse = std::function<Real(const Synapse&)>;
 
 struct Thought {
   Neuron neuron;
-  Scalar flux;
+  Real flux;
 };
 
 using Imagination = std::vector<Thought>;
 
 struct ImagineParams {
   Nid start;
-  std::size_t epochs;
-  Scalar creativity;
+  Natural epochs;
+  Real creativity;
 };
 
 class Cortex {
