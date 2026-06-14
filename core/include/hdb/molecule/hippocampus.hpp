@@ -5,7 +5,8 @@
 #include <span>
 #include <vector>
 
-#include <hdb/types.hpp>
+#include <hdb/atom/neuron.hpp>
+#include <hdb/atom/synapse.hpp>
 #include <hdb/store/ineuron_table.hpp>
 #include <hdb/store/isynapse_table.hpp>
 #include <hdb/store/iabstract_table.hpp>
@@ -18,8 +19,8 @@ struct Resonance {
 };
 
 struct Engram {
-  std::vector<NeuronRecord> neurons;
-  std::vector<SynapseRecord> synapses;
+  std::vector<Neuron> neurons;
+  std::vector<Synapse> synapses;
 };
 
 class Hippocampus {

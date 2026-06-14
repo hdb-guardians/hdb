@@ -2,26 +2,19 @@
 
 #include <cstddef>
 #include <optional>
-#include <span>
 #include <vector>
 
 #include <hdb/types.hpp>
-#include <hdb/store/isynapse_table.hpp>
 
 namespace hdb {
 
-class Synapse {
- public:
-  explicit Synapse(ISynapseTable& table);
-
-  std::optional<Sid> Fire(
-      std::span<const std::byte> actor,
-      const Nid& from_nid,
-      const Nid& to_nid,
-      std::optional<std::span<const std::byte>> meta = std::nullopt);
-
- private:
-  ISynapseTable& table_;
+struct Synapse {
+  Sid name;
+  std::vector<std::byte> actor;
+  Nid from;
+  Nid to;
+  TimePoint timestamp;
+  std::optional<std::vector<std::byte>> meta;
 };
 
 }  // namespace hdb

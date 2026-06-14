@@ -4,23 +4,23 @@
 #include <functional>
 #include <vector>
 
-#include <hdb/types.hpp>
-#include <hdb/store/isynapse_table.hpp>
+#include <hdb/atom/neuron.hpp>
+#include <hdb/atom/synapse.hpp>
 #include <hdb/molecule/hippocampus.hpp>
 
 namespace hdb {
 
-using Impulse = std::function<Scalar(const SynapseRecord&)>;
+using Impulse = std::function<Scalar(const Synapse&)>;
 
 struct Thought {
-  Nid nid;
+  Neuron neuron;
   Scalar flux;
 };
 
 using Imagination = std::vector<Thought>;
 
 struct ImagineParams {
-  Nid start_nid;
+  Nid start;
   std::size_t epochs;
   Scalar creativity;
 };

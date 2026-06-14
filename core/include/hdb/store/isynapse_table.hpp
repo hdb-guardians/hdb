@@ -1,29 +1,19 @@
 #pragma once
 
-#include <cstddef>
 #include <optional>
 #include <vector>
 
-#include <hdb/types.hpp>
+#include <hdb/atom/synapse.hpp>
 
 namespace hdb {
-
-struct SynapseRecord {
-  Sid sid;
-  std::vector<std::byte> actor;
-  Nid from_nid;
-  Nid to_nid;
-  TimePoint timestamp;
-  std::optional<std::vector<std::byte>> meta;
-};
 
 class ISynapseTable {
  public:
   virtual ~ISynapseTable() = default;
 
-  virtual std::optional<Sid> insert(const SynapseRecord&) = 0;
-  virtual std::optional<SynapseRecord> find(const Sid&) const = 0;
-  virtual std::vector<SynapseRecord> find_range(
+  virtual std::optional<Synapse> insert(const Synapse&) = 0;
+  virtual std::optional<Synapse> find(const Sid&) const = 0;
+  virtual std::vector<Synapse> find(
       const TimePoint since,
       const TimePoint until) const = 0;
 };

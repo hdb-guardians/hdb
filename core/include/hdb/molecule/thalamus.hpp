@@ -16,7 +16,7 @@ class Thalamus {
 
   std::optional<Aid> Consolidate(
       std::span<const std::byte> actor,
-      const Nid& nid,
+      const Nid& name,
       std::span<const std::byte> payload,
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 
