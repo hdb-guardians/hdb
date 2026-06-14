@@ -3,7 +3,7 @@
 **Human Database** — 인간의 사고 과정을 저장하고 시뮬레이션하는 C++23 프리미티브 엔진.
 
 **Author**: 박경찬 — DPChanny @ DPC Studio  
-**License**: [HDB Core License](LICENSE) — 상업적 이용은 저자의 명시적 허락 필요.
+**License**: [Dual License](LICENSE) — AGPL-3.0 (오픈소스) / 상업적 이용은 저자의 명시적 허락 필요.
 
 ---
 
