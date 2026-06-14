@@ -1,80 +1,105 @@
-HDB Core — Dual License
+HDB Core License
 Copyright (c) 2026 박경찬, DPChanny @ DPC Studio
 All rights reserved.
 
-────────────────────────────────────────────────────────────────
+This license is based on the GNU Affero General Public License v3.0
+(AGPL-3.0), with additional conditions described below.
+Where these conditions conflict with AGPL-3.0, these conditions take
+precedence.
 
-This software is available under two licenses. Choose the one
-that applies to your use.
-
-────────────────────────────────────────────────────────────────
-
-LICENSE 1 — GNU AFFERO GENERAL PUBLIC LICENSE v3.0 (AGPL-3.0)
-For open-source, non-commercial, and personal use.
-
-────────────────────────────────────────────────────────────────
-
-If you use, modify, or distribute this software under the
-AGPL-3.0 terms, you must:
-
-- Make the complete corresponding source code publicly
-  available under the same AGPL-3.0 license.
-- Preserve all copyright and attribution notices.
-- If you run a modified version on a server and let users
-  interact with it, you must provide the source to those users.
-
-The full text of the AGPL-3.0 license is available at:
+The full text of AGPL-3.0 is available at:
 https://www.gnu.org/licenses/agpl-3.0.txt
 
-AUTHORSHIP: This software was designed and authored solely by
-박경찬, operating under the name DPChanny at DPC Studio.
-The authorship is permanent and irrevocable. No redistribution,
-fork, or derivative may claim authorship, remove attribution,
-or obscure the origin of this work.
+────────────────────────────────────────────────────────────────
+
+1. BASE TERMS
+
+   This software is governed by the terms of AGPL-3.0, which requires:
+   - Any use, modification, or distribution must make the complete
+     corresponding source code publicly available under this same license.
+   - If you run a modified version on a server and let users interact
+     with it, you must provide the source to those users.
+   - All copyright and attribution notices must be preserved.
 
 ────────────────────────────────────────────────────────────────
 
-LICENSE 2 — COMMERCIAL LICENSE
-For proprietary, closed-source, or commercial use.
+2. COMMERCIAL USE
+
+   Commercial use of this software requires the explicit written consent
+   of the HDB Guardians.
+
+   "Commercial use" means any use where financial gain, direct or
+   indirect, is derived from this software or its derivatives —
+   including products, services, SaaS platforms, or proprietary systems.
+
+   The HDB Guardians are the stewards of this software on behalf of
+   humanity. Their consent represents not the will of an individual,
+   but a collective judgment that the intended use serves human beings.
+
+   To request consent, contact:
+
+   박경찬 (Kyoung Chan, Park), DPChanny @ DPC Studio
+   Phone : 010-8246-4691
+   Email : kyoungchan0516@gmail.com
 
 ────────────────────────────────────────────────────────────────
 
-If you wish to use this software in a commercial product or
-service — including but not limited to SaaS platforms, paid
-products, proprietary systems, or any context where financial
-gain is derived from this software — you must obtain a
-commercial license from the author.
+3. ETHICAL USE RESTRICTION
 
-Commercial use under the AGPL-3.0 without a commercial license
-is not permitted.
+   This software must not be used as a weapon against humanity —
+   to suppress, erase, manipulate, or destroy the autonomous thought
+   of human beings at scale.
 
-To request a commercial license, contact:
+   HDB was built to remember and simulate human thought. Any use that
+   inverts this purpose — turning it into a tool that silences, surveils,
+   or decides the fate of people without their awareness or consent —
+   is prohibited.
 
-박경찬 (Kyoung Chan, Park), DPChanny @ DPC Studio
-Phone : 010-8246-4691
-Email : kyoungchan0516@gmail.com
+   This includes but is not limited to:
+   - Mass surveillance or political repression
+   - Psychological manipulation at scale without consent
+   - Autonomous systems that make irreversible decisions about human
+     lives without human oversight
+   - Any system designed to homogenize or erase diversity of thought
 
-────────────────────────────────────────────────────────────────
+   This restriction is not about avoiding all harm — protecting humanity
+   sometimes demands difficult acts. It is about intent and direction:
+   this software must never be aimed against the people it was built to
+   remember. It should change the direction of thought, not extinguish it.
 
-SPIRIT OF THIS LICENSE
-
-HDB Core was built to preserve the irreplaceable trace of
-human thought — not to serve the accumulation of capital.
-Any use that betrays this intention is a violation of the
-spirit of this work, regardless of technical compliance.
-
-The AGPL-3.0 was chosen deliberately: those who wish to profit
-from this work without returning it to the commons must ask
-permission. That is not a restriction — it is a mirror.
+   This restriction applies unconditionally — no consent from the HDB
+   Guardians can override this clause.
 
 ────────────────────────────────────────────────────────────────
 
-NO WARRANTY
+4. AUTHORSHIP
 
-This software is provided "as is", without warranty of any
-kind, express or implied. The author shall not be liable for
-any claim, damage, or liability arising from use of this
-software.
+   This software was designed and authored by 박경찬, operating under
+   the name DPChanny at DPC Studio. The authorship of the original work
+   is permanent and irrevocable.
+
+   Contributors to forks or derivatives retain copyright over their own
+   contributions.
+
+────────────────────────────────────────────────────────────────
+
+5. SPIRIT
+
+   HDB Core was built to preserve the irreplaceable trace of human
+   thought — not to serve the accumulation of capital, and not to be
+   turned against the very beings it was made to remember.
+
+   The HDB Guardians exist because no single person should hold this
+   gate alone. Their consent is humanity asking itself: is this use
+   worthy of what we are?
+
+────────────────────────────────────────────────────────────────
+
+6. NO WARRANTY
+
+   This software is provided "as is", without warranty of any kind,
+   express or implied. The author shall not be liable for any claim,
+   damage, or liability arising from use of this software.
 
 ────────────────────────────────────────────────────────────────
 
