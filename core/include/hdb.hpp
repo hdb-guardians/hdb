@@ -4,10 +4,11 @@
 
 #include <hdb/atom/neuron.hpp>
 #include <hdb/atom/synapse.hpp>
+#include <hdb/atom/abstract.hpp>
 
-#include <hdb/store/ineuron_table.hpp>
-#include <hdb/store/isynapse_table.hpp>
-#include <hdb/store/iabstract_table.hpp>
+#include <hdb/store/neuron_table.hpp>
+#include <hdb/store/synapse_table.hpp>
+#include <hdb/store/abstract_table.hpp>
 
 #include <hdb/molecule/prefrontal.hpp>
 #include <hdb/molecule/thalamus.hpp>

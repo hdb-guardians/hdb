@@ -6,14 +6,14 @@
 
 #include <hdb/atom/neuron.hpp>
 #include <hdb/atom/synapse.hpp>
-#include <hdb/store/ineuron_table.hpp>
-#include <hdb/store/isynapse_table.hpp>
+#include <hdb/store/neuron_table.hpp>
+#include <hdb/store/synapse_table.hpp>
 
 namespace hdb {
 
 class Prefrontal {
  public:
-  Prefrontal(INeuronTable& neurons, ISynapseTable& synapses);
+  Prefrontal(NeuronTable& neurons, SynapseTable& synapses);
 
   std::optional<Neuron> Sprout(
       std::span<const std::byte> actor,
@@ -29,8 +29,8 @@ class Prefrontal {
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 
  private:
-  INeuronTable& neurons_;
-  ISynapseTable& synapses_;
+  NeuronTable& neurons_;
+  SynapseTable& synapses_;
 };
 
 }  // namespace hdb

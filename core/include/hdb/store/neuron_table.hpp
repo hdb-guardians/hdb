@@ -7,9 +7,9 @@
 
 namespace hdb {
 
-class INeuronTable {
+class NeuronTable {
  public:
-  virtual ~INeuronTable() = default;
+  virtual ~NeuronTable() = default;
 
   virtual std::optional<Neuron> insert(const Neuron&) = 0;
   virtual std::optional<Neuron> find(const Nid&) const = 0;

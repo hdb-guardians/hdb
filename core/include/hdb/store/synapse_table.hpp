@@ -7,9 +7,9 @@
 
 namespace hdb {
 
-class ISynapseTable {
+class SynapseTable {
  public:
-  virtual ~ISynapseTable() = default;
+  virtual ~SynapseTable() = default;
 
   virtual std::optional<Synapse> insert(const Synapse&) = 0;
   virtual std::optional<Synapse> find(const Sid&) const = 0;
