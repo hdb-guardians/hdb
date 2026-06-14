@@ -158,7 +158,7 @@ Fire(actor, from_nid, to_nid, meta?) → optional<Sid>
 ### Thalamus — molecule
 
 ```
-Consolidate(nid, actor, payload, meta?) → optional<Aid>
+Consolidate(actor, nid, payload, meta?) → optional<Aid>
 ```
 
 뇌과학: 수면 중 해마의 sharp-wave ripple이 시상을 거쳐 신피질에 기억을 공고화한다.  

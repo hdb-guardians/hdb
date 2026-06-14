@@ -15,8 +15,8 @@ class Thalamus {
   explicit Thalamus(IAbstractTable& table);
 
   std::optional<Aid> Consolidate(
-      const Nid& nid,
       std::span<const std::byte> actor,
+      const Nid& nid,
       std::span<const std::byte> payload,
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 

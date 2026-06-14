@@ -15,9 +15,9 @@ class Synapse {
   explicit Synapse(ISynapseTable& table);
 
   std::optional<Sid> Fire(
+      std::span<const std::byte> actor,
       const Nid& from_nid,
       const Nid& to_nid,
-      std::span<const std::byte> actor,
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 
  private:
