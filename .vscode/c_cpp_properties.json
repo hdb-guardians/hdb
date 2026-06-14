@@ -1,0 +1,13 @@
+{
+  "configurations": [
+    {
+      "name": "core",
+      "includePath": ["${workspaceFolder}/core/**"],
+      "cppStandard": "c++23",
+      "intelliSenseMode": "windows-clang-x64",
+      "compilerPath": "C:\\msys64\\clang64\\bin\\clang.exe",
+      "cStandard": "c17"
+    }
+  ],
+  "version": 4
+}
