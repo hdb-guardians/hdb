@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <optional>
 #include <vector>
 
@@ -15,11 +14,6 @@ struct Abstract {
   std::vector<std::byte> payload;
   TimePoint timestamp;
   std::optional<std::vector<std::byte>> meta;
-};
-
-struct Resonance {
-  Nid neuron;
-  Real fidelity;
 };
 
 }  // namespace hdb

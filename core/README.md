@@ -39,7 +39,13 @@ core/include/
     ├── atom/                      # 순수 값 객체 — 자기 자신만 안다
     │   ├── neuron.hpp
     │   ├── synapse.hpp
-    │   └── abstract.hpp
+    │   ├── abstract.hpp
+    │   ├── resonance.hpp
+    │   ├── engram.hpp
+    │   ├── impulse.hpp
+    │   ├── thought.hpp
+    │   ├── imagination.hpp
+    │   └── imagine_params.hpp
     ├── store/                     # 순수 가상 인터페이스
     │   ├── neuron_table.hpp
     │   ├── synapse_table.hpp

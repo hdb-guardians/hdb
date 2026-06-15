@@ -1,27 +1,21 @@
 #pragma once
 
-#include <cstddef>
 #include <optional>
 #include <span>
-#include <vector>
 
 #include <hdb/atom/neuron.hpp>
 #include <hdb/atom/synapse.hpp>
-#include <hdb/atom/abstract.hpp>
+#include <hdb/atom/engram.hpp>
+#include <hdb/atom/resonance.hpp>
 #include <hdb/store/neuron_table.hpp>
 #include <hdb/store/synapse_table.hpp>
 #include <hdb/store/abstract_table.hpp>
 
 namespace hdb {
 
-struct Engram {
-  std::vector<Neuron> neurons;
-  std::vector<Synapse> synapses;
-};
-
 class Hippocampus {
  public:
-  Hippocampus(
+  explicit Hippocampus(
       NeuronTable& neurons,
       SynapseTable& synapses,
       AbstractTable& abstracts);

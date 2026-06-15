@@ -1,29 +1,12 @@
 #pragma once
 
-#include <cstddef>
-#include <functional>
-#include <vector>
-
-#include <hdb/atom/neuron.hpp>
-#include <hdb/atom/synapse.hpp>
-#include <hdb/molecule/hippocampus.hpp>
+#include <hdb/atom/impulse.hpp>
+#include <hdb/atom/thought.hpp>
+#include <hdb/atom/imagination.hpp>
+#include <hdb/atom/imagine_params.hpp>
+#include <hdb/atom/engram.hpp>
 
 namespace hdb {
-
-using Impulse = std::function<Real(const Synapse&)>;
-
-struct Thought {
-  Neuron neuron;
-  Real flux;
-};
-
-using Imagination = std::vector<Thought>;
-
-struct ImagineParams {
-  Nid start;
-  Natural epochs;
-  Real creativity;
-};
 
 class Cortex {
  public:

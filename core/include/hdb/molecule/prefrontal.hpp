@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <optional>
 #include <span>
 
@@ -13,7 +12,7 @@ namespace hdb {
 
 class Prefrontal {
  public:
-  Prefrontal(NeuronTable& neurons, SynapseTable& synapses);
+  explicit Prefrontal(NeuronTable& neurons, SynapseTable& synapses);
 
   std::optional<Neuron> Sprout(
       std::span<const std::byte> actor,

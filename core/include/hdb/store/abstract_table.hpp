@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <hdb/atom/abstract.hpp>
+#include <hdb/atom/resonance.hpp>
 
 namespace hdb {
 
