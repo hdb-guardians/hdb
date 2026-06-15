@@ -12,9 +12,9 @@ option(HDB_CORE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 # Id type: default std::string. Override example: -DHDB_ID_TYPE=uint64_t
 set(HDB_ID_TYPE "" CACHE STRING "Override Id type (default: std::string)")
 
-# TimePoint type: default std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds>
+# TimePoint type: default system_clock / milliseconds.
 # Override example: -DHDB_TIME_POINT_TYPE="std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>"
-set(HDB_TIME_POINT_TYPE "" CACHE STRING "Override TimePoint type (default: system_clock / microseconds)")
+set(HDB_TIME_POINT_TYPE "" CACHE STRING "Override TimePoint type (default: system_clock / milliseconds)")
 
 # Real type: default float. Override example: -DHDB_REAL_TYPE=double
 # Affects: Impulse weight, Resonance.fidelity, Thought.flux, Cortex creativity parameter.
@@ -62,6 +62,5 @@ endif()
 
 # Dependency placeholders (enable once package names/targets are finalized).
 # find_package(SQLite3 REQUIRED)
-# find_package(kuzu CONFIG REQUIRED)
 # find_package(sqlite-vec CONFIG REQUIRED)
-# target_link_libraries(hdb_core INTERFACE SQLite::SQLite3 kuzu::kuzu sqlite-vec::sqlite-vec)
+# target_link_libraries(hdb_core INTERFACE SQLite::SQLite3 sqlite-vec::sqlite-vec)

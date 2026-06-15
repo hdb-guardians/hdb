@@ -62,7 +62,7 @@ core/include/
 types.hpp → atom/ → store/ → molecule/
 ```
 
-`atom/`은 `types.hpp`만 안다. `store/`는 `atom/`을 안다 — 인터페이스의 반환 타입이 값 객체이므로. `molecule/`은 `store/`를 통해 데이터에 접근한다. `Engram`은 `hippocampus.hpp`에 정의된다 — `Neuron`/`Synapse`에 의존하기 때문이다. `Cortex`는 `Engram`을 직접 받아 동작하는 순수한 시뮬레이터다 — 저장소 의존성이 없다.
+`atom/`은 `types.hpp`만 안다. `store/`는 `atom/`을 안다 — 인터페이스의 반환 타입이 값 객체이므로. `molecule/`은 `store/`를 통해 데이터에 접근한다. `Cortex`는 `Engram`을 직접 받아 동작하는 순수한 시뮬레이터다 — 저장소 의존성이 없다.
 
 ---
 
@@ -132,11 +132,11 @@ types.hpp → atom/ → store/ → molecule/
 
 | 필드                           | 의도                                                                                                                                                                                                                 |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name: Did`                    | `timestamp`, `actor`, `neuron`, `payload`, `meta` 가 함께 이 추상화를 정의한다. `name`은 그 복합 지문을 대표하는 값이다.                                                                                             |
-| `actor: vector<byte>`          | 이 추상화를 생성한 주체. 같은 뉴런에서 비롯된 추상화라도 만든 주체가 다르면 다른 관점이다 — 같은 기억을 어떻게 추상화하는지는 누가 바라보는지에 따라 달라진다.                                                       |
-| `neuron: Nid`                  | 이 추상화가 어떤 뉴런에서 비롯됐는지. 추상화는 반드시 실제 사고에 뿌리를 두어야 한다.                                                                                                                                |
+| `name: Did`                    | `timestamp`, `actor`, `neuron`, `payload`, `meta` 가 함께 이 꿈을 정의한다. `name`은 그 복합 지문을 대표하는 값이다.                                                                                                |
+| `actor: vector<byte>`          | 이 꿈을 생성한 주체. 같은 뉴런에서 비롯된 꿈이라도 만든 주체가 다르면 다른 관점이다 — 같은 기억을 어떻게 추상화하는지는 누가 바라보는지에 따라 달라진다.                                                            |
+| `neuron: Nid`                  | 이 꿈이 어떤 뉴런에서 비롯됐는지. 꿈은 반드시 실제 사고에 뿌리를 두어야 한다.                                                                                                                                       |
 | `payload: vector<byte>`        | 의미 벡터(임베딩) raw bytes. 어떤 모델이 만든 임베딩이든 담을 수 있어야 한다. sqlite-vec이 이 필드에서 ANN 검색을 수행한다.                                                                                          |
-| `timestamp: TimePoint`         | 이 추상화가 탄생한 시각. 잠을 자고 꿈을 꾸고 나서의 나, 술에 취해 가장 순수한 나에 닿아 있을 때의 나 — 그때마다 환경이 달랐기에 그것은 새로운 나다. 같은 양자 단위까지 같았어도 파동함수는 그 다음을 예측할 수 없다. |
+| `timestamp: TimePoint`         | 이 꿈이 탄생한 시각. 잠을 자고 꿈을 꾸고 나서의 나, 술에 취해 가장 순수한 나에 닿아 있을 때의 나 — 그때마다 환경이 달랐기에 그것은 새로운 나다. 같은 양자 단위까지 같았어도 파동함수는 그 다음을 예측할 수 없다.    |
 | `meta: optional<vector<byte>>` | 임베딩 모델 정보 등 부가 정보. 코어는 읽지 않는다.                                                                                                                                                                   |
 
 임베딩 생성은 코어의 책임이 아니다 — `payload`에 담기는 벡터는 외부 레이어가 만들고 `Thalamus::Consolidate()`로 전달한다.
@@ -169,7 +169,9 @@ Consolidate(actor, neuron, payload, meta?) → optional<Dream>
 
 뇌과학: 수면 중 해마의 sharp-wave ripple이 시상을 거쳐 신피질에 기억을 공고화한다.
 
-**Consolidate**(공고화하다): 외부 레이어가 생성한 임베딩을 `Dream`로 굳혀 `DreamTable`에 기록한다. 기억을 공고화하는 것이 아니라, 지금 이 순간의 나를 영구히 새기는 행위다. 성공하면 `Dream`를 반환한다.
+**Consolidate**(공고화하다): 외부 레이어가 생성한 임베딩을 `Dream`으로 굳혀 `DreamTable`에 기록한다. 기억을 공고화하는 것이 아니라, 지금 이 순간의 나를 영구히 새기는 행위다. 성공하면 `Dream`을 반환한다.
+
+생성자는 `DreamTable&` 하나를 받는다.
 
 ### Hippocampus
 
@@ -180,7 +182,7 @@ Reminisce(since, until)     → optional<Engram>
 
 뇌과학: 해마는 단기 기억을 장기 기억으로 전환하고, 공간적·시간적 맥락을 색인화한다.
 
-**Resonate**(공명하다): `stimulus`(임베딩)와 가장 유사한 Abstract들을 ANN 검색으로 찾아 `Resonance { neuron, fidelity }` 목록을 반환한다. `fidelity`는 양자 정보 이론의 `⟨ψ|φ⟩²`에서 차용 — 두 상태의 겹침 정도.
+**Resonate**(공명하다): `stimulus`(임베딩)와 가장 유사한 Dream들을 ANN 검색으로 찾아 `Resonance { neuron, fidelity }` 목록을 반환한다. `fidelity`는 양자 정보 이론의 `⟨ψ|φ⟩²`에서 차용 — 두 상태의 겹침 정도.
 
 **Reminisce**(회상하다): `since`부터 `until` 사이의 뉴런과 시냅스 전체를 `Engram { neurons, synapses }`으로 꺼낸다. 기본값은 `TimePoint::min()`/`TimePoint::max()`.
 
@@ -198,7 +200,7 @@ Imagine(engram, start, epochs, creativity, impulse) → Imagination
 **Imagine**(상상하다): Engram 위에서 확률적 그래프 워크를 수행한다.
 
 1. Engram → `AdjacencyMap`
-2. `params.start`에서 출발
+2. `start`에서 출발
 3. 매 스텝: outgoing edges에 `Impulse` 적용 → softmax(creativity) → 확률적 선택 → `Thought { neuron, flux }`
 4. `epochs`번 반복 → `Imagination` 반환
 
@@ -250,7 +252,7 @@ Cortex는 생성자 의존성이 없다.
 | -------------------- | -------------------------- | ------------------------------------------ |
 | `Resonance.fidelity` | Quantum fidelity `⟨ψ\|φ⟩²` | 두 상태(자극 vs 기억)의 겹침 정도          |
 | `Thought.flux`       | Probability flux           | 확률 선속 — 그 스텝에서 선택된 확률의 흐름 |
-| `Dream.neuron`       | 뉴런 참조                  | 지금 이 추상화가 어떤 뉴런에서 비롯됐는지  |
+| `Dream.neuron`       | 뉴런 참조                  | 이 꿈이 어떤 뉴런에서 비롯됐는지           |
 
 ### 타입 어휘
 
