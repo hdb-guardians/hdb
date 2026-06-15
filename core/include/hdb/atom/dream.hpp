@@ -7,8 +7,8 @@
 
 namespace hdb {
 
-struct Abstract {
-  Aid name;
+struct Dream {
+  Did name;
   std::vector<std::byte> actor;
   Nid neuron;
   std::vector<std::byte> payload;

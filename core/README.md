@@ -39,17 +39,16 @@ core/include/
     ├── atom/                      # 순수 값 객체 — 자기 자신만 안다
     │   ├── neuron.hpp
     │   ├── synapse.hpp
-    │   ├── abstract.hpp
+    │   ├── dream.hpp
     │   ├── resonance.hpp
     │   ├── engram.hpp
     │   ├── impulse.hpp
     │   ├── thought.hpp
-    │   ├── imagination.hpp
-    │   └── imagine_params.hpp
+    │   └── imagination.hpp
     ├── store/                     # 순수 가상 인터페이스
     │   ├── neuron_table.hpp
     │   ├── synapse_table.hpp
-    │   └── abstract_table.hpp
+    │   └── dream_table.hpp
     └── molecule/                  # 고차 인지 연산
         ├── prefrontal.hpp
         ├── thalamus.hpp
@@ -73,16 +72,16 @@ types.hpp → atom/ → store/ → molecule/
 
 | CMake 옵션            | 기본값                        | alias               |
 | --------------------- | ----------------------------- | ------------------- |
-| `HDB_ID_TYPE`         | `std::string`                 | `Nid`, `Sid`, `Aid` |
+| `HDB_ID_TYPE`         | `std::string`                 | `Nid`, `Sid`, `Did` |
 | `HDB_TIME_POINT_TYPE` | `system_clock / milliseconds` | —                   |
 | `HDB_REAL_TYPE`       | `float`                       | —                   |
 | `HDB_NATURAL_TYPE`    | `std::size_t`                 | —                   |
 
 ### Id
 
-기본값은 `std::string`이다. `Nid/Sid/Aid`는 컴파일러 입장에서 같은 타입이지만, 코드를 읽는 사람에게 어떤 테이블의 ID인지 즉시 알려준다. 성능이 중요한 환경에서는 `-DHDB_ID_TYPE=uint64_t`로 교체할 수 있다.
+기본값은 `std::string`이다. `Nid/Sid/Did`는 컴파일러 입장에서 같은 타입이지만, 코드를 읽는 사람에게 어떤 테이블의 ID인지 즉시 알려준다. 성능이 중요한 환경에서는 `-DHDB_ID_TYPE=uint64_t`로 교체할 수 있다.
 
-각 레코드의 진짜 primary key는 `timestamp + actor + payload + meta` 복합이다. 같은 순간이라도 다른 actor가 다른 생각을 했다면 다른 사건이고, 같은 actor라도 환경이 달랐다면 다른 사건이다. `Nid/Sid/Aid`는 그 복합 지문을 사람이 다루기 편하게 압축한 handle이다 — UUID가 기본 구현으로 적합한 이유가 여기 있다.
+각 레코드의 진짜 primary key는 `timestamp + actor + payload + meta` 복합이다. 같은 순간이라도 다른 actor가 다른 생각을 했다면 다른 사건이고, 같은 actor라도 환경이 달랐다면 다른 사건이다. `Nid/Sid/Did`는 그 복합 지문을 사람이 다루기 편하게 압축한 handle이다 — UUID가 기본 구현으로 적합한 이유가 여기 있다.
 
 ### TimePoint
 
@@ -129,11 +128,11 @@ types.hpp → atom/ → store/ → molecule/
 
 시냅스 타입(EdgeType)은 의도적으로 없다. 이 연결은 "인간이 확정한 사고의 연결"이라는 의미 하나다. 타입을 나누는 순간 코어가 의미론을 강제하기 시작한다.
 
-### Abstract
+### Dream
 
 | 필드                           | 의도                                                                                                                                                                                                                 |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name: Aid`                    | `timestamp`, `actor`, `neuron`, `payload`, `meta` 가 함께 이 추상화를 정의한다. `name`은 그 복합 지문을 대표하는 값이다.                                                                                             |
+| `name: Did`                    | `timestamp`, `actor`, `neuron`, `payload`, `meta` 가 함께 이 추상화를 정의한다. `name`은 그 복합 지문을 대표하는 값이다.                                                                                             |
 | `actor: vector<byte>`          | 이 추상화를 생성한 주체. 같은 뉴런에서 비롯된 추상화라도 만든 주체가 다르면 다른 관점이다 — 같은 기억을 어떻게 추상화하는지는 누가 바라보는지에 따라 달라진다.                                                       |
 | `neuron: Nid`                  | 이 추상화가 어떤 뉴런에서 비롯됐는지. 추상화는 반드시 실제 사고에 뿌리를 두어야 한다.                                                                                                                                |
 | `payload: vector<byte>`        | 의미 벡터(임베딩) raw bytes. 어떤 모델이 만든 임베딩이든 담을 수 있어야 한다. sqlite-vec이 이 필드에서 ANN 검색을 수행한다.                                                                                          |
@@ -165,12 +164,12 @@ Fire(actor, from, to, meta?)  → optional<Synapse>
 ### Thalamus
 
 ```
-Consolidate(actor, neuron, payload, meta?) → optional<Abstract>
+Consolidate(actor, neuron, payload, meta?) → optional<Dream>
 ```
 
 뇌과학: 수면 중 해마의 sharp-wave ripple이 시상을 거쳐 신피질에 기억을 공고화한다.
 
-**Consolidate**(공고화하다): 외부 레이어가 생성한 임베딩을 `Abstract`로 굳혀 `AbstractTable`에 기록한다. 기억을 공고화하는 것이 아니라, 지금 이 순간의 나를 영구히 새기는 행위다. 성공하면 `Abstract`를 반환한다.
+**Consolidate**(공고화하다): 외부 레이어가 생성한 임베딩을 `Dream`로 굳혀 `DreamTable`에 기록한다. 기억을 공고화하는 것이 아니라, 지금 이 순간의 나를 영구히 새기는 행위다. 성공하면 `Dream`를 반환한다.
 
 ### Hippocampus
 
@@ -185,25 +184,25 @@ Reminisce(since, until)     → optional<Engram>
 
 **Reminisce**(회상하다): `since`부터 `until` 사이의 뉴런과 시냅스 전체를 `Engram { neurons, synapses }`으로 꺼낸다. 기본값은 `TimePoint::min()`/`TimePoint::max()`.
 
-생성자는 `NeuronTable&`, `SynapseTable&`, `AbstractTable&` 셋을 받는다.
+생성자는 `NeuronTable&`, `SynapseTable&`, `DreamTable&` 셋을 받는다.
 
 ### Cortex
 
 ```
 using Impulse = std::function<Real(const Synapse&)>
-Imagine(engram, params, impulse) → Imagination
+Imagine(engram, start, epochs, creativity, impulse) → Imagination
 ```
 
 뇌과학: 대뇌피질은 기억을 패턴으로 추상화하고, 수면 중 그 패턴을 재활성화해 꿈을 만든다. 잠든 뇌는 "이러면 어떨까?"를 자동으로 시뮬레이션하며 내일의 내가 쓸 수 있도록 기억을 재조합한다.
 
-**Imagine**(상상하다): Engram 위에서 확률적 그래프 워크를 수행한다. `params`는 `ImagineParams { start, epochs, creativity }`로 전달한다.
+**Imagine**(상상하다): Engram 위에서 확률적 그래프 워크를 수행한다.
 
 1. Engram → `AdjacencyMap`
 2. `params.start`에서 출발
 3. 매 스텝: outgoing edges에 `Impulse` 적용 → softmax(creativity) → 확률적 선택 → `Thought { neuron, flux }`
-4. `params.epochs`번 반복 → `Imagination` 반환
+4. `epochs`번 반복 → `Imagination` 반환
 
-`Impulse`는 시냅스마다 가중치를 계산하는 함수다. decay, 균등, 커스텀 — 전략은 외부에서 주입한다. `params.creativity`가 높을수록 엔트로피가 커진다 — 깊은 수면의 뇌처럼. 낮을수록 deterministic하게 수렴한다 — 각성한 뇌처럼. `params.start`가 Engram에 없으면 빈 `Imagination`을 반환한다.
+`Impulse`는 시냅스마다 가중치를 계산하는 함수다. decay, 균등, 커스텀 — 전략은 외부에서 주입한다. `creativity`가 높을수록 엔트로피가 커진다 — 깊은 수면의 뇌처럼. 낮을수록 deterministic하게 수렴한다 — 각성한 뇌처럼. `start`가 Engram에 없으면 빈 `Imagination`을 반환한다.
 
 Cortex는 생성자 의존성이 없다.
 
@@ -251,7 +250,7 @@ Cortex는 생성자 의존성이 없다.
 | -------------------- | -------------------------- | ------------------------------------------ |
 | `Resonance.fidelity` | Quantum fidelity `⟨ψ\|φ⟩²` | 두 상태(자극 vs 기억)의 겹침 정도          |
 | `Thought.flux`       | Probability flux           | 확률 선속 — 그 스텝에서 선택된 확률의 흐름 |
-| `Abstract.neuron`    | 뉴런 참조                  | 지금 이 추상화가 어떤 뉴런에서 비롯됐는지  |
+| `Dream.neuron`       | 뉴런 참조                  | 지금 이 추상화가 어떤 뉴런에서 비롯됐는지  |
 
 ### 타입 어휘
 

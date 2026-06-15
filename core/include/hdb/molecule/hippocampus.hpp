@@ -9,7 +9,7 @@
 #include <hdb/atom/resonance.hpp>
 #include <hdb/store/neuron_table.hpp>
 #include <hdb/store/synapse_table.hpp>
-#include <hdb/store/abstract_table.hpp>
+#include <hdb/store/dream_table.hpp>
 
 namespace hdb {
 
@@ -18,7 +18,7 @@ class Hippocampus {
   explicit Hippocampus(
       NeuronTable& neurons,
       SynapseTable& synapses,
-      AbstractTable& abstracts);
+      DreamTable& abstracts);
 
   std::vector<Resonance> Resonate(
       std::span<const std::byte> stimulus,
@@ -31,7 +31,7 @@ class Hippocampus {
  private:
   NeuronTable& neurons_;
   SynapseTable& synapses_;
-  AbstractTable& abstracts_;
+  DreamTable& abstracts_;
 };
 
 }  // namespace hdb

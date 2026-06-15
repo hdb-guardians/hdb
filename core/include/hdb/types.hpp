@@ -14,7 +14,7 @@ using Id = HDB_ID_TYPE;
 
 using Nid = Id;
 using Sid = Id;
-using Aid = Id;
+using Did = Id;
 
 #ifndef HDB_TIME_POINT_TYPE
 using TimePoint = std::chrono::
