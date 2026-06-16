@@ -1,7 +1,5 @@
 #include <hdb/molecule/prefrontal.hpp>
 
-#include <hdb/types.hpp>
-
 namespace hdb {
 
 Prefrontal::Prefrontal(NeuronTable& neurons, SynapseTable& synapses)

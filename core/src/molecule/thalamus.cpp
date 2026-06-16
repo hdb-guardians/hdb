@@ -1,7 +1,5 @@
 #include <hdb/molecule/thalamus.hpp>
 
-#include <hdb/types.hpp>
-
 namespace hdb {
 
 Thalamus::Thalamus(DreamTable& table) : dreams(table) {}

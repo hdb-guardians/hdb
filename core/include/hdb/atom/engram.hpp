@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include <hdb/quark/neuron.hpp>
 #include <hdb/quark/synapse.hpp>
 

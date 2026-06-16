@@ -2,7 +2,11 @@
 
 #include <chrono>
 #include <cstddef>
+#include <functional>
+#include <optional>
+#include <span>
 #include <string>
+#include <vector>
 
 namespace hdb {
 

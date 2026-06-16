@@ -1,8 +1,5 @@
 #pragma once
 
-#include <optional>
-#include <span>
-
 #include <hdb/quark/dream.hpp>
 #include <hdb/store/dream_table.hpp>
 
