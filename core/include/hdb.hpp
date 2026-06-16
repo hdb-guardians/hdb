@@ -2,10 +2,11 @@
 
 #include <hdb/types.hpp>
 
-#include <hdb/atom/neuron.hpp>
-#include <hdb/atom/synapse.hpp>
-#include <hdb/atom/dream.hpp>
-#include <hdb/atom/resonance.hpp>
+#include <hdb/quark/neuron.hpp>
+#include <hdb/quark/synapse.hpp>
+#include <hdb/quark/dream.hpp>
+#include <hdb/quark/resonance.hpp>
+
 #include <hdb/atom/engram.hpp>
 #include <hdb/atom/impulse.hpp>
 #include <hdb/atom/thought.hpp>

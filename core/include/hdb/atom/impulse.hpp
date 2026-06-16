@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include <hdb/atom/synapse.hpp>
+#include <hdb/quark/synapse.hpp>
 #include <hdb/types.hpp>
 
 namespace hdb {

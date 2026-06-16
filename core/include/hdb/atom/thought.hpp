@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hdb/atom/neuron.hpp>
+#include <hdb/quark/neuron.hpp>
 #include <hdb/types.hpp>
 
 namespace hdb {

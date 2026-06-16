@@ -7,12 +7,11 @@
 
 namespace hdb {
 
-struct Dream {
-  Did name;
+struct Neuron {
+  Nid name;
   std::vector<std::byte> actor;
-  Nid neuron;
   std::vector<std::byte> payload;
-  TimePoint timestamp;
+  Moment moment;
   std::optional<std::vector<std::byte>> meta;
 };
 

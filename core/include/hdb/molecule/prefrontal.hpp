@@ -3,8 +3,8 @@
 #include <optional>
 #include <span>
 
-#include <hdb/atom/neuron.hpp>
-#include <hdb/atom/synapse.hpp>
+#include <hdb/quark/neuron.hpp>
+#include <hdb/quark/synapse.hpp>
 #include <hdb/store/neuron_table.hpp>
 #include <hdb/store/synapse_table.hpp>
 
@@ -15,6 +15,7 @@ class Prefrontal {
   explicit Prefrontal(NeuronTable& neurons, SynapseTable& synapses);
 
   std::optional<Neuron> Sprout(
+      const Nid& name,
       std::span<const std::byte> actor,
       std::span<const std::byte> payload,
       std::optional<std::span<const std::byte>> meta = std::nullopt);
@@ -22,14 +23,15 @@ class Prefrontal {
   std::optional<Neuron> Awaken(const Nid& name);
 
   std::optional<Synapse> Fire(
+      const Sid& name,
       std::span<const std::byte> actor,
       const Nid& from,
       const Nid& to,
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 
  private:
-  NeuronTable& neurons_;
-  SynapseTable& synapses_;
+  NeuronTable& neurons;
+  SynapseTable& synapses;
 };
 
 }  // namespace hdb

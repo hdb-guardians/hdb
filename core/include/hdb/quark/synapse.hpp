@@ -12,7 +12,7 @@ struct Synapse {
   std::vector<std::byte> actor;
   Nid from;
   Nid to;
-  TimePoint timestamp;
+  Moment moment;
   std::optional<std::vector<std::byte>> meta;
 };
 

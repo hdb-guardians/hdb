@@ -4,8 +4,8 @@
 #include <span>
 #include <vector>
 
-#include <hdb/atom/dream.hpp>
-#include <hdb/atom/resonance.hpp>
+#include <hdb/quark/dream.hpp>
+#include <hdb/quark/resonance.hpp>
 
 namespace hdb {
 

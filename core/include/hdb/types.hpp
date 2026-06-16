@@ -16,11 +16,16 @@ using Nid = Id;
 using Sid = Id;
 using Did = Id;
 
-#ifndef HDB_TIME_POINT_TYPE
-using TimePoint = std::chrono::
-    time_point<std::chrono::system_clock, std::chrono::milliseconds>;
+#ifndef HDB_CLOCK_TYPE
+using Clock = std::chrono::system_clock;
 #else
-using TimePoint = HDB_TIME_POINT_TYPE;
+using Clock = HDB_CLOCK_TYPE;
+#endif
+
+#ifndef HDB_MOMENT_TYPE
+using Moment = Clock::time_point;
+#else
+using Moment = HDB_MOMENT_TYPE;
 #endif
 
 #ifndef HDB_REAL_TYPE

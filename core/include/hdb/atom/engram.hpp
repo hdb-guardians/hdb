@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include <hdb/atom/neuron.hpp>
-#include <hdb/atom/synapse.hpp>
+#include <hdb/quark/neuron.hpp>
+#include <hdb/quark/synapse.hpp>
 
 namespace hdb {
 
