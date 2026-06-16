@@ -14,72 +14,62 @@ Imagination Cortex::Imagine(
     neuron_map.emplace(n.name, &n);
   }
 
-  // Adjacency list: Nid -> outgoing synapses
-  std::unordered_map<Nid, std::vector<const Synapse*>> adj;
+  std::unordered_map<Nid, std::vector<const Synapse*>> synapse_map;
   for (const auto& s : engram.synapses) {
-    adj[s.from].push_back(&s);
+    synapse_map[s.from].push_back(&s);
   }
 
-  // --- Spreading activation ---
-  // total_flux accumulates activation across all epochs.
-  // wave carries the current epoch's activation front.
+  std::unordered_map<Nid, Real> flux_map;
+  flux_map[start] = Real{1};
 
-  std::unordered_map<Nid, Real> total_flux;
-  total_flux[start] = Real{1};
-
-  std::unordered_map<Nid, Real> wave;
-  wave[start] = Real{1};
+  std::unordered_map<Nid, Real> wave_map;
+  wave_map[start] = Real{1};
 
   thread_local std::mt19937 rng{std::random_device{}()};
   std::uniform_real_distribution<Real> noise{Real{-1}, Real{1}};
 
-  for (Natural e = 0; e < epochs; ++e) {
-    std::unordered_map<Nid, Real> next_wave;
+  for (Natural epoch = 0; epoch < epochs; ++epoch) {
+    std::unordered_map<Nid, Real> _wave_map;
 
-    for (const auto& [nid, flux] : wave) {
-      auto it = adj.find(nid);
-      if (it == adj.end()) continue;
+    for (const auto& [nid, flux] : wave_map) {
+      auto i = synapse_map.find(nid);
+      if (i == synapse_map.end()) continue;
 
-      for (const Synapse* s : it->second) {
+      for (const Synapse* s : i->second) {
         Real contribution = flux * impulse(*s);
 
-        if (creativity > Real{0}) {
+        if (creativity != Real{0}) {
           contribution += creativity * noise(rng);
-          contribution = std::max(Real{0}, contribution);
         }
 
-        next_wave[s->to] += contribution;
+        _wave_map[s->to] += contribution;
       }
     }
 
-    if (next_wave.empty()) break;
+    if (_wave_map.empty()) break;
 
-    // Accumulate into total_flux
-    for (const auto& [nid, f] : next_wave) {
-      total_flux[nid] += f;
+    for (const auto& [nid, f] : _wave_map) {
+      flux_map[nid] += f;
     }
 
-    wave = std::move(next_wave);
+    wave_map = std::move(_wave_map);
   }
 
-  // --- Build Imagination from activated neurons ---
+  Imagination imagination;
+  imagination.reserve(flux_map.size());
 
-  Imagination result;
-  result.reserve(total_flux.size());
-
-  for (const auto& [nid, flux] : total_flux) {
-    auto it = neuron_map.find(nid);
-    if (it != neuron_map.end()) {
-      result.push_back(Thought{*it->second, flux});
+  for (const auto& [nid, flux] : flux_map) {
+    auto i = neuron_map.find(nid);
+    if (i != neuron_map.end()) {
+      imagination.push_back(Thought{*i->second, flux});
     }
   }
 
-  // Sort by flux descending (most activated first)
-  std::ranges::sort(result, [](const Thought& a, const Thought& b) {
+  std::ranges::sort(imagination, [](const Thought& a, const Thought& b) {
     return a.flux > b.flux;
   });
 
-  return result;
+  return imagination;
 }
 
 }  // namespace hdb
