@@ -12,9 +12,10 @@ option(HDB_CORE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 # Id type: default std::string. Override example: -DHDB_ID_TYPE=uint64_t
 set(HDB_ID_TYPE "" CACHE STRING "Override Id type (default: std::string)")
 
-# Moment type: default Clock::time_point.
-# Override example: -DHDB_MOMENT_TYPE="std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>"
-set(HDB_MOMENT_TYPE "" CACHE STRING "Override Moment type (default: Clock::time_point)")
+# Clock type: default std::chrono::system_clock. Override example: -DHDB_CLOCK_TYPE=std::chrono::steady_clock
+set(HDB_CLOCK_TYPE "" CACHE STRING "Override Clock type (default: std::chrono::system_clock)")
+
+# Moment type is derived from Clock::time_point and cannot be overridden separately.
 
 # Real type: default float. Override example: -DHDB_REAL_TYPE=double
 # Affects: Impulse weight, Resonance.fidelity, Thought.flux, Cortex creativity parameter.
@@ -42,8 +43,8 @@ target_include_directories(hdb_core
 if(HDB_ID_TYPE)
     target_compile_definitions(hdb_core PUBLIC HDB_ID_TYPE=${HDB_ID_TYPE})
 endif()
-if(HDB_MOMENT_TYPE)
-    target_compile_definitions(hdb_core PUBLIC HDB_MOMENT_TYPE=${HDB_MOMENT_TYPE})
+if(HDB_CLOCK_TYPE)
+    target_compile_definitions(hdb_core PUBLIC HDB_CLOCK_TYPE=${HDB_CLOCK_TYPE})
 endif()
 if(HDB_REAL_TYPE)
     target_compile_definitions(hdb_core PUBLIC HDB_REAL_TYPE=${HDB_REAL_TYPE})

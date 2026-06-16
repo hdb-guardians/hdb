@@ -29,11 +29,7 @@ using Clock = std::chrono::system_clock;
 using Clock = HDB_CLOCK_TYPE;
 #endif
 
-#ifndef HDB_MOMENT_TYPE
 using Moment = Clock::time_point;
-#else
-using Moment = HDB_MOMENT_TYPE;
-#endif
 
 #ifndef HDB_REAL_TYPE
 using Real = float;
