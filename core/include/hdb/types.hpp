@@ -7,6 +7,9 @@
 #include <span>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <random>
+#include <unordered_map>
 
 namespace hdb {
 

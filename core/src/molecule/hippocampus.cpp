@@ -17,14 +17,14 @@ std::vector<Resonance> Hippocampus::Resonate(
 std::optional<Engram> Hippocampus::Reminisce(
     const Moment since,
     const Moment until) {
-  auto neurons = neurons.find(since, until);
-  auto synapses = synapses.find(since, until);
+  auto _neurons = neurons.find(since, until);
+  auto _synapses = synapses.find(since, until);
 
-  if (neurons.empty() && synapses.empty()) {
+  if (_neurons.empty() && _synapses.empty()) {
     return std::nullopt;
   }
 
-  return Engram{std::move(neurons), std::move(synapses)};
+  return Engram{std::move(_neurons), std::move(_synapses)};
 }
 
 }  // namespace hdb

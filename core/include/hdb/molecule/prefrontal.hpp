@@ -1,7 +1,5 @@
 #pragma once
 
-#include <hdb/quark/neuron.hpp>
-#include <hdb/quark/synapse.hpp>
 #include <hdb/store/neuron_table.hpp>
 #include <hdb/store/synapse_table.hpp>
 

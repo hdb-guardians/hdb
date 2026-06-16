@@ -1,10 +1,5 @@
 #include <hdb/molecule/cortex.hpp>
 
-#include <algorithm>
-#include <random>
-#include <unordered_map>
-#include <vector>
-
 namespace hdb {
 
 Imagination Cortex::Imagine(
@@ -13,8 +8,6 @@ Imagination Cortex::Imagine(
     const Natural epochs,
     const Real creativity,
     const Impulse& impulse) {
-  // --- Build lookup structures from the Engram ---
-
   std::unordered_map<Nid, const Neuron*> neuron_map;
   neuron_map.reserve(engram.neurons.size());
   for (const auto& n : engram.neurons) {

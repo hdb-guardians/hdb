@@ -1,7 +1,6 @@
 #pragma once
 
 #include <hdb/atom/impulse.hpp>
-#include <hdb/atom/thought.hpp>
 #include <hdb/atom/imagination.hpp>
 #include <hdb/atom/engram.hpp>
 

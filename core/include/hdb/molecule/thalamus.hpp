@@ -1,6 +1,5 @@
 #pragma once
 
-#include <hdb/quark/dream.hpp>
 #include <hdb/store/dream_table.hpp>
 
 namespace hdb {
