@@ -12,17 +12,18 @@ std::optional<Neuron> Prefrontal::Sprout(
     std::span<const std::byte> actor,
     std::span<const std::byte> payload,
     std::optional<std::span<const std::byte>> meta) {
-  Neuron n;
-  n.name = name;
-  n.actor = {actor.begin(), actor.end()};
-  n.payload = {payload.begin(), payload.end()};
-  n.moment = Clock::now();
+  Neuron neuron{
+      .name = name,
+      .actor = {actor.begin(), actor.end()},
+      .payload = {payload.begin(), payload.end()},
+      .moment = Clock::now(),
+  };
 
   if (meta) {
-    n.meta = std::vector<std::byte>{meta->begin(), meta->end()};
+    neuron.meta = std::vector<std::byte>{meta->begin(), meta->end()};
   }
 
-  return neurons.insert(n);
+  return neurons.insert(neuron);
 }
 
 std::optional<Neuron> Prefrontal::Awaken(const Nid& name) {
@@ -35,18 +36,19 @@ std::optional<Synapse> Prefrontal::Fire(
     const Nid& from,
     const Nid& to,
     std::optional<std::span<const std::byte>> meta) {
-  Synapse s;
-  s.name = name;
-  s.actor = {actor.begin(), actor.end()};
-  s.from = from;
-  s.to = to;
-  s.moment = Clock::now();
+  Synapse synapse{
+      .name = name,
+      .actor = {actor.begin(), actor.end()},
+      .from = from,
+      .to = to,
+      .moment = Clock::now(),
+  };
 
   if (meta) {
-    s.meta = std::vector<std::byte>{meta->begin(), meta->end()};
+    synapse.meta = std::vector<std::byte>{meta->begin(), meta->end()};
   }
 
-  return synapses.insert(s);
+  return synapses.insert(synapse);
 }
 
 }  // namespace hdb

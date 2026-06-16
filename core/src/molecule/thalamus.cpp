@@ -12,18 +12,19 @@ std::optional<Dream> Thalamus::Consolidate(
     const Nid& neuron,
     std::span<const std::byte> payload,
     std::optional<std::span<const std::byte>> meta) {
-  Dream d;
-  d.name = name;
-  d.actor = {actor.begin(), actor.end()};
-  d.neuron = neuron;
-  d.payload = {payload.begin(), payload.end()};
-  d.moment = Clock::now();
+  Dream dream{
+      .name = name,
+      .actor = {actor.begin(), actor.end()},
+      .neuron = neuron,
+      .payload = {payload.begin(), payload.end()},
+      .moment = Clock::now(),
+  };
 
   if (meta) {
-    d.meta = std::vector<std::byte>{meta->begin(), meta->end()};
+    dream.meta = std::vector<std::byte>{meta->begin(), meta->end()};
   }
 
-  return dreams.insert(d);
+  return dreams.insert(dream);
 }
 
 }  // namespace hdb
