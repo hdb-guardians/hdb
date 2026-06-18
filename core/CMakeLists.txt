@@ -8,20 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(HDB_CORE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 
-# --- Type overrides ---
-# Id type: default std::string. Override example: -DHDB_ID_TYPE=uint64_t
 set(HDB_ID_TYPE "" CACHE STRING "Override Id type (default: std::string)")
 
-# Clock type: default std::chrono::system_clock. Override example: -DHDB_CLOCK_TYPE=std::chrono::steady_clock
 set(HDB_CLOCK_TYPE "" CACHE STRING "Override Clock type (default: std::chrono::system_clock)")
 
-# Moment type is derived from Clock::time_point and cannot be overridden separately.
-
-# Real type: default float. Override example: -DHDB_REAL_TYPE=double
-# Affects: Impulse weight, Resonance.fidelity, Thought.flux, Cortex creativity parameter.
 set(HDB_REAL_TYPE "" CACHE STRING "Override real type (default: float)")
 
-# Natural type: default std::size_t. Override example: -DHDB_NATURAL_TYPE=uint32_t
 set(HDB_NATURAL_TYPE "" CACHE STRING "Override natural type (default: std::size_t)")
 
 add_library(hdb_core STATIC
@@ -31,7 +23,6 @@ add_library(hdb_core STATIC
     src/molecule/cortex.cpp
 )
 
-# Public headers for consumers; private src/ for internal detail headers.
 target_include_directories(hdb_core
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -39,7 +30,6 @@ target_include_directories(hdb_core
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-# Propagate type overrides so consumers see the same types.
 if(HDB_ID_TYPE)
     target_compile_definitions(hdb_core PUBLIC HDB_ID_TYPE=${HDB_ID_TYPE})
 endif()
@@ -53,7 +43,6 @@ if(HDB_NATURAL_TYPE)
     target_compile_definitions(hdb_core PUBLIC HDB_NATURAL_TYPE=${HDB_NATURAL_TYPE})
 endif()
 
-# Strict diagnostics (private — only for building hdb_core itself).
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(hdb_core PRIVATE
         -Wall -Wextra -Wpedantic
@@ -67,6 +56,3 @@ elseif(MSVC)
         target_compile_options(hdb_core PRIVATE /WX)
     endif()
 endif()
-
-# Store implementations (SQLite, sqlite-vec, etc.) live outside core.
-# Add them in a separate CMake project that links against hdb_core.
