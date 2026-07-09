@@ -1,5 +1,11 @@
 #pragma once
 
+#include <cstddef>
+#include <optional>
+#include <span>
+#include <string>
+#include <vector>
+
 #include <hdb/molecule/cortex.hpp>
 #include <hdb/molecule/hippocampus.hpp>
 #include <hdb/molecule/prefrontal.hpp>

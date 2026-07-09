@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "hdb",
+      "name": "windows-clang-x64",
       "includePath": [
         "${workspaceFolder}/core/include",
         "${workspaceFolder}/core/src",
@@ -20,8 +20,6 @@
         "limitSymbolsToIncludedHeaders": true
       },
       "intelliSenseMode": "windows-clang-x64",
-      "compilerPath": "C:\\msys64\\clang64\\bin\\clang++.exe",
-      "compilerArgs": ["-std=c++23"],
       "cppStandard": "c++23",
       "cStandard": "c23"
     }

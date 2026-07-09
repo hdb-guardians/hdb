@@ -1,10 +1,13 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <cstddef>
 #include <chrono>
 #include <cstring>
+#include <cstdint>
 #include <hdb/standard/session.hpp>
 #include <optional>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -228,12 +231,12 @@ PYBIND11_MODULE(_hdb, m) {
 
             py::dict result;
             py::list neurons;
-            for (const auto& n : out->neurons) {
+            for (const auto& n : out->Neurons()) {
               neurons.append(NeuronToDict(n));
             }
 
             py::list synapses;
-            for (const auto& s : out->synapses) {
+            for (const auto& s : out->Synapses()) {
               synapses.append(SynapseToDict(s));
             }
 
