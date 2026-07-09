@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_core LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 option(HDB_CORE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 
 set(HDB_ID_TYPE "" CACHE STRING "Override Id type (default: std::string)")
@@ -22,6 +18,9 @@ add_library(hdb_core STATIC
     src/molecule/hippocampus.cpp
     src/molecule/cortex.cpp
 )
+
+target_compile_features(hdb_core PUBLIC cxx_std_23)
+set_target_properties(hdb_core PROPERTIES CXX_EXTENSIONS OFF)
 
 target_include_directories(hdb_core
     PUBLIC

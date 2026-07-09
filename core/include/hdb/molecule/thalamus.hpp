@@ -19,4 +19,4 @@ class Thalamus {
   DreamTable& dreams;
 };
 
-}  // namespace hdb
+}

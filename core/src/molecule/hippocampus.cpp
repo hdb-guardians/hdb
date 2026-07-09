@@ -27,4 +27,4 @@ std::optional<Engram> Hippocampus::Reminisce(
   return Engram{std::move(_neurons), std::move(_synapses)};
 }
 
-}  // namespace hdb
+}

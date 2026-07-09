@@ -6,4 +6,4 @@ namespace hdb {
 
 using Impulse = std::function<Real(const Synapse&)>;
 
-}  // namespace hdb
+}

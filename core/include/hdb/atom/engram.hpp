@@ -10,4 +10,4 @@ struct Engram {
   std::vector<Synapse> synapses;
 };
 
-}  // namespace hdb
+}

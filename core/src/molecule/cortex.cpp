@@ -72,4 +72,4 @@ Imagination Cortex::Imagine(
   return imagination;
 }
 
-}  // namespace hdb
+}

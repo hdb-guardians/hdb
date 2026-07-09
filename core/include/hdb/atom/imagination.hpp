@@ -6,4 +6,4 @@ namespace hdb {
 
 using Imagination = std::vector<Thought>;
 
-}  // namespace hdb
+}

@@ -13,4 +13,4 @@ struct Synapse {
   std::optional<std::vector<std::byte>> meta;
 };
 
-}  // namespace hdb
+}

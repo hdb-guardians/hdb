@@ -1,8 +1,8 @@
 #pragma once
 
-#include <hdb/atom/impulse.hpp>
-#include <hdb/atom/imagination.hpp>
 #include <hdb/atom/engram.hpp>
+#include <hdb/atom/imagination.hpp>
+#include <hdb/atom/impulse.hpp>
 
 namespace hdb {
 
@@ -16,4 +16,4 @@ class Cortex {
       const Impulse& impulse);
 };
 
-}  // namespace hdb
+}
