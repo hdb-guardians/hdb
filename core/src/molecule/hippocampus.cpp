@@ -1,3 +1,9 @@
+#include <cstddef>
+#include <optional>
+#include <span>
+#include <utility>
+#include <vector>
+
 #include <hdb/molecule/hippocampus.hpp>
 
 namespace hdb {

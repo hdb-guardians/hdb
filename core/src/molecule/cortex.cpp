@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <random>
 #include <unordered_map>
 
@@ -46,8 +47,8 @@ Imagination Cortex::Imagine(
 
     if (_wave_map.empty()) break;
 
-    for (const auto& [nid, f] : _wave_map) {
-      flux_map[nid] += f;
+    for (const auto& [nid, flux] : _wave_map) {
+      flux_map[nid] += flux;
     }
 
     wave_map = std::move(_wave_map);
@@ -60,6 +61,25 @@ Imagination Cortex::Imagine(
     auto i = adjacency_by_nid.find(nid);
     if (i != adjacency_by_nid.end() && i->second.neuron_index.has_value()) {
       imagination.push_back(Thought{neurons[*i->second.neuron_index], flux});
+    }
+  }
+
+  if (!imagination.empty()) {
+    Real max_flux = imagination.front().flux;
+    for (const auto& thought : imagination) {
+      max_flux = std::max(max_flux, thought.flux);
+    }
+
+    Real denominator = Real{0};
+    for (auto& thought : imagination) {
+      thought.flux = static_cast<Real>(std::exp(thought.flux - max_flux));
+      denominator += thought.flux;
+    }
+
+    if (denominator != Real{0}) {
+      for (auto& thought : imagination) {
+        thought.flux /= denominator;
+      }
     }
   }
 

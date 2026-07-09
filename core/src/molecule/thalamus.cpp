@@ -1,3 +1,8 @@
+#include <cstddef>
+#include <optional>
+#include <span>
+#include <vector>
+
 #include <hdb/molecule/thalamus.hpp>
 
 namespace hdb {

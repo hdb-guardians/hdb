@@ -1,5 +1,8 @@
 #pragma once
 
+#include <optional>
+#include <vector>
+
 #include <hdb/quark/neuron.hpp>
 
 namespace hdb {
