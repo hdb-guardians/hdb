@@ -8,14 +8,6 @@ endif()
 
 find_package(SQLite3 REQUIRED)
 
-if(TARGET SQLite::SQLite3)
-  set(HDB_SQLITE_TARGET SQLite::SQLite3)
-elseif(TARGET SQLite3::SQLite3)
-  set(HDB_SQLITE_TARGET SQLite3::SQLite3)
-else()
-  message(FATAL_ERROR "No imported SQLite target found")
-endif()
-
 add_library(hdb_standard STATIC
   src/sqlite_context.cpp
   src/sqlite_neuron_table.cpp
@@ -35,7 +27,7 @@ target_link_libraries(hdb_standard
   PUBLIC
     hdb_core
   PRIVATE
-    ${HDB_SQLITE_TARGET}
+    SQLite3::SQLite3
 )
 
 target_compile_features(hdb_standard PUBLIC cxx_std_23)
