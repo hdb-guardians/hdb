@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <hdb/quark/synapse.hpp>
 
 namespace hdb {

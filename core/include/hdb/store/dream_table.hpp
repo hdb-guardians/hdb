@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include <hdb/quark/dream.hpp>
 #include <hdb/quark/resonance.hpp>
 
