@@ -2,16 +2,22 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_python LANGUAGES CXX)
 
-if(NOT TARGET hdb_sqlite)
+if(NOT TARGET hdb_api OR NOT TARGET hdb_sqlite)
   # Standalone python-package build path (e.g. wheel build via pyproject).
   # Reuse the same core/api/sqlite targets from the repository tree.
-  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_BINARY_DIR}/hdb_core")
-  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../api" "${CMAKE_CURRENT_BINARY_DIR}/hdb_api")
-  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../sqlite" "${CMAKE_CURRENT_BINARY_DIR}/hdb_sqlite")
+  if(NOT TARGET hdb_core)
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_BINARY_DIR}/hdb_core")
+  endif()
+  if(NOT TARGET hdb_api)
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../api" "${CMAKE_CURRENT_BINARY_DIR}/hdb_api")
+  endif()
+  if(NOT TARGET hdb_sqlite)
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../sqlite" "${CMAKE_CURRENT_BINARY_DIR}/hdb_sqlite")
+  endif()
 endif()
 
-if(NOT TARGET hdb_sqlite)
-  message(FATAL_ERROR "hdb/python: failed to resolve required target hdb_sqlite")
+if(NOT TARGET hdb_api OR NOT TARGET hdb_sqlite)
+  message(FATAL_ERROR "hdb/python: required targets hdb_api or hdb_sqlite are missing. hint: add_subdirectory(api) and add_subdirectory(sqlite) before python")
 endif()
 
 set(Python_FIND_VIRTUALENV FIRST)
@@ -31,7 +37,11 @@ endif()
 
 find_package(pybind11 CONFIG REQUIRED)
 
-add_subdirectory(bindings)
+add_subdirectory(bindings_api)
+
+if(TARGET hdb_sqlite)
+  add_subdirectory(bindings_sqlite)
+endif()
 
 install(
   DIRECTORY src/hdb/

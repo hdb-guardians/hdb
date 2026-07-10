@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <cstring>
 #include <hdb/api/session.hpp>
-#include <hdb/sqlite/open.hpp>
 #include <memory>
 #include <optional>
 #include <span>
@@ -180,7 +179,7 @@ hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
 }  // namespace
 
 PYBIND11_MODULE(_hdb, m) {
-  m.doc() = "HDB runtime bindings";
+  m.doc() = "HDB API bindings";
 
   py::class_<hdb::NeuronTable, std::shared_ptr<hdb::NeuronTable>>(
       m, "NeuronTable");
@@ -188,16 +187,6 @@ PYBIND11_MODULE(_hdb, m) {
       m, "SynapseTable");
   py::class_<hdb::DreamTable, std::shared_ptr<hdb::DreamTable>>(
       m, "DreamTable");
-
-  m.def(
-      "open_sqlite",
-      [](const std::string& db_path, const std::string& vec_ext) {
-        auto [neurons, synapses, dreams] = hdb::sqlite::open_sqlite(
-            db_path, hdb::sqlite::resolve_vec_extension_path(vec_ext));
-        return py::make_tuple(neurons, synapses, dreams);
-      },
-      py::arg("db_path"),
-      py::arg("sqlite_vec_extension_path") = "");
 
   py::class_<hdb::api::Session>(m, "Session")
       .def(

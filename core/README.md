@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # HDB Core
 
 **Parent project**: [HDB](../README.md)  
@@ -153,4 +151,3 @@ The following concerns belong to [standard/README.md](../standard/README.md):
 - SQLite connection and pragmas
 - sqlite-vec extension loading
 - runtime facade construction (`hdb::standard::Session`)
->>>>>>> 022f4d75a64c684c541304c2d2d91c536553643d
