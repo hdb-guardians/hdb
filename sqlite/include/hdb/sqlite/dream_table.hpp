@@ -1,21 +1,20 @@
 #pragma once
 
-#include <hdb/standard/sqlite_context.hpp>
+#include <hdb/sqlite/context.hpp>
 #include <hdb/store/dream_table.hpp>
 
-namespace hdb::standard {
+namespace hdb::sqlite {
 
 class SqliteDreamTable : public DreamTable {
  public:
   explicit SqliteDreamTable(SqliteContext& ctx);
 
   std::optional<Dream> insert(const Dream& dream) override;
-  std::vector<Resonance> find(
-      std::span<const std::byte> payload,
-      const Natural limit) const override;
+  std::vector<Resonance> find(std::span<const std::byte> payload, Natural limit)
+      const override;
 
  private:
-  SqliteContext& _ctx;
+  SqliteContext& ctx_;
 };
 
-}
+}  // namespace hdb::sqlite

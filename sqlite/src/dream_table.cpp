@@ -1,12 +1,12 @@
 #include <sqlite3.h>
 
-#include <hdb/standard/sqlite_dream_table.hpp>
-#include <hdb/standard/sqlite_utils.hpp>
+#include <hdb/sqlite/dream_table.hpp>
+#include <hdb/sqlite/utils.hpp>
 #include <stdexcept>
 
-namespace hdb::standard {
+namespace hdb::sqlite {
 
-SqliteDreamTable::SqliteDreamTable(SqliteContext& ctx) : _ctx(ctx) {}
+SqliteDreamTable::SqliteDreamTable(SqliteContext& ctx) : ctx_(ctx) {}
 
 std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
   static constexpr const char* kSql =
@@ -14,7 +14,7 @@ std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
       "VALUES(?1, ?2, ?3, ?4, ?5, ?6);";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(_ctx.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return std::nullopt;
   }
@@ -50,10 +50,10 @@ std::vector<Resonance> SqliteDreamTable::find(
 
   sqlite3_stmt* stmt = nullptr;
   const int prepare_rc =
-      sqlite3_prepare_v2(_ctx.handle(), kSql, -1, &stmt, nullptr);
+      sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr);
   if (prepare_rc != SQLITE_OK) {
     throw std::runtime_error(
-        "hdb::standard::SqliteDreamTable: query prepare failed: sqlite-vec "
+        "hdb::sqlite::SqliteDreamTable: query prepare failed: sqlite-vec "
         "resonance query");
   }
 
@@ -72,4 +72,4 @@ std::vector<Resonance> SqliteDreamTable::find(
   return out;
 }
 
-}
+}  // namespace hdb::sqlite

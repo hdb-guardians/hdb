@@ -1,21 +1,17 @@
 #include <utility>
 
-#include <hdb/standard/session.hpp>
+#include <hdb/api/session.hpp>
 
-namespace hdb::standard {
+namespace hdb::api {
 
-Session::Session(
-    const std::string& db_path,
-    const std::string& sqlite_vec_extension_path)
-    : _ctx(db_path, sqlite_vec_extension_path),
-      _neurons(_ctx),
-      _synapses(_ctx),
-      _dreams(_ctx),
-      prefrontal_(_neurons, _synapses),
-      thalamus_(_dreams),
-      hippocampus_(_neurons, _synapses, _dreams) {
-  _ctx.initialize_schema();
-}
+Session::Session(Context ctx)
+    : ctx_(std::move(ctx)),
+      neurons_(ctx_.get<NeuronTable>()),
+      synapses_(ctx_.get<SynapseTable>()),
+      dreams_(ctx_.get<DreamTable>()),
+      prefrontal_(*neurons_, *synapses_),
+      thalamus_(*dreams_),
+      hippocampus_(*neurons_, *synapses_, *dreams_) {}
 
 std::optional<Neuron> Session::Sprout(
     const Nid& name,

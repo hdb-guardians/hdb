@@ -1,9 +1,9 @@
 #pragma once
 
-#include <hdb/standard/sqlite_context.hpp>
+#include <hdb/sqlite/context.hpp>
 #include <hdb/store/neuron_table.hpp>
 
-namespace hdb::standard {
+namespace hdb::sqlite {
 
 class SqliteNeuronTable : public NeuronTable {
  public:
@@ -11,11 +11,10 @@ class SqliteNeuronTable : public NeuronTable {
 
   std::optional<Neuron> insert(const Neuron& neuron) override;
   std::optional<Neuron> find(const Nid& name) const override;
-  std::vector<Neuron> find(const Moment since, const Moment until)
-      const override;
+  std::vector<Neuron> find(Moment since, Moment until) const override;
 
  private:
-  SqliteContext& _ctx;
+  SqliteContext& ctx_;
 };
 
-}
+}  // namespace hdb::sqlite

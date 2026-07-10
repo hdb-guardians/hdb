@@ -2,15 +2,16 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_python LANGUAGES CXX)
 
-if(NOT TARGET hdb_standard)
+if(NOT TARGET hdb_sqlite)
   # Standalone python-package build path (e.g. wheel build via pyproject).
-  # Reuse the same core/standard targets from the repository tree.
+  # Reuse the same core/api/sqlite targets from the repository tree.
   add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_BINARY_DIR}/hdb_core")
-  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../standard" "${CMAKE_CURRENT_BINARY_DIR}/hdb_standard")
+  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../api" "${CMAKE_CURRENT_BINARY_DIR}/hdb_api")
+  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../sqlite" "${CMAKE_CURRENT_BINARY_DIR}/hdb_sqlite")
 endif()
 
-if(NOT TARGET hdb_standard)
-  message(FATAL_ERROR "hdb/python: failed to resolve required target hdb_standard")
+if(NOT TARGET hdb_sqlite)
+  message(FATAL_ERROR "hdb/python: failed to resolve required target hdb_sqlite")
 endif()
 
 set(Python_FIND_VIRTUALENV FIRST)

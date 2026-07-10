@@ -6,7 +6,8 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
-#include <hdb/standard/session.hpp>
+#include <hdb/api/session.hpp>
+#include <hdb/sqlite/setup.hpp>
 #include <memory>
 #include <optional>
 #include <span>
@@ -200,19 +201,22 @@ std::string ResolveSqliteVecExtensionPath(
 PYBIND11_MODULE(_hdb, m) {
   m.doc() = "HDB standard runtime bindings";
 
-  py::class_<hdb::standard::Session>(m, "Session")
+  py::class_<hdb::api::Session>(m, "Session")
       .def(
           py::init([](const std::string& db_path,
                       const std::string& sqlite_vec_extension_path) {
-            return std::make_unique<hdb::standard::Session>(
+            hdb::api::Context ctx;
+            hdb::sqlite::append_sqlite_context(
+                ctx,
                 db_path,
                 ResolveSqliteVecExtensionPath(sqlite_vec_extension_path));
+            return std::make_unique<hdb::api::Session>(std::move(ctx));
           }),
           py::arg("db_path"),
           py::arg("sqlite_vec_extension_path") = "")
       .def(
           "sprout",
-          [](hdb::standard::Session& self,
+          [](hdb::api::Session& self,
              const std::string& name,
              const py::bytes actor,
              const py::bytes payload,
@@ -234,7 +238,7 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("meta") = py::none())
       .def(
           "awaken",
-          [](hdb::standard::Session& self, const std::string& name) {
+          [](hdb::api::Session& self, const std::string& name) {
             auto out = self.Awaken(name);
             if (!out.has_value()) {
               return py::object(py::none());
@@ -244,7 +248,7 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("name"))
       .def(
           "fire",
-          [](hdb::standard::Session& self,
+          [](hdb::api::Session& self,
              const std::string& name,
              const py::bytes actor,
              const std::string& from,
@@ -267,7 +271,7 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("meta") = py::none())
       .def(
           "consolidate",
-          [](hdb::standard::Session& self,
+          [](hdb::api::Session& self,
              const std::string& name,
              const py::bytes actor,
              const std::string& neuron,
@@ -292,7 +296,7 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("meta") = py::none())
       .def(
           "resonate",
-          [](hdb::standard::Session& self,
+          [](hdb::api::Session& self,
              const py::bytes stimulus,
              const std::size_t limit) {
             const auto stimulus_bytes = ToBytes(stimulus);
@@ -308,7 +312,7 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("limit") = 10)
       .def(
           "reminisce",
-          [](hdb::standard::Session& self,
+          [](hdb::api::Session& self,
              const std::int64_t since_ticks,
              const std::int64_t until_ticks) {
             auto out = self.Reminisce(
@@ -336,7 +340,7 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("until_ticks") = ToMomentTicks(hdb::Moment::max()))
       .def(
           "imagine",
-          [](hdb::standard::Session& self,
+          [](hdb::api::Session& self,
              const py::dict engram_obj,
              const std::string& start,
              const std::size_t epochs,
