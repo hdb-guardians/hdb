@@ -17,6 +17,14 @@ It implements the storage interfaces defined in `core` and exposes a single runt
 - `SqliteDreamTable`: `DreamTable` implementation
 - `Session`: facade that wires `Prefrontal`, `Thalamus`, `Hippocampus`, and `Cortex`
 
+## Planned Details
+
+- `SqliteContext`: _내용 작성 예정_
+- `SqliteNeuronTable`: _내용 작성 예정_
+- `SqliteSynapseTable`: _내용 작성 예정_
+- `SqliteDreamTable`: _내용 작성 예정_
+- `Session`: _내용 작성 예정_
+
 ## Session API
 
 The public API in [include/hdb/standard/session.hpp](include/hdb/standard/session.hpp):
@@ -43,7 +51,7 @@ Primary key and data style:
 
 - each table uses `name TEXT PRIMARY KEY`
 - payload fields are stored as `BLOB`
-- `moment` is stored as `INTEGER`
+- `moment` is stored as `INTEGER` clock ticks (`Moment::duration::rep`)
 
 Indices:
 

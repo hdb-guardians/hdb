@@ -48,6 +48,76 @@ The core supports type overrides via CMake cache variables:
 - `HDB_REAL_TYPE` (default: `float`)
 - `HDB_NATURAL_TYPE` (default: `std::size_t`)
 
+## Borrowed Domains and Design Intent
+
+HDB core borrows terms from neuroscience, cognitive science, and quantum mechanics intentionally.
+These terms are used to keep boundaries explicit between facts, computation, and orchestration.
+
+Core philosophical constraints:
+
+- only explicit human-confirmed links are recorded (no automatic linking)
+- writes are append-only (past thought events are not overwritten)
+- synapse semantics stay single-purpose (directed confirmed relation)
+- lifecycle control stays outside C++ core (core executes explicit calls)
+
+This vocabulary is a contract, not decoration.
+
+## Domain Layers
+
+### Quark
+
+The `quark` layer groups persistent value objects.
+
+| Concept     | Field                  | Role                                  |
+| ----------- | ---------------------- | ------------------------------------- |
+| `Neuron`    | Neuroscience           | Minimal thought event                 |
+| `Synapse`   | Neuroscience           | Directed relation                     |
+| `Dream`     | Cognitive neuroscience | Derived memory artifact               |
+| `Resonance` | Quantum mechanics      | Overlap-style similarity (`fidelity`) |
+
+Planned details:
+
+- `Neuron`: _내용 작성 예정_
+- `Synapse`: _내용 작성 예정_
+- `Dream`: _내용 작성 예정_
+- `Resonance`: _내용 작성 예정_
+
+### Atom
+
+The `atom` layer groups computation-ready aggregates and policies.
+
+| Concept       | Field                     | Role                           |
+| ------------- | ------------------------- | ------------------------------ |
+| `Thought`     | Cognitive science         | Activated recall unit (`flux`) |
+| `Imagination` | Cognitive simulation      | Propagation output             |
+| `Impulse`     | Quantum mechanics         | Pluggable weighting policy     |
+| `Engram`      | Neuroscience memory trace | Retrieval bundle               |
+
+Planned details:
+
+- `Thought`: _내용 작성 예정_
+- `Imagination`: _내용 작성 예정_
+- `Impulse`: _내용 작성 예정_
+- `Engram`: _내용 작성 예정_
+
+### Molecule
+
+The `molecule` layer groups orchestration surfaces.
+
+| Concept       | Field                        | Role                                     |
+| ------------- | ---------------------------- | ---------------------------------------- |
+| `Prefrontal`  | Prefrontal cortex            | Deliberate action surface                |
+| `Thalamus`    | Thalamic relay/consolidation | Consolidation boundary                   |
+| `Hippocampus` | Memory indexing/recall       | Retrieval boundary                       |
+| `Cortex`      | Quantum mechanics            | Wave-function / entropy-style simulation |
+
+Planned details:
+
+- `Prefrontal`: _내용 작성 예정_
+- `Thalamus`: _내용 작성 예정_
+- `Hippocampus`: _내용 작성 예정_
+- `Cortex`: _내용 작성 예정_
+
 ## Domain Records
 
 - `Neuron { name, actor, payload, moment, meta }`

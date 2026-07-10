@@ -21,7 +21,7 @@ class SqliteContext {
   void initialize_schema();
 
  private:
-  sqlite3* db_ = nullptr;
+  sqlite3* _db = nullptr;
 };
 
 }

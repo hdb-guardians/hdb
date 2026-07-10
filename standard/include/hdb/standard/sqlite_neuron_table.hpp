@@ -15,7 +15,7 @@ class SqliteNeuronTable : public NeuronTable {
       const override;
 
  private:
-  SqliteContext& ctx_;
+  SqliteContext& _ctx;
 };
 
 }

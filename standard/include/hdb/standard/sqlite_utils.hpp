@@ -13,14 +13,11 @@
 namespace hdb::standard {
 
 inline sqlite3_int64 ToSqlMoment(const Moment moment) {
-  using namespace std::chrono;
-  return static_cast<sqlite3_int64>(
-      duration_cast<microseconds>(moment.time_since_epoch()).count());
+  return static_cast<sqlite3_int64>(moment.time_since_epoch().count());
 }
 
-inline Moment FromSqlMoment(const sqlite3_int64 moment_us) {
-  using namespace std::chrono;
-  return Moment{microseconds{moment_us}};
+inline Moment FromSqlMoment(const sqlite3_int64 moment_ticks) {
+  return Moment{Clock::duration{moment_ticks}};
 }
 
 inline void

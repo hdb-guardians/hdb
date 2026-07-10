@@ -15,7 +15,7 @@ class SqliteSynapseTable : public SynapseTable {
       const override;
 
  private:
-  SqliteContext& ctx_;
+  SqliteContext& _ctx;
 };
 
 }

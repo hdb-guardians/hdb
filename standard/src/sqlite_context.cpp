@@ -18,7 +18,7 @@ void ExecOrThrow(sqlite3* db, const char* sql) {
   throw std::runtime_error(msg);
 }
 
-}  // namespace
+}
 
 namespace hdb::standard {
 
@@ -27,20 +27,20 @@ SqliteContext::SqliteContext(
     const std::string& sqlite_vec_extension_path) {
   const int rc = sqlite3_open_v2(
       db_path.c_str(),
-      &db_,
+      &_db,
       SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
       nullptr);
-  if (rc != SQLITE_OK || db_ == nullptr) {
+  if (rc != SQLITE_OK || _db == nullptr) {
     throw std::runtime_error("failed to open sqlite database");
   }
 
-  ExecOrThrow(db_, "PRAGMA journal_mode = WAL;");
-  ExecOrThrow(db_, "PRAGMA foreign_keys = ON;");
+  ExecOrThrow(_db, "PRAGMA journal_mode = WAL;");
+  ExecOrThrow(_db, "PRAGMA foreign_keys = ON;");
 
-  sqlite3_enable_load_extension(db_, 1);
+  sqlite3_enable_load_extension(_db, 1);
   char* err = nullptr;
   const int load_rc = sqlite3_load_extension(
-      db_, sqlite_vec_extension_path.c_str(), nullptr, &err);
+      _db, sqlite_vec_extension_path.c_str(), nullptr, &err);
 
   if (load_rc != SQLITE_OK) {
     std::string msg = err == nullptr ? "failed to load sqlite-vec" : err;
@@ -50,17 +50,17 @@ SqliteContext::SqliteContext(
 }
 
 SqliteContext::~SqliteContext() {
-  if (db_ != nullptr) {
-    sqlite3_close(db_);
-    db_ = nullptr;
+  if (_db != nullptr) {
+    sqlite3_close(_db);
+    _db = nullptr;
   }
 }
 
-sqlite3* SqliteContext::handle() const noexcept { return db_; }
+sqlite3* SqliteContext::handle() const noexcept { return _db; }
 
 void SqliteContext::initialize_schema() {
   ExecOrThrow(
-      db_,
+      _db,
       "CREATE TABLE IF NOT EXISTS neurons("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
@@ -70,10 +70,10 @@ void SqliteContext::initialize_schema() {
       ");");
 
   ExecOrThrow(
-      db_, "CREATE INDEX IF NOT EXISTS idx_neurons_moment ON neurons(moment);");
+      _db, "CREATE INDEX IF NOT EXISTS idx_neurons_moment ON neurons(moment);");
 
   ExecOrThrow(
-      db_,
+      _db,
       "CREATE TABLE IF NOT EXISTS synapses("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
@@ -84,15 +84,15 @@ void SqliteContext::initialize_schema() {
       ");");
 
   ExecOrThrow(
-      db_,
+      _db,
       "CREATE INDEX IF NOT EXISTS idx_synapses_moment ON synapses(moment);");
   ExecOrThrow(
-      db_,
+      _db,
       "CREATE INDEX IF NOT EXISTS idx_synapses_from_to ON "
       "synapses(from_id, to_id);");
 
   ExecOrThrow(
-      db_,
+      _db,
       "CREATE TABLE IF NOT EXISTS dreams("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
@@ -103,9 +103,9 @@ void SqliteContext::initialize_schema() {
       ");");
 
   ExecOrThrow(
-      db_, "CREATE INDEX IF NOT EXISTS idx_dreams_moment ON dreams(moment);");
+      _db, "CREATE INDEX IF NOT EXISTS idx_dreams_moment ON dreams(moment);");
   ExecOrThrow(
-      db_, "CREATE INDEX IF NOT EXISTS idx_dreams_neuron ON dreams(neuron);");
+      _db, "CREATE INDEX IF NOT EXISTS idx_dreams_neuron ON dreams(neuron);");
 }
 
 }

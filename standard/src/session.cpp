@@ -7,14 +7,14 @@ namespace hdb::standard {
 Session::Session(
     const std::string& db_path,
     const std::string& sqlite_vec_extension_path)
-    : ctx_(db_path, sqlite_vec_extension_path),
-      neurons_(ctx_),
-      synapses_(ctx_),
-      dreams_(ctx_),
-      prefrontal_(neurons_, synapses_),
-      thalamus_(dreams_),
-      hippocampus_(neurons_, synapses_, dreams_) {
-  ctx_.initialize_schema();
+    : _ctx(db_path, sqlite_vec_extension_path),
+      _neurons(_ctx),
+      _synapses(_ctx),
+      _dreams(_ctx),
+      prefrontal_(_neurons, _synapses),
+      thalamus_(_dreams),
+      hippocampus_(_neurons, _synapses, _dreams) {
+  _ctx.initialize_schema();
 }
 
 std::optional<Neuron> Session::Sprout(

@@ -15,7 +15,7 @@ class SqliteDreamTable : public DreamTable {
       const Natural limit) const override;
 
  private:
-  SqliteContext& ctx_;
+  SqliteContext& _ctx;
 };
 
 }

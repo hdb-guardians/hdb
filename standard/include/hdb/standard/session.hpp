@@ -61,10 +61,10 @@ class Session {
       const Impulse& impulse);
 
  private:
-  SqliteContext ctx_;
-  SqliteNeuronTable neurons_;
-  SqliteSynapseTable synapses_;
-  SqliteDreamTable dreams_;
+  SqliteContext _ctx;
+  SqliteNeuronTable _neurons;
+  SqliteSynapseTable _synapses;
+  SqliteDreamTable _dreams;
   Prefrontal prefrontal_;
   Thalamus thalamus_;
   Hippocampus hippocampus_;
