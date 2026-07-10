@@ -6,7 +6,8 @@
 
 namespace hdb::sqlite {
 
-SqliteDreamTable::SqliteDreamTable(SqliteContext& ctx) : ctx_(ctx) {}
+SqliteDreamTable::SqliteDreamTable(std::shared_ptr<SqliteContext> ctx)
+    : ctx_(std::move(ctx)) {}
 
 std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
   static constexpr const char* kSql =
@@ -14,7 +15,7 @@ std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
       "VALUES(?1, ?2, ?3, ?4, ?5, ?6);";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return std::nullopt;
   }
@@ -50,7 +51,7 @@ std::vector<Resonance> SqliteDreamTable::find(
 
   sqlite3_stmt* stmt = nullptr;
   const int prepare_rc =
-      sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr);
+      sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr);
   if (prepare_rc != SQLITE_OK) {
     throw std::runtime_error(
         "hdb::sqlite::SqliteDreamTable: query prepare failed: sqlite-vec "

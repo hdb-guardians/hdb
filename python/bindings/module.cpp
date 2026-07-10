@@ -4,10 +4,9 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <cstdlib>
 #include <cstring>
 #include <hdb/api/session.hpp>
-#include <hdb/sqlite/store.hpp>
+#include <hdb/sqlite/open.hpp>
 #include <memory>
 #include <optional>
 #include <span>
@@ -170,7 +169,6 @@ hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
   if (impulse_obj.is_none()) {
     return [](const hdb::Synapse&) { return hdb::Real{1}; };
   }
-
   const py::function impulse_fn = impulse_obj.cast<py::function>();
   return [impulse_fn](const hdb::Synapse& synapse) -> hdb::Real {
     py::gil_scoped_acquire gil;
@@ -179,46 +177,39 @@ hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
   };
 }
 
-std::string ResolveSqliteVecExtensionPath(
-    const std::string& sqlite_vec_extension_path) {
-  if (!sqlite_vec_extension_path.empty()) {
-    return sqlite_vec_extension_path;
-  }
-
-  const char* from_env = std::getenv("HDB_SQLITE_VEC_EXTENSION");
-  if (from_env != nullptr && from_env[0] != '\0') {
-    return std::string{from_env};
-  }
-
-  throw std::runtime_error(
-      "hdb::python::Session: sqlite-vec extension path is required. "
-      "Pass sqlite_vec_extension_path explicitly or set "
-      "HDB_SQLITE_VEC_EXTENSION.");
-}
-
 }  // namespace
 
 PYBIND11_MODULE(_hdb, m) {
   m.doc() = "HDB runtime bindings";
 
-  py::class_<hdb::sqlite::SqliteStore>(m, "SqliteStore")
-      .def(
-          py::init([](const std::string& db_path,
-                      const std::string& sqlite_vec_extension_path) {
-            return hdb::sqlite::make_sqlite_store(
-                db_path,
-                ResolveSqliteVecExtensionPath(sqlite_vec_extension_path));
-          }),
-          py::arg("db_path"),
-          py::arg("sqlite_vec_extension_path") = "");
+  py::class_<hdb::NeuronTable, std::shared_ptr<hdb::NeuronTable>>(
+      m, "NeuronTable");
+  py::class_<hdb::SynapseTable, std::shared_ptr<hdb::SynapseTable>>(
+      m, "SynapseTable");
+  py::class_<hdb::DreamTable, std::shared_ptr<hdb::DreamTable>>(
+      m, "DreamTable");
+
+  m.def(
+      "open_sqlite",
+      [](const std::string& db_path, const std::string& vec_ext) {
+        auto [neurons, synapses, dreams] = hdb::sqlite::open_sqlite(
+            db_path, hdb::sqlite::resolve_vec_extension_path(vec_ext));
+        return py::make_tuple(neurons, synapses, dreams);
+      },
+      py::arg("db_path"),
+      py::arg("sqlite_vec_extension_path") = "");
 
   py::class_<hdb::api::Session>(m, "Session")
       .def(
-          py::init([](const hdb::sqlite::SqliteStore& store) {
+          py::init([](std::shared_ptr<hdb::NeuronTable> neurons,
+                      std::shared_ptr<hdb::SynapseTable> synapses,
+                      std::shared_ptr<hdb::DreamTable> dreams) {
             return std::make_unique<hdb::api::Session>(
-                store.neurons, store.synapses, store.dreams);
+                std::move(neurons), std::move(synapses), std::move(dreams));
           }),
-          py::arg("store"))
+          py::arg("neurons"),
+          py::arg("synapses"),
+          py::arg("dreams"))
       .def(
           "sprout",
           [](hdb::api::Session& self,

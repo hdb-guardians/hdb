@@ -5,7 +5,8 @@
 
 namespace hdb::sqlite {
 
-SqliteSynapseTable::SqliteSynapseTable(SqliteContext& ctx) : ctx_(ctx) {}
+SqliteSynapseTable::SqliteSynapseTable(std::shared_ptr<SqliteContext> ctx)
+    : ctx_(std::move(ctx)) {}
 
 std::optional<Synapse> SqliteSynapseTable::insert(const Synapse& synapse) {
   static constexpr const char* kSql =
@@ -13,7 +14,7 @@ std::optional<Synapse> SqliteSynapseTable::insert(const Synapse& synapse) {
       "VALUES(?1, ?2, ?3, ?4, ?5, ?6);";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return std::nullopt;
   }
@@ -44,7 +45,7 @@ std::optional<Synapse> SqliteSynapseTable::find(const Sid& name) const {
       "FROM synapses WHERE name = ?1 LIMIT 1;";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return std::nullopt;
   }
@@ -76,7 +77,7 @@ std::vector<Synapse> SqliteSynapseTable::find(
       "FROM synapses WHERE moment >= ?1 AND moment <= ?2 ORDER BY moment ASC;";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return {};
   }

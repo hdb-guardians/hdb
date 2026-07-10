@@ -13,7 +13,7 @@ add_library(hdb_sqlite STATIC
   src/neuron_table.cpp
   src/synapse_table.cpp
   src/dream_table.cpp
-  src/store.cpp
+  src/open.cpp
 )
 
 target_include_directories(hdb_sqlite

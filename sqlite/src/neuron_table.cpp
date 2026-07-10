@@ -5,7 +5,8 @@
 
 namespace hdb::sqlite {
 
-SqliteNeuronTable::SqliteNeuronTable(SqliteContext& ctx) : ctx_(ctx) {}
+SqliteNeuronTable::SqliteNeuronTable(std::shared_ptr<SqliteContext> ctx)
+    : ctx_(std::move(ctx)) {}
 
 std::optional<Neuron> SqliteNeuronTable::insert(const Neuron& neuron) {
   static constexpr const char* kSql =
@@ -13,7 +14,7 @@ std::optional<Neuron> SqliteNeuronTable::insert(const Neuron& neuron) {
       "VALUES(?1, ?2, ?3, ?4, ?5);";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return std::nullopt;
   }
@@ -43,7 +44,7 @@ std::optional<Neuron> SqliteNeuronTable::find(const Nid& name) const {
       "FROM neurons WHERE name = ?1 LIMIT 1;";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return std::nullopt;
   }
@@ -74,7 +75,7 @@ std::vector<Neuron> SqliteNeuronTable::find(
       "FROM neurons WHERE moment >= ?1 AND moment <= ?2 ORDER BY moment ASC;";
 
   sqlite3_stmt* stmt = nullptr;
-  if (sqlite3_prepare_v2(ctx_.handle(), kSql, -1, &stmt, nullptr) !=
+  if (sqlite3_prepare_v2(ctx_->handle(), kSql, -1, &stmt, nullptr) !=
       SQLITE_OK) {
     return {};
   }
