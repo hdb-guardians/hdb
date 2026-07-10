@@ -21,6 +21,7 @@ std::optional<Dream> Thalamus::Consolidate(
       .neuron = neuron,
       .payload = {payload.begin(), payload.end()},
       .moment = Clock::now(),
+      .meta = std::nullopt,
   };
 
   if (meta) {

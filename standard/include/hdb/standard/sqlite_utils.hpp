@@ -5,6 +5,8 @@
 #include <chrono>
 #include <cstring>
 #include <hdb/types.hpp>
+#include <optional>
+#include <span>
 #include <string>
 #include <vector>
 

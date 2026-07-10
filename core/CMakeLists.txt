@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_core LANGUAGES CXX)
 
-option(HDB_CORE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
-
 set(HDB_ID_TYPE "" CACHE STRING "Override Id type (default: std::string)")
 
 set(HDB_CLOCK_TYPE "" CACHE STRING "Override Clock type (default: std::chrono::system_clock)")
@@ -45,13 +43,8 @@ endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(hdb_core PRIVATE
         -Wall -Wextra -Wpedantic
+        -Werror
     )
-    if(HDB_CORE_WARNINGS_AS_ERRORS)
-        target_compile_options(hdb_core PRIVATE -Werror)
-    endif()
 elseif(MSVC)
-    target_compile_options(hdb_core PRIVATE /W4)
-    if(HDB_CORE_WARNINGS_AS_ERRORS)
-        target_compile_options(hdb_core PRIVATE /WX)
-    endif()
+    target_compile_options(hdb_core PRIVATE /W4 /WX)
 endif()

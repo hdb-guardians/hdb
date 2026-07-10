@@ -18,26 +18,13 @@ void ExecOrThrow(sqlite3* db, const char* sql) {
   throw std::runtime_error(msg);
 }
 
-bool ProbeVec(sqlite3* db) {
-  sqlite3_stmt* stmt = nullptr;
-  const int rc =
-      sqlite3_prepare_v2(db, "SELECT vec_version();", -1, &stmt, nullptr);
-  if (rc != SQLITE_OK) {
-    return false;
-  }
-
-  const int step = sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
-  return step == SQLITE_ROW;
-}
-
 }  // namespace
 
 namespace hdb::standard {
 
 SqliteContext::SqliteContext(
     const std::string& db_path,
-    std::optional<std::string> sqlite_vec_extension_path) {
+    const std::string& sqlite_vec_extension_path) {
   const int rc = sqlite3_open_v2(
       db_path.c_str(),
       &db_,
@@ -50,20 +37,15 @@ SqliteContext::SqliteContext(
   ExecOrThrow(db_, "PRAGMA journal_mode = WAL;");
   ExecOrThrow(db_, "PRAGMA foreign_keys = ON;");
 
-  if (sqlite_vec_extension_path.has_value()) {
-    sqlite3_enable_load_extension(db_, 1);
-    char* err = nullptr;
-    const int load_rc = sqlite3_load_extension(
-        db_, sqlite_vec_extension_path->c_str(), nullptr, &err);
+  sqlite3_enable_load_extension(db_, 1);
+  char* err = nullptr;
+  const int load_rc = sqlite3_load_extension(
+      db_, sqlite_vec_extension_path.c_str(), nullptr, &err);
 
-    if (load_rc != SQLITE_OK) {
-      std::string msg = err == nullptr ? "failed to load sqlite-vec" : err;
-      sqlite3_free(err);
-      throw std::runtime_error(msg);
-    }
-    vec_enabled_ = true;
-  } else {
-    vec_enabled_ = ProbeVec(db_);
+  if (load_rc != SQLITE_OK) {
+    std::string msg = err == nullptr ? "failed to load sqlite-vec" : err;
+    sqlite3_free(err);
+    throw std::runtime_error(msg);
   }
 }
 
@@ -75,8 +57,6 @@ SqliteContext::~SqliteContext() {
 }
 
 sqlite3* SqliteContext::handle() const noexcept { return db_; }
-
-bool SqliteContext::has_vec() const noexcept { return vec_enabled_; }
 
 void SqliteContext::initialize_schema() {
   ExecOrThrow(

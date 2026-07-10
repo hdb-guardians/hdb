@@ -41,12 +41,6 @@ std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
 std::vector<Resonance> SqliteDreamTable::find(
     std::span<const std::byte> payload,
     const Natural limit) const {
-  if (!ctx_.has_vec()) {
-    throw std::runtime_error(
-        "sqlite-vec is not available. Provide extension "
-        "path when creating Session.");
-  }
-
   static constexpr const char* kSql =
       "SELECT neuron, "
       "1.0 / (1.0 + vec_distance_l2(payload, ?1)) AS fidelity "

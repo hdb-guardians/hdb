@@ -6,8 +6,8 @@ namespace hdb::standard {
 
 Session::Session(
     const std::string& db_path,
-    std::optional<std::string> sqlite_vec_extension_path)
-    : ctx_(db_path, std::move(sqlite_vec_extension_path)),
+    const std::string& sqlite_vec_extension_path)
+    : ctx_(db_path, sqlite_vec_extension_path),
       neurons_(ctx_),
       synapses_(ctx_),
       dreams_(ctx_),

@@ -21,7 +21,7 @@ class Session {
  public:
   explicit Session(
       const std::string& db_path,
-      std::optional<std::string> sqlite_vec_extension_path = std::nullopt);
+      const std::string& sqlite_vec_extension_path);
 
   std::optional<Neuron> Sprout(
       const Nid& name,
