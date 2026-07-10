@@ -16,8 +16,8 @@ if(NOT TARGET hdb_api OR NOT TARGET hdb_sqlite)
   endif()
 endif()
 
-if(NOT TARGET hdb_api OR NOT TARGET hdb_sqlite)
-  message(FATAL_ERROR "hdb/python: required targets hdb_api or hdb_sqlite are missing. hint: add_subdirectory(api) and add_subdirectory(sqlite) before python")
+if(NOT TARGET hdb_api)
+  message(FATAL_ERROR "hdb/python: required target hdb_api is missing. hint: add_subdirectory(api) before python")
 endif()
 
 set(Python_FIND_VIRTUALENV FIRST)

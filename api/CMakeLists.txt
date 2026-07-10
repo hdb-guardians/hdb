@@ -25,8 +25,8 @@ set_target_properties(hdb_api PROPERTIES CXX_EXTENSIONS OFF)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   target_compile_options(hdb_api PRIVATE
-    -Wall -Wextra -Wpedantic
+    -Wall -Wextra -Wpedantic -Werror
   )
 elseif(MSVC)
-  target_compile_options(hdb_api PRIVATE /W4)
+  target_compile_options(hdb_api PRIVATE /W4 /WX)
 endif()
