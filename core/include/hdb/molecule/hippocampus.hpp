@@ -1,9 +1,13 @@
 #pragma once
 
+#include <optional>
+#include <span>
+#include <vector>
+
 #include <hdb/atom/engram.hpp>
+#include <hdb/store/dream_table.hpp>
 #include <hdb/store/neuron_table.hpp>
 #include <hdb/store/synapse_table.hpp>
-#include <hdb/store/dream_table.hpp>
 
 namespace hdb {
 
@@ -28,4 +32,4 @@ class Hippocampus {
   DreamTable& dreams;
 };
 
-}  // namespace hdb
+}

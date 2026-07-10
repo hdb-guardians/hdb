@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstddef>
+#include <optional>
+#include <span>
+
 #include <hdb/store/neuron_table.hpp>
 #include <hdb/store/synapse_table.hpp>
 
@@ -29,4 +33,4 @@ class Prefrontal {
   SynapseTable& synapses;
 };
 
-}  // namespace hdb
+}

@@ -1,3 +1,8 @@
+#include <cstddef>
+#include <optional>
+#include <span>
+#include <vector>
+
 #include <hdb/molecule/prefrontal.hpp>
 
 namespace hdb {
@@ -15,6 +20,7 @@ std::optional<Neuron> Prefrontal::Sprout(
       .actor = {actor.begin(), actor.end()},
       .payload = {payload.begin(), payload.end()},
       .moment = Clock::now(),
+      .meta = std::nullopt,
   };
 
   if (meta) {
@@ -40,6 +46,7 @@ std::optional<Synapse> Prefrontal::Fire(
       .from = from,
       .to = to,
       .moment = Clock::now(),
+      .meta = std::nullopt,
   };
 
   if (meta) {
@@ -49,4 +56,4 @@ std::optional<Synapse> Prefrontal::Fire(
   return synapses.insert(synapse);
 }
 
-}  // namespace hdb
+}

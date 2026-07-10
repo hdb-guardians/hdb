@@ -1,3 +1,8 @@
+#include <cstddef>
+#include <optional>
+#include <span>
+#include <vector>
+
 #include <hdb/molecule/thalamus.hpp>
 
 namespace hdb {
@@ -16,6 +21,7 @@ std::optional<Dream> Thalamus::Consolidate(
       .neuron = neuron,
       .payload = {payload.begin(), payload.end()},
       .moment = Clock::now(),
+      .meta = std::nullopt,
   };
 
   if (meta) {
@@ -25,4 +31,4 @@ std::optional<Dream> Thalamus::Consolidate(
   return dreams.insert(dream);
 }
 
-}  // namespace hdb
+}

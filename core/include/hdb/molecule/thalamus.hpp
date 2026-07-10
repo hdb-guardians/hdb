@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstddef>
+#include <optional>
+#include <span>
+
 #include <hdb/store/dream_table.hpp>
 
 namespace hdb {
@@ -19,4 +23,4 @@ class Thalamus {
   DreamTable& dreams;
 };
 
-}  // namespace hdb
+}

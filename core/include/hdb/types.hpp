@@ -2,14 +2,7 @@
 
 #include <chrono>
 #include <cstddef>
-#include <functional>
-#include <optional>
-#include <span>
 #include <string>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <unordered_map>
 
 namespace hdb {
 
@@ -43,4 +36,4 @@ using Natural = std::size_t;
 using Natural = HDB_NATURAL_TYPE;
 #endif
 
-}  // namespace hdb
+}

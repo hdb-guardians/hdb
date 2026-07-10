@@ -1,3 +1,9 @@
+#include <cstddef>
+#include <optional>
+#include <span>
+#include <utility>
+#include <vector>
+
 #include <hdb/molecule/hippocampus.hpp>
 
 namespace hdb {
@@ -27,4 +33,4 @@ std::optional<Engram> Hippocampus::Reminisce(
   return Engram{std::move(_neurons), std::move(_synapses)};
 }
 
-}  // namespace hdb
+}

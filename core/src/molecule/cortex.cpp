@@ -1,3 +1,8 @@
+#include <algorithm>
+#include <cmath>
+#include <random>
+#include <unordered_map>
+
 #include <hdb/molecule/cortex.hpp>
 
 namespace hdb {
@@ -8,16 +13,9 @@ Imagination Cortex::Imagine(
     const Natural epochs,
     const Real creativity,
     const Impulse& impulse) {
-  std::unordered_map<Nid, const Neuron*> neuron_map;
-  neuron_map.reserve(engram.neurons.size());
-  for (const auto& n : engram.neurons) {
-    neuron_map.emplace(n.name, &n);
-  }
-
-  std::unordered_map<Nid, std::vector<const Synapse*>> synapse_map;
-  for (const auto& s : engram.synapses) {
-    synapse_map[s.from].push_back(&s);
-  }
+  const auto& synapses = engram.Synapses();
+  const auto& neurons = engram.Neurons();
+  const auto& adjacency_by_nid = engram.AdjacencyByNid();
 
   std::unordered_map<Nid, Real> flux_map;
   flux_map[start] = Real{1};
@@ -32,24 +30,25 @@ Imagination Cortex::Imagine(
     std::unordered_map<Nid, Real> _wave_map;
 
     for (const auto& [nid, flux] : wave_map) {
-      auto i = synapse_map.find(nid);
-      if (i == synapse_map.end()) continue;
+      auto i = adjacency_by_nid.find(nid);
+      if (i == adjacency_by_nid.end()) continue;
 
-      for (const Synapse* s : i->second) {
-        Real contribution = flux * impulse(*s);
+      for (const std::size_t synapse_index : i->second.synapse_indices) {
+        const Synapse& synapse = synapses[synapse_index];
+        Real contribution = flux * impulse(synapse);
 
         if (creativity != Real{0}) {
           contribution += creativity * noise(rng);
         }
 
-        _wave_map[s->to] += contribution;
+        _wave_map[synapse.to] += contribution;
       }
     }
 
     if (_wave_map.empty()) break;
 
-    for (const auto& [nid, f] : _wave_map) {
-      flux_map[nid] += f;
+    for (const auto& [nid, flux] : _wave_map) {
+      flux_map[nid] += flux;
     }
 
     wave_map = std::move(_wave_map);
@@ -59,9 +58,28 @@ Imagination Cortex::Imagine(
   imagination.reserve(flux_map.size());
 
   for (const auto& [nid, flux] : flux_map) {
-    auto i = neuron_map.find(nid);
-    if (i != neuron_map.end()) {
-      imagination.push_back(Thought{*i->second, flux});
+    auto i = adjacency_by_nid.find(nid);
+    if (i != adjacency_by_nid.end() && i->second.neuron_index.has_value()) {
+      imagination.push_back(Thought{neurons[*i->second.neuron_index], flux});
+    }
+  }
+
+  if (!imagination.empty()) {
+    Real max_flux = imagination.front().flux;
+    for (const auto& thought : imagination) {
+      max_flux = std::max(max_flux, thought.flux);
+    }
+
+    Real denominator = Real{0};
+    for (auto& thought : imagination) {
+      thought.flux = static_cast<Real>(std::exp(thought.flux - max_flux));
+      denominator += thought.flux;
+    }
+
+    if (denominator != Real{0}) {
+      for (auto& thought : imagination) {
+        thought.flux /= denominator;
+      }
     }
   }
 
@@ -72,4 +90,4 @@ Imagination Cortex::Imagine(
   return imagination;
 }
 
-}  // namespace hdb
+}
