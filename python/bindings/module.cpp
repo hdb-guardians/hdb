@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <hdb/api/session.hpp>
-#include <hdb/sqlite/setup.hpp>
+#include <hdb/sqlite/store.hpp>
 #include <memory>
 #include <optional>
 #include <span>
@@ -196,24 +196,29 @@ std::string ResolveSqliteVecExtensionPath(
       "HDB_SQLITE_VEC_EXTENSION.");
 }
 
-}
+}  // namespace
 
 PYBIND11_MODULE(_hdb, m) {
-  m.doc() = "HDB standard runtime bindings";
+  m.doc() = "HDB runtime bindings";
 
-  py::class_<hdb::api::Session>(m, "Session")
+  py::class_<hdb::sqlite::SqliteStore>(m, "SqliteStore")
       .def(
           py::init([](const std::string& db_path,
                       const std::string& sqlite_vec_extension_path) {
-            hdb::api::Context ctx;
-            hdb::sqlite::append_sqlite_context(
-                ctx,
+            return hdb::sqlite::make_sqlite_store(
                 db_path,
                 ResolveSqliteVecExtensionPath(sqlite_vec_extension_path));
-            return std::make_unique<hdb::api::Session>(std::move(ctx));
           }),
           py::arg("db_path"),
-          py::arg("sqlite_vec_extension_path") = "")
+          py::arg("sqlite_vec_extension_path") = "");
+
+  py::class_<hdb::api::Session>(m, "Session")
+      .def(
+          py::init([](const hdb::sqlite::SqliteStore& store) {
+            return std::make_unique<hdb::api::Session>(
+                store.neurons, store.synapses, store.dreams);
+          }),
+          py::arg("store"))
       .def(
           "sprout",
           [](hdb::api::Session& self,

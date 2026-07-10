@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_sqlite LANGUAGES CXX)
 
-if(NOT TARGET hdb_api)
-  message(FATAL_ERROR "hdb/sqlite: required target hdb_api is missing. hint: add_subdirectory(api) before sqlite")
+if(NOT TARGET hdb_core)
+  message(FATAL_ERROR "hdb/sqlite: required target hdb_core is missing. hint: add_subdirectory(core) before sqlite")
 endif()
 
 find_package(SQLite3 REQUIRED)
@@ -13,7 +13,7 @@ add_library(hdb_sqlite STATIC
   src/neuron_table.cpp
   src/synapse_table.cpp
   src/dream_table.cpp
-  src/setup.cpp
+  src/store.cpp
 )
 
 target_include_directories(hdb_sqlite
@@ -25,7 +25,7 @@ target_include_directories(hdb_sqlite
 
 target_link_libraries(hdb_sqlite
   PUBLIC
-    hdb_api
+    hdb_core
   PRIVATE
     SQLite3::SQLite3
 )

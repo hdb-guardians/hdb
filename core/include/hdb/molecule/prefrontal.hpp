@@ -33,4 +33,4 @@ class Prefrontal {
   SynapseTable& synapses;
 };
 
-}
+}  // namespace hdb

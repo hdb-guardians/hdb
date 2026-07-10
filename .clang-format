@@ -7,4 +7,3 @@ AlignAfterOpenBracket: AlwaysBreak
 AllowAllParametersOfDeclarationOnNextLine: false
 
 SortIncludes: false
-FixNamespaceComments: false

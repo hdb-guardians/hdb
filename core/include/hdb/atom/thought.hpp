@@ -9,4 +9,4 @@ struct Thought {
   Real flux;
 };
 
-}
+}  // namespace hdb

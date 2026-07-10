@@ -22,7 +22,7 @@ void ExecOrThrow(sqlite3* db, const char* sql) {
   throw std::runtime_error(msg);
 }
 
-}
+}  // namespace
 
 namespace hdb::sqlite {
 

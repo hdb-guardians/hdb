@@ -36,4 +36,4 @@ using Natural = std::size_t;
 using Natural = HDB_NATURAL_TYPE;
 #endif
 
-}
+}  // namespace hdb

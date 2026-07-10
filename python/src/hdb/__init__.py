@@ -1,3 +1,3 @@
-from ._hdb import Session
+from ._hdb import Session, SqliteStore
 
-__all__ = ["Session"]
+__all__ = ["Session", "SqliteStore"]

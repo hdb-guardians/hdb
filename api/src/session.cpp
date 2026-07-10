@@ -1,14 +1,14 @@
-#include <utility>
-
 #include <hdb/api/session.hpp>
 
 namespace hdb::api {
 
-Session::Session(Context ctx)
-    : ctx_(std::move(ctx)),
-      neurons_(ctx_.get<NeuronTable>()),
-      synapses_(ctx_.get<SynapseTable>()),
-      dreams_(ctx_.get<DreamTable>()),
+Session::Session(
+    std::shared_ptr<NeuronTable> neurons,
+    std::shared_ptr<SynapseTable> synapses,
+    std::shared_ptr<DreamTable> dreams)
+    : neurons_(std::move(neurons)),
+      synapses_(std::move(synapses)),
+      dreams_(std::move(dreams)),
       prefrontal_(*neurons_, *synapses_),
       thalamus_(*dreams_),
       hippocampus_(*neurons_, *synapses_, *dreams_) {}
@@ -64,4 +64,4 @@ Imagination Session::Imagine(
   return cortex_.Imagine(engram, start, epochs, creativity, impulse);
 }
 
-}
+}  // namespace hdb::api

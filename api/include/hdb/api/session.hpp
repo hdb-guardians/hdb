@@ -6,7 +6,6 @@
 #include <span>
 #include <vector>
 
-#include <hdb/api/context.hpp>
 #include <hdb/molecule/cortex.hpp>
 #include <hdb/molecule/hippocampus.hpp>
 #include <hdb/molecule/prefrontal.hpp>
@@ -19,7 +18,10 @@ namespace hdb::api {
 
 class Session {
  public:
-  explicit Session(Context ctx);
+  explicit Session(
+      std::shared_ptr<NeuronTable> neurons,
+      std::shared_ptr<SynapseTable> synapses,
+      std::shared_ptr<DreamTable> dreams);
 
   std::optional<Neuron> Sprout(
       const Nid& name,
@@ -59,7 +61,6 @@ class Session {
       const Impulse& impulse);
 
  private:
-  Context ctx_;
   std::shared_ptr<NeuronTable> neurons_;
   std::shared_ptr<SynapseTable> synapses_;
   std::shared_ptr<DreamTable> dreams_;
@@ -69,4 +70,4 @@ class Session {
   Cortex cortex_;
 };
 
-}
+}  // namespace hdb::api

@@ -17,4 +17,4 @@ class NeuronTable {
       const = 0;
 };
 
-}
+}  // namespace hdb

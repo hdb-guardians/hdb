@@ -16,4 +16,4 @@ struct Neuron {
   std::optional<std::vector<std::byte>> meta;
 };
 
-}
+}  // namespace hdb

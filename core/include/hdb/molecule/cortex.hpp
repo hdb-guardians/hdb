@@ -16,4 +16,4 @@ class Cortex {
       const Impulse& impulse);
 };
 
-}
+}  // namespace hdb
