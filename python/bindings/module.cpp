@@ -4,8 +4,10 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <hdb/standard/session.hpp>
+#include <memory>
 #include <optional>
 #include <span>
 #include <stdexcept>
@@ -176,6 +178,23 @@ hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
   };
 }
 
+std::string ResolveSqliteVecExtensionPath(
+    const std::string& sqlite_vec_extension_path) {
+  if (!sqlite_vec_extension_path.empty()) {
+    return sqlite_vec_extension_path;
+  }
+
+  const char* from_env = std::getenv("HDB_SQLITE_VEC_EXTENSION");
+  if (from_env != nullptr && from_env[0] != '\0') {
+    return std::string{from_env};
+  }
+
+  throw std::runtime_error(
+      "hdb::python::Session: sqlite-vec extension path is required. "
+      "Pass sqlite_vec_extension_path explicitly or set "
+      "HDB_SQLITE_VEC_EXTENSION.");
+}
+
 }
 
 PYBIND11_MODULE(_hdb, m) {
@@ -183,7 +202,12 @@ PYBIND11_MODULE(_hdb, m) {
 
   py::class_<hdb::standard::Session>(m, "Session")
       .def(
-          py::init<const std::string&, const std::string&>(),
+          py::init([](const std::string& db_path,
+                      const std::string& sqlite_vec_extension_path) {
+            return std::make_unique<hdb::standard::Session>(
+                db_path,
+                ResolveSqliteVecExtensionPath(sqlite_vec_extension_path));
+          }),
           py::arg("db_path"),
           py::arg("sqlite_vec_extension_path") = "")
       .def(

@@ -28,6 +28,69 @@ Root build option:
 
 - `HDB_BUILD_PYTHON` (default: `ON`)
 
+## Development Flow (uv)
+
+From the repository root:
+
+```powershell
+uv sync --project python --group dev --no-install-project
+cmake -S . -B build -DHDB_BUILD_STANDARD=ON -DHDB_BUILD_PYTHON=ON -DPython_EXECUTABLE="c:/Devs/generals/hdb/python/.venv/Scripts/python.exe"
+cmake --build build
+```
+
+What this produces:
+
+- `build/standard/libhdb_standard.a` (native intermediate static library)
+- `build/python/bindings/_hdb.<python-tag>.pyd` (Python extension module)
+
+## How Python Consumption Works
+
+`hdb_standard` is a native build input for the binding module.
+Python users do not link `libhdb_standard.a` directly.
+
+Python-facing artifact is the package:
+
+```text
+hdb/
+|- __init__.py
+`- _hdb.<python-tag>.pyd
+```
+
+The package entrypoint is `hdb.Session`.
+
+## Use In Another Python Project
+
+Recommended path is wheel-based installation.
+
+1. Build a wheel from this repository.
+2. Install that wheel into the target project's virtual environment.
+3. Import and use `hdb`.
+
+Example workflow:
+
+```powershell
+uv sync --project python --group dev --no-install-project
+uv build ./python --wheel -o ./dist
+uv pip install --python python/.venv/Scripts/python.exe ./dist/hdb-0.1.0-*.whl
+python/.venv/Scripts/python.exe -c "import hdb; print(hdb.Session)"
+```
+
+Note:
+
+- CMake install rules place `__init__.py` and `_hdb` under the `hdb` package path used by wheel builds.
+- `python/CMakeLists.txt` resolves `pybind11` from the selected interpreter via `python -m pybind11 --cmakedir`, so `uv` virtual environments work without manually setting `pybind11_DIR`.
+- `uv sync` can be run with `--no-install-project` during initial environment provisioning to avoid editable-build failures when a C/C++ toolchain is not yet fully configured.
+- This package intentionally avoids OS-specific runtime DLL bundling.
+- `sqlite-vec` is treated as an external runtime dependency.
+- `Session(db_path)` requires either `sqlite_vec_extension_path` argument or environment variable `HDB_SQLITE_VEC_EXTENSION`.
+
+Example:
+
+```powershell
+$env:HDB_SQLITE_VEC_EXTENSION="C:/path/to/sqlite_vec.dll"
+python/.venv/Scripts/python.exe -c "import hdb; s=hdb.Session('hdb.db')"
+```
+
 ## Module Layout
 
 ```text
@@ -62,6 +125,6 @@ Methods:
 
 ## Planned Details
 
-- Packaging and wheel strategy: _내용 작성 예정_
+- Packaging and wheel strategy: maintained via scikit-build-core and CMake install rules
 - Type hints and stubs: _내용 작성 예정_
 - Compatibility policy across API revisions: _내용 작성 예정_
