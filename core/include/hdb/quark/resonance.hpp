@@ -9,4 +9,4 @@ struct Resonance {
   Real fidelity;
 };
 
-}
+}  // namespace hdb

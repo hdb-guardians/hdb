@@ -1,27 +1,27 @@
 #pragma once
 
 #include <cstddef>
+#include <memory>
 #include <optional>
 #include <span>
-#include <string>
 #include <vector>
 
 #include <hdb/molecule/cortex.hpp>
 #include <hdb/molecule/hippocampus.hpp>
 #include <hdb/molecule/prefrontal.hpp>
 #include <hdb/molecule/thalamus.hpp>
-#include <hdb/standard/sqlite_context.hpp>
-#include <hdb/standard/sqlite_dream_table.hpp>
-#include <hdb/standard/sqlite_neuron_table.hpp>
-#include <hdb/standard/sqlite_synapse_table.hpp>
+#include <hdb/store/dream_table.hpp>
+#include <hdb/store/neuron_table.hpp>
+#include <hdb/store/synapse_table.hpp>
 
-namespace hdb::standard {
+namespace hdb::api {
 
 class Session {
  public:
   explicit Session(
-      const std::string& db_path,
-      const std::string& sqlite_vec_extension_path);
+      std::shared_ptr<NeuronTable> neurons,
+      std::shared_ptr<SynapseTable> synapses,
+      std::shared_ptr<DreamTable> dreams);
 
   std::optional<Neuron> Sprout(
       const Nid& name,
@@ -47,28 +47,27 @@ class Session {
 
   std::vector<Resonance> Resonate(
       std::span<const std::byte> stimulus,
-      const Natural limit = 10);
+      Natural limit = 10);
 
   std::optional<Engram> Reminisce(
-      const Moment since = Moment::min(),
-      const Moment until = Moment::max());
+      Moment since = Moment::min(),
+      Moment until = Moment::max());
 
   Imagination Imagine(
       const Engram& engram,
       const Nid& start,
-      const Natural epochs,
-      const Real creativity,
+      Natural epochs,
+      Real creativity,
       const Impulse& impulse);
 
  private:
-  SqliteContext _ctx;
-  SqliteNeuronTable _neurons;
-  SqliteSynapseTable _synapses;
-  SqliteDreamTable _dreams;
+  std::shared_ptr<NeuronTable> neurons_;
+  std::shared_ptr<SynapseTable> synapses_;
+  std::shared_ptr<DreamTable> dreams_;
   Prefrontal prefrontal_;
   Thalamus thalamus_;
   Hippocampus hippocampus_;
   Cortex cortex_;
 };
 
-}
+}  // namespace hdb::api

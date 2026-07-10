@@ -18,31 +18,31 @@ struct Engram {
   };
 
   Engram(std::vector<Neuron> neurons, std::vector<Synapse> synapses)
-      : _neurons(std::move(neurons)), _synapses(std::move(synapses)) {
-    _adjacency_by_nid.clear();
-    _adjacency_by_nid.reserve(_neurons.size());
-    for (std::size_t i = 0; i < _neurons.size(); ++i) {
-      _adjacency_by_nid[_neurons[i].name].neuron_index = i;
+      : neurons_(std::move(neurons)), synapses_(std::move(synapses)) {
+    adjacency_by_nid_.clear();
+    adjacency_by_nid_.reserve(neurons_.size());
+    for (std::size_t i = 0; i < neurons_.size(); ++i) {
+      adjacency_by_nid_[neurons_[i].name].neuron_index = i;
     }
 
-    for (std::size_t i = 0; i < _synapses.size(); ++i) {
-      _adjacency_by_nid[_synapses[i].from].synapse_indices.push_back(i);
+    for (std::size_t i = 0; i < synapses_.size(); ++i) {
+      adjacency_by_nid_[synapses_[i].from].synapse_indices.push_back(i);
     }
   }
 
-  const std::vector<Neuron>& Neurons() const noexcept { return _neurons; }
+  const std::vector<Neuron>& Neurons() const noexcept { return neurons_; }
 
-  const std::vector<Synapse>& Synapses() const noexcept { return _synapses; }
+  const std::vector<Synapse>& Synapses() const noexcept { return synapses_; }
 
   const std::unordered_map<Nid, AdjacencyEntry>& AdjacencyByNid()
       const noexcept {
-    return _adjacency_by_nid;
+    return adjacency_by_nid_;
   }
 
  private:
-  std::vector<Neuron> _neurons;
-  std::vector<Synapse> _synapses;
-  std::unordered_map<Nid, AdjacencyEntry> _adjacency_by_nid;
+  std::vector<Neuron> neurons_;
+  std::vector<Synapse> synapses_;
+  std::unordered_map<Nid, AdjacencyEntry> adjacency_by_nid_;
 };
 
-}
+}  // namespace hdb

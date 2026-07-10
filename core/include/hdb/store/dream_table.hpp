@@ -20,4 +20,4 @@ class DreamTable {
       const Natural limit) const = 0;
 };
 
-}
+}  // namespace hdb

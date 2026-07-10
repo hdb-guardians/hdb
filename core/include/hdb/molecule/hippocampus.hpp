@@ -32,4 +32,4 @@ class Hippocampus {
   DreamTable& dreams;
 };
 
-}
+}  // namespace hdb

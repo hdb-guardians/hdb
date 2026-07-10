@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace hdb::standard {
+namespace hdb::sqlite {
 
 inline sqlite3_int64 ToSqlMoment(const Moment moment) {
   return static_cast<sqlite3_int64>(moment.time_since_epoch().count());
@@ -68,4 +68,4 @@ inline std::optional<std::vector<std::byte>> ReadOptionalBlob(
   return ReadBlob(stmt, col);
 }
 
-}
+}  // namespace hdb::sqlite

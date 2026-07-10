@@ -56,4 +56,4 @@ std::optional<Synapse> Prefrontal::Fire(
   return synapses.insert(synapse);
 }
 
-}
+}  // namespace hdb

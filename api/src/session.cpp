@@ -1,21 +1,17 @@
-#include <utility>
+#include <hdb/api/session.hpp>
 
-#include <hdb/standard/session.hpp>
-
-namespace hdb::standard {
+namespace hdb::api {
 
 Session::Session(
-    const std::string& db_path,
-    const std::string& sqlite_vec_extension_path)
-    : _ctx(db_path, sqlite_vec_extension_path),
-      _neurons(_ctx),
-      _synapses(_ctx),
-      _dreams(_ctx),
-      prefrontal_(_neurons, _synapses),
-      thalamus_(_dreams),
-      hippocampus_(_neurons, _synapses, _dreams) {
-  _ctx.initialize_schema();
-}
+    std::shared_ptr<NeuronTable> neurons,
+    std::shared_ptr<SynapseTable> synapses,
+    std::shared_ptr<DreamTable> dreams)
+    : neurons_(std::move(neurons)),
+      synapses_(std::move(synapses)),
+      dreams_(std::move(dreams)),
+      prefrontal_(*neurons_, *synapses_),
+      thalamus_(*dreams_),
+      hippocampus_(*neurons_, *synapses_, *dreams_) {}
 
 std::optional<Neuron> Session::Sprout(
     const Nid& name,
@@ -68,4 +64,4 @@ Imagination Session::Imagine(
   return cortex_.Imagine(engram, start, epochs, creativity, impulse);
 }
 
-}
+}  // namespace hdb::api

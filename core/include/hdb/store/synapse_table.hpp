@@ -17,4 +17,4 @@ class SynapseTable {
       const = 0;
 };
 
-}
+}  // namespace hdb

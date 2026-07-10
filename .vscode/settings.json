@@ -3,9 +3,10 @@
   "cmake.buildDirectory": "${workspaceFolder}/build",
   "cmake.configureSettings": {
     "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-    "HDB_BUILD_STANDARD": "ON",
+    "HDB_BUILD_SQLITE": "ON",
     "HDB_BUILD_PYTHON": "ON"
   },
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json"
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+  "C_Cpp.formatting": "clangFormat"
 }

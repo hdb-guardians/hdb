@@ -4,7 +4,7 @@
 
 struct sqlite3;
 
-namespace hdb::standard {
+namespace hdb::sqlite {
 
 class SqliteContext {
  public:
@@ -21,7 +21,7 @@ class SqliteContext {
   void initialize_schema();
 
  private:
-  sqlite3* _db = nullptr;
+  sqlite3* db_ = nullptr;
 };
 
-}
+}  // namespace hdb::sqlite

@@ -27,7 +27,7 @@ Imagination Cortex::Imagine(
   std::uniform_real_distribution<Real> noise{Real{-1}, Real{1}};
 
   for (Natural epoch = 0; epoch < epochs; ++epoch) {
-    std::unordered_map<Nid, Real> _wave_map;
+    std::unordered_map<Nid, Real> next_wave_map;
 
     for (const auto& [nid, flux] : wave_map) {
       auto i = adjacency_by_nid.find(nid);
@@ -41,17 +41,17 @@ Imagination Cortex::Imagine(
           contribution += creativity * noise(rng);
         }
 
-        _wave_map[synapse.to] += contribution;
+        next_wave_map[synapse.to] += contribution;
       }
     }
 
-    if (_wave_map.empty()) break;
+    if (next_wave_map.empty()) break;
 
-    for (const auto& [nid, flux] : _wave_map) {
+    for (const auto& [nid, flux] : next_wave_map) {
       flux_map[nid] += flux;
     }
 
-    wave_map = std::move(_wave_map);
+    wave_map = std::move(next_wave_map);
   }
 
   Imagination imagination;
@@ -90,4 +90,4 @@ Imagination Cortex::Imagine(
   return imagination;
 }
 
-}
+}  // namespace hdb

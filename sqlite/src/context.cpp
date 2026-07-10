@@ -1,6 +1,6 @@
 #include <sqlite3.h>
 
-#include <hdb/standard/sqlite_context.hpp>
+#include <hdb/sqlite/context.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -15,44 +15,44 @@ void ExecOrThrow(sqlite3* db, const char* sql) {
 
   std::string msg =
       err == nullptr
-          ? "hdb::standard::SqliteContext: sqlite3_exec failed"
-          : std::string{"hdb::standard::SqliteContext: sqlite3_exec failed: "} +
+          ? "hdb::sqlite::SqliteContext: sqlite3_exec failed"
+          : std::string{"hdb::sqlite::SqliteContext: sqlite3_exec failed: "} +
                 err;
   sqlite3_free(err);
   throw std::runtime_error(msg);
 }
 
-}
+}  // namespace
 
-namespace hdb::standard {
+namespace hdb::sqlite {
 
 SqliteContext::SqliteContext(
     const std::string& db_path,
     const std::string& sqlite_vec_extension_path) {
   const int rc = sqlite3_open_v2(
       db_path.c_str(),
-      &_db,
+      &db_,
       SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
       nullptr);
-  if (rc != SQLITE_OK || _db == nullptr) {
+  if (rc != SQLITE_OK || db_ == nullptr) {
     throw std::runtime_error(
-        "hdb::standard::SqliteContext: sqlite open failed: could not open "
+        "hdb::sqlite::SqliteContext: sqlite open failed: could not open "
         "database");
   }
 
-  ExecOrThrow(_db, "PRAGMA journal_mode = WAL;");
-  ExecOrThrow(_db, "PRAGMA foreign_keys = ON;");
+  ExecOrThrow(db_, "PRAGMA journal_mode = WAL;");
+  ExecOrThrow(db_, "PRAGMA foreign_keys = ON;");
 
-  sqlite3_enable_load_extension(_db, 1);
+  sqlite3_enable_load_extension(db_, 1);
   char* err = nullptr;
   const int load_rc = sqlite3_load_extension(
-      _db, sqlite_vec_extension_path.c_str(), nullptr, &err);
+      db_, sqlite_vec_extension_path.c_str(), nullptr, &err);
 
   if (load_rc != SQLITE_OK) {
     std::string msg =
         err == nullptr
-            ? "hdb::standard::SqliteContext: sqlite extension load failed: sqlite-vec"
-            : std::string{"hdb::standard::SqliteContext: sqlite extension load failed: sqlite-vec: "} +
+            ? "hdb::sqlite::SqliteContext: sqlite extension load failed: sqlite-vec"
+            : std::string{"hdb::sqlite::SqliteContext: sqlite extension load failed: sqlite-vec: "} +
                   err;
     sqlite3_free(err);
     throw std::runtime_error(msg);
@@ -60,17 +60,17 @@ SqliteContext::SqliteContext(
 }
 
 SqliteContext::~SqliteContext() {
-  if (_db != nullptr) {
-    sqlite3_close(_db);
-    _db = nullptr;
+  if (db_ != nullptr) {
+    sqlite3_close(db_);
+    db_ = nullptr;
   }
 }
 
-sqlite3* SqliteContext::handle() const noexcept { return _db; }
+sqlite3* SqliteContext::handle() const noexcept { return db_; }
 
 void SqliteContext::initialize_schema() {
   ExecOrThrow(
-      _db,
+      db_,
       "CREATE TABLE IF NOT EXISTS neurons("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
@@ -80,10 +80,10 @@ void SqliteContext::initialize_schema() {
       ");");
 
   ExecOrThrow(
-      _db, "CREATE INDEX IF NOT EXISTS idx_neurons_moment ON neurons(moment);");
+      db_, "CREATE INDEX IF NOT EXISTS idx_neurons_moment ON neurons(moment);");
 
   ExecOrThrow(
-      _db,
+      db_,
       "CREATE TABLE IF NOT EXISTS synapses("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
@@ -94,15 +94,15 @@ void SqliteContext::initialize_schema() {
       ");");
 
   ExecOrThrow(
-      _db,
+      db_,
       "CREATE INDEX IF NOT EXISTS idx_synapses_moment ON synapses(moment);");
   ExecOrThrow(
-      _db,
+      db_,
       "CREATE INDEX IF NOT EXISTS idx_synapses_from_to ON "
       "synapses(from_id, to_id);");
 
   ExecOrThrow(
-      _db,
+      db_,
       "CREATE TABLE IF NOT EXISTS dreams("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
@@ -113,9 +113,9 @@ void SqliteContext::initialize_schema() {
       ");");
 
   ExecOrThrow(
-      _db, "CREATE INDEX IF NOT EXISTS idx_dreams_moment ON dreams(moment);");
+      db_, "CREATE INDEX IF NOT EXISTS idx_dreams_moment ON dreams(moment);");
   ExecOrThrow(
-      _db, "CREATE INDEX IF NOT EXISTS idx_dreams_neuron ON dreams(neuron);");
+      db_, "CREATE INDEX IF NOT EXISTS idx_dreams_neuron ON dreams(neuron);");
 }
 
-}
+}  // namespace hdb::sqlite

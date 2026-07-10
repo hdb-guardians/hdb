@@ -10,7 +10,7 @@
         "${workspaceFolder}",
         "-B",
         "${workspaceFolder}/build",
-        "-DHDB_BUILD_STANDARD=ON",
+        "-DHDB_BUILD_SQLITE=ON",
         "-DHDB_BUILD_PYTHON=ON",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
       ],

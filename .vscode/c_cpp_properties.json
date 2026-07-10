@@ -5,16 +5,18 @@
       "includePath": [
         "${workspaceFolder}/core/include",
         "${workspaceFolder}/core/src",
-        "${workspaceFolder}/standard/include",
-        "${workspaceFolder}/standard/src",
+        "${workspaceFolder}/api/include",
+        "${workspaceFolder}/sqlite/include",
+        "${workspaceFolder}/sqlite/src",
         "${workspaceFolder}/python/bindings"
       ],
       "browse": {
         "path": [
           "${workspaceFolder}/core/include",
           "${workspaceFolder}/core/src",
-          "${workspaceFolder}/standard/include",
-          "${workspaceFolder}/standard/src",
+          "${workspaceFolder}/api/include",
+          "${workspaceFolder}/sqlite/include",
+          "${workspaceFolder}/sqlite/src",
           "${workspaceFolder}/python/bindings"
         ],
         "limitSymbolsToIncludedHeaders": true

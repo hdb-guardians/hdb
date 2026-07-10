@@ -17,4 +17,4 @@ struct Dream {
   std::optional<std::vector<std::byte>> meta;
 };
 
-}
+}  // namespace hdb

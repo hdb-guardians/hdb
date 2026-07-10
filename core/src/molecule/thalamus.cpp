@@ -31,4 +31,4 @@ std::optional<Dream> Thalamus::Consolidate(
   return dreams.insert(dream);
 }
 
-}
+}  // namespace hdb
