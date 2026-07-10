@@ -11,7 +11,7 @@
         "-B",
         "${workspaceFolder}/build",
         "-DHDB_BUILD_STANDARD=ON",
-        "-DHDB_BUILD_PYTHON=OFF",
+        "-DHDB_BUILD_PYTHON=ON",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
       ],
       "problemMatcher": []

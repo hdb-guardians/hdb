@@ -75,13 +75,6 @@ The `quark` layer groups persistent value objects.
 | `Dream`     | Cognitive neuroscience | Derived memory artifact               |
 | `Resonance` | Quantum mechanics      | Overlap-style similarity (`fidelity`) |
 
-Planned details:
-
-- `Neuron`: _내용 작성 예정_
-- `Synapse`: _내용 작성 예정_
-- `Dream`: _내용 작성 예정_
-- `Resonance`: _내용 작성 예정_
-
 ### Atom
 
 The `atom` layer groups computation-ready aggregates and policies.
@@ -93,13 +86,6 @@ The `atom` layer groups computation-ready aggregates and policies.
 | `Impulse`     | Quantum mechanics         | Pluggable weighting policy     |
 | `Engram`      | Neuroscience memory trace | Retrieval bundle               |
 
-Planned details:
-
-- `Thought`: _내용 작성 예정_
-- `Imagination`: _내용 작성 예정_
-- `Impulse`: _내용 작성 예정_
-- `Engram`: _내용 작성 예정_
-
 ### Molecule
 
 The `molecule` layer groups orchestration surfaces.
@@ -110,13 +96,6 @@ The `molecule` layer groups orchestration surfaces.
 | `Thalamus`    | Thalamic relay/consolidation | Consolidation boundary                   |
 | `Hippocampus` | Memory indexing/recall       | Retrieval boundary                       |
 | `Cortex`      | Quantum mechanics            | Wave-function / entropy-style simulation |
-
-Planned details:
-
-- `Prefrontal`: _내용 작성 예정_
-- `Thalamus`: _내용 작성 예정_
-- `Hippocampus`: _내용 작성 예정_
-- `Cortex`: _내용 작성 예정_
 
 ## Domain Records
 

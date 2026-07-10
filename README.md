@@ -18,11 +18,12 @@ Requirements:
 - CMake 3.26+
 - C++23 compiler
 - SQLite3 development package (when building `standard`)
+- pybind11 CMake package (when building `python`)
 
 Configure:
 
 ```bash
-cmake -S . -B build -DHDB_BUILD_STANDARD=ON -DHDB_BUILD_PYTHON=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake -S . -B build -DHDB_BUILD_STANDARD=ON -DHDB_BUILD_PYTHON=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ```
 
 Build:
@@ -34,12 +35,13 @@ cmake --build build
 Root CMake options:
 
 - `HDB_BUILD_STANDARD` (default: `ON`)
-- `HDB_BUILD_PYTHON` (default: `OFF`)
+- `HDB_BUILD_PYTHON` (default: `ON`)
 
 ## Documentation
 
 - Core scope and API: [core/README.md](core/README.md)
 - Standard runtime scope and API: [standard/README.md](standard/README.md)
+- Python bindings scope and API: [python/README.md](python/README.md)
 
 ## Stewardship
 

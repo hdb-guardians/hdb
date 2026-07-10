@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.26)
 project(hdb_standard LANGUAGES CXX)
 
 if(NOT TARGET hdb_core)
-  message(FATAL_ERROR "hdb_core target is required. Add core before standard.")
+  message(FATAL_ERROR "hdb/standard: required target hdb_core is missing. hint: add_subdirectory(core) before standard")
 endif()
 
 find_package(SQLite3 REQUIRED)

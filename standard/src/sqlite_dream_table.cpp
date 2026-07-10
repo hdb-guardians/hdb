@@ -52,7 +52,9 @@ std::vector<Resonance> SqliteDreamTable::find(
   const int prepare_rc =
       sqlite3_prepare_v2(_ctx.handle(), kSql, -1, &stmt, nullptr);
   if (prepare_rc != SQLITE_OK) {
-    throw std::runtime_error("failed to prepare sqlite-vec resonance query");
+    throw std::runtime_error(
+        "hdb::standard::SqliteDreamTable: query prepare failed: sqlite-vec "
+        "resonance query");
   }
 
   BindBlob(stmt, 1, payload);

@@ -13,7 +13,11 @@ void ExecOrThrow(sqlite3* db, const char* sql) {
     return;
   }
 
-  std::string msg = err == nullptr ? "sqlite3_exec failed" : err;
+  std::string msg =
+      err == nullptr
+          ? "hdb::standard::SqliteContext: sqlite3_exec failed"
+          : std::string{"hdb::standard::SqliteContext: sqlite3_exec failed: "} +
+                err;
   sqlite3_free(err);
   throw std::runtime_error(msg);
 }
@@ -31,7 +35,9 @@ SqliteContext::SqliteContext(
       SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
       nullptr);
   if (rc != SQLITE_OK || _db == nullptr) {
-    throw std::runtime_error("failed to open sqlite database");
+    throw std::runtime_error(
+        "hdb::standard::SqliteContext: sqlite open failed: could not open "
+        "database");
   }
 
   ExecOrThrow(_db, "PRAGMA journal_mode = WAL;");
@@ -43,7 +49,11 @@ SqliteContext::SqliteContext(
       _db, sqlite_vec_extension_path.c_str(), nullptr, &err);
 
   if (load_rc != SQLITE_OK) {
-    std::string msg = err == nullptr ? "failed to load sqlite-vec" : err;
+    std::string msg =
+        err == nullptr
+            ? "hdb::standard::SqliteContext: sqlite extension load failed: sqlite-vec"
+            : std::string{"hdb::standard::SqliteContext: sqlite extension load failed: sqlite-vec: "} +
+                  err;
     sqlite3_free(err);
     throw std::runtime_error(msg);
   }

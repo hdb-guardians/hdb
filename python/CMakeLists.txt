@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.26)
 project(hdb_python LANGUAGES CXX)
 
 if(NOT TARGET hdb_standard)
-  message(FATAL_ERROR "hdb_standard target is required. Enable HDB_BUILD_STANDARD.")
+  message(FATAL_ERROR "hdb/python: required target hdb_standard is missing. hint: set HDB_BUILD_STANDARD=ON")
 endif()
 
 find_package(pybind11 CONFIG REQUIRED)
