@@ -236,14 +236,14 @@ PYBIND11_MODULE(_hdb, m) {
           [](hdb::api::Session& self,
              const std::string& name,
              const py::bytes actor,
-             const std::string& from,
-             const std::string& to,
+             const std::string& source,
+             const std::string& target,
              const py::object meta_obj) {
             const auto actor_bytes = ToBytes(actor);
             const auto meta_bytes = ToOptionalBytes(meta_obj);
             const auto meta_span = OptionalSpanFromOwned(meta_bytes);
 
-            auto out = self.Fire(name, actor_bytes, from, to, meta_span);
+            auto out = self.Fire(name, actor_bytes, source, target, meta_span);
             if (!out.has_value()) {
               return py::object(py::none());
             }
@@ -251,8 +251,8 @@ PYBIND11_MODULE(_hdb, m) {
           },
           py::arg("name"),
           py::arg("actor"),
-          py::arg("from"),
-          py::arg("to"),
+          py::arg("source"),
+          py::arg("target"),
           py::arg("meta") = py::none())
       .def(
           "consolidate",

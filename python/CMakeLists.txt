@@ -48,4 +48,5 @@ install(
   DESTINATION hdb
   FILES_MATCHING
   PATTERN "*.py"
+  PATTERN "*.pyi"
 )
