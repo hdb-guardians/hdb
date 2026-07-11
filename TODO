@@ -1,4 +1,4 @@
-core - api - (store 구현체) - python 구조
+sqlite schema 및 quark 필드 네이밍 검토
 core 클램핑 고려
 수학 연산 오차 계산 및 예외 검토
-README 작성
+README 추가 작성

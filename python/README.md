@@ -32,15 +32,6 @@ python/
 └── pyproject.toml
 ```
 
-## Build Prerequisites
-
-- Python 3.9+
-- pybind11 with CMake config package
-- CMake 3.26+
-- sqlite-vec shared library (runtime dependency; not bundled)
-
-Root CMake option: `HDB_BUILD_PYTHON` (default: `ON`).
-
 ## Development Flow (uv)
 
 ```powershell

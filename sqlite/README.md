@@ -51,7 +51,9 @@ Each class implements the corresponding core abstract interface via a shared `Sq
 
 Dream similarity search (implemented in `SqliteDreamTable::find`) uses:
 
-$$\text{fidelity} = \frac{1}{1 + \text{vec\_distance\_l2}(\text{payload},\, \text{stimulus})}$$
+```
+fidelity = 1.0 / (1.0 + vec_distance_l2(payload, stimulus))
+```
 
 `fidelity` is in `(0, 1]`. Higher values mean closer vectors.
 
