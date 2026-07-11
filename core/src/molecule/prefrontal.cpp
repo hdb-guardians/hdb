@@ -37,14 +37,14 @@ std::optional<Neuron> Prefrontal::Awaken(const Nid& name) {
 std::optional<Synapse> Prefrontal::Fire(
     const Sid& name,
     std::span<const std::byte> actor,
-    const Nid& from,
-    const Nid& to,
+    const Nid& source,
+    const Nid& target,
     std::optional<std::span<const std::byte>> meta) {
   Synapse synapse{
       .name = name,
       .actor = {actor.begin(), actor.end()},
-      .from = from,
-      .to = to,
+      .source = source,
+      .target = target,
       .moment = Clock::now(),
       .meta = std::nullopt,
   };

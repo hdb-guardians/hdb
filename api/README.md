@@ -45,7 +45,7 @@ Ownership of the stores is shared. All four molecules are wired to the same stor
 ```cpp
 std::optional<Neuron> Sprout(name, actor, payload, meta = nullopt)
 std::optional<Neuron> Awaken(name)
-std::optional<Synapse> Fire(name, actor, from, to, meta = nullopt)
+std::optional<Synapse> Fire(name, actor, source, target, meta = nullopt)
 ```
 
 ### Thalamus

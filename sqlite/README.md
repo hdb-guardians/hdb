@@ -44,7 +44,7 @@ Each class implements the corresponding core abstract interface via a shared `Sq
 | Class                | Interface      | Notable detail                                       |
 | -------------------- | -------------- | ---------------------------------------------------- |
 | `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`       |
-| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; indexed on `(from_id, to_id)` |
+| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; indexed on `(source, target)` |
 | `SqliteDreamTable`   | `DreamTable`   | `find()` uses `vec_distance_l2` from sqlite-vec      |
 
 ### Resonance Formula
@@ -101,8 +101,8 @@ CREATE TABLE neurons (
 CREATE TABLE synapses (
     name    TEXT PRIMARY KEY,
     actor   BLOB NOT NULL,
-    from_id TEXT NOT NULL,
-    to_id   TEXT NOT NULL,
+    source  TEXT NOT NULL,
+    target  TEXT NOT NULL,
     moment  INTEGER NOT NULL,
     meta    BLOB
 );
@@ -117,7 +117,7 @@ CREATE TABLE dreams (
 );
 ```
 
-Indices: `neurons(moment)`, `synapses(moment)`, `synapses(from_id, to_id)`, `dreams(moment)`, `dreams(neuron)`.
+Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dreams(moment)`, `dreams(neuron)`.
 
 ## Build
 

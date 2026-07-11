@@ -100,7 +100,7 @@ The `molecule` layer groups orchestration surfaces.
 ## Domain Records
 
 - `Neuron { name, actor, payload, moment, meta }`
-- `Synapse { name, actor, from, to, moment, meta }`
+- `Synapse { name, actor, source, target, moment, meta }`
 - `Dream { name, actor, neuron, payload, moment, meta }`
 
 `actor`, `payload`, and `meta` are byte-oriented (`std::vector<std::byte>`). The core does not interpret their content.
@@ -114,7 +114,7 @@ The following signatures reflect the actual core API.
 ```text
 Sprout(name, actor, payload, meta?) -> optional<Neuron>
 Awaken(name)                        -> optional<Neuron>
-Fire(name, actor, from, to, meta?)  -> optional<Synapse>
+Fire(name, actor, source, target, meta?) -> optional<Synapse>
 ```
 
 ### Thalamus

@@ -10,7 +10,7 @@ SqliteSynapseTable::SqliteSynapseTable(std::shared_ptr<SqliteContext> ctx)
 
 std::optional<Synapse> SqliteSynapseTable::insert(const Synapse& synapse) {
   static constexpr const char* kSql =
-      "INSERT INTO synapses(name, actor, from_id, to_id, moment, meta) "
+      "INSERT INTO synapses(name, actor, source, target, moment, meta) "
       "VALUES(?1, ?2, ?3, ?4, ?5, ?6);";
 
   sqlite3_stmt* stmt = nullptr;
@@ -21,8 +21,8 @@ std::optional<Synapse> SqliteSynapseTable::insert(const Synapse& synapse) {
 
   BindText(stmt, 1, synapse.name);
   BindBlob(stmt, 2, synapse.actor);
-  BindText(stmt, 3, synapse.from);
-  BindText(stmt, 4, synapse.to);
+  BindText(stmt, 3, synapse.source);
+  BindText(stmt, 4, synapse.target);
   sqlite3_bind_int64(stmt, 5, ToSqlMoment(synapse.moment));
   if (synapse.meta.has_value()) {
     BindBlob(stmt, 6, *synapse.meta);
@@ -41,7 +41,7 @@ std::optional<Synapse> SqliteSynapseTable::insert(const Synapse& synapse) {
 
 std::optional<Synapse> SqliteSynapseTable::find(const Sid& name) const {
   static constexpr const char* kSql =
-      "SELECT name, actor, from_id, to_id, moment, meta "
+      "SELECT name, actor, source, target, moment, meta "
       "FROM synapses WHERE name = ?1 LIMIT 1;";
 
   sqlite3_stmt* stmt = nullptr;
@@ -60,8 +60,8 @@ std::optional<Synapse> SqliteSynapseTable::find(const Sid& name) const {
   Synapse out;
   out.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
   out.actor = ReadBlob(stmt, 1);
-  out.from = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-  out.to = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+  out.source = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+  out.target = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
   out.moment = FromSqlMoment(sqlite3_column_int64(stmt, 4));
   out.meta = ReadOptionalBlob(stmt, 5);
 
@@ -73,7 +73,7 @@ std::vector<Synapse> SqliteSynapseTable::find(
     const Moment since,
     const Moment until) const {
   static constexpr const char* kSql =
-      "SELECT name, actor, from_id, to_id, moment, meta "
+      "SELECT name, actor, source, target, moment, meta "
       "FROM synapses WHERE moment >= ?1 AND moment <= ?2 ORDER BY moment ASC;";
 
   sqlite3_stmt* stmt = nullptr;
@@ -90,8 +90,8 @@ std::vector<Synapse> SqliteSynapseTable::find(
     Synapse s;
     s.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
     s.actor = ReadBlob(stmt, 1);
-    s.from = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-    s.to = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+    s.source = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+    s.target = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
     s.moment = FromSqlMoment(sqlite3_column_int64(stmt, 4));
     s.meta = ReadOptionalBlob(stmt, 5);
     out.push_back(std::move(s));

@@ -95,8 +95,8 @@ py::dict SynapseToDict(const hdb::Synapse& s) {
   py::dict out;
   out["name"] = s.name;
   out["actor"] = FromBytes(s.actor);
-  out["from"] = s.from;
-  out["to"] = s.to;
+  out["source"] = s.source;
+  out["target"] = s.target;
   out["moment_ticks"] = ToMomentTicks(s.moment);
   out["meta"] = FromOptionalBytes(s.meta);
   return out;
@@ -129,8 +129,8 @@ hdb::Synapse DictToSynapse(const py::dict& obj) {
   hdb::Synapse out;
   out.name = obj["name"].cast<std::string>();
   out.actor = ToBytes(obj["actor"].cast<py::bytes>());
-  out.from = obj["from"].cast<std::string>();
-  out.to = obj["to"].cast<std::string>();
+  out.source = obj["source"].cast<std::string>();
+  out.target = obj["target"].cast<std::string>();
   out.moment = ReadMomentFromDict(obj);
   if (obj.contains("meta") && !obj["meta"].is_none()) {
     out.meta = ToBytes(obj["meta"].cast<py::bytes>());

@@ -107,11 +107,11 @@ session.imagine(engram, start, epochs, creativity, impulse=None) -> list[dict]
 
 ## Data Conventions
 
-| Field                      | Python type         | Notes                                    |
-| -------------------------- | ------------------- | ---------------------------------------- |
-| `actor`, `payload`, `meta` | `bytes`             | Core treats these as opaque blobs        |
-| `moment`                   | `moment_ticks: int` | `Clock::duration::rep` cast to `int`     |
-| synapse `from` / `to`      | `source` / `target` | Renamed to avoid Python keyword conflict |
+| Field                       | Python type         | Notes                                |
+| --------------------------- | ------------------- | ------------------------------------ |
+| `actor`, `payload`, `meta`  | `bytes`             | Core treats these as opaque blobs    |
+| `moment`                    | `moment_ticks: int` | `Clock::duration::rep` cast to `int` |
+| synapse `source` / `target` | Python field names  | Match C++ struct fields after rename |
 
 ## Wheel Build
 

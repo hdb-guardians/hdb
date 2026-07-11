@@ -28,10 +28,10 @@ std::optional<Neuron> Session::Awaken(const Nid& name) {
 std::optional<Synapse> Session::Fire(
     const Sid& name,
     std::span<const std::byte> actor,
-    const Nid& from,
-    const Nid& to,
+    const Nid& source,
+    const Nid& target,
     std::optional<std::span<const std::byte>> meta) {
-  return prefrontal_.Fire(name, actor, from, to, meta);
+  return prefrontal_.Fire(name, actor, source, target, meta);
 }
 
 std::optional<Dream> Session::Consolidate(

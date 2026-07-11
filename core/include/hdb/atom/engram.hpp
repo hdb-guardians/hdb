@@ -26,7 +26,7 @@ struct Engram {
     }
 
     for (std::size_t i = 0; i < synapses_.size(); ++i) {
-      adjacency_by_nid_[synapses_[i].from].synapse_indices.push_back(i);
+      adjacency_by_nid_[synapses_[i].source].synapse_indices.push_back(i);
     }
   }
 

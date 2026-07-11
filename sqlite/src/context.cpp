@@ -87,8 +87,8 @@ void SqliteContext::initialize_schema() {
       "CREATE TABLE IF NOT EXISTS synapses("
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
-      "from_id TEXT NOT NULL,"
-      "to_id TEXT NOT NULL,"
+      "source TEXT NOT NULL,"
+      "target TEXT NOT NULL,"
       "moment INTEGER NOT NULL,"
       "meta BLOB"
       ");");
@@ -98,8 +98,8 @@ void SqliteContext::initialize_schema() {
       "CREATE INDEX IF NOT EXISTS idx_synapses_moment ON synapses(moment);");
   ExecOrThrow(
       db_,
-      "CREATE INDEX IF NOT EXISTS idx_synapses_from_to ON "
-      "synapses(from_id, to_id);");
+      "CREATE INDEX IF NOT EXISTS idx_synapses_source_target ON "
+      "synapses(source, target);");
 
   ExecOrThrow(
       db_,

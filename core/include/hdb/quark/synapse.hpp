@@ -11,8 +11,8 @@ namespace hdb {
 struct Synapse {
   Sid name;
   std::vector<std::byte> actor;
-  Nid from;
-  Nid to;
+  Nid source;
+  Nid target;
   Moment moment;
   std::optional<std::vector<std::byte>> meta;
 };

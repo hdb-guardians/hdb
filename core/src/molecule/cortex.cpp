@@ -41,7 +41,7 @@ Imagination Cortex::Imagine(
           contribution += creativity * noise(rng);
         }
 
-        next_wave_map[synapse.to] += contribution;
+        next_wave_map[synapse.target] += contribution;
       }
     }
 

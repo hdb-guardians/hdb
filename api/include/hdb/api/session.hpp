@@ -34,8 +34,8 @@ class Session {
   std::optional<Synapse> Fire(
       const Sid& name,
       std::span<const std::byte> actor,
-      const Nid& from,
-      const Nid& to,
+      const Nid& source,
+      const Nid& target,
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 
   std::optional<Dream> Consolidate(
