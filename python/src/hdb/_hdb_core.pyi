@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import datetime
 
 class Neuron:
@@ -65,3 +66,58 @@ class DreamTable:
     def __init__(self) -> None: ...
     def insert(self, dream: Dream) -> Dream | None: ...
     def find(self, payload: bytes, limit: int = 10) -> list[Resonance]: ...
+
+class Prefrontal:
+    def __init__(self, neurons: NeuronTable, synapses: SynapseTable) -> None: ...
+    def sprout(
+        self,
+        name: str,
+        actor: bytes,
+        payload: bytes,
+        meta: bytes | None = None,
+    ) -> Neuron | None: ...
+    def awaken(self, name: str) -> Neuron | None: ...
+    def fire(
+        self,
+        name: str,
+        actor: bytes,
+        source: str,
+        target: str,
+        meta: bytes | None = None,
+    ) -> Synapse | None: ...
+
+class Thalamus:
+    def __init__(self, dreams: DreamTable) -> None: ...
+    def consolidate(
+        self,
+        name: str,
+        actor: bytes,
+        neuron: str,
+        payload: bytes,
+        meta: bytes | None = None,
+    ) -> Dream | None: ...
+
+class Hippocampus:
+    def __init__(
+        self,
+        neurons: NeuronTable,
+        synapses: SynapseTable,
+        dreams: DreamTable,
+    ) -> None: ...
+    def resonate(self, stimulus: bytes, limit: int = 10) -> list[Resonance]: ...
+    def reminisce(
+        self,
+        since: datetime | None = None,
+        until: datetime | None = None,
+    ) -> Engram | None: ...
+
+class Cortex:
+    def __init__(self) -> None: ...
+    def imagine(
+        self,
+        engram: Engram,
+        start: str,
+        epochs: int,
+        creativity: float,
+        impulse: Callable[[Synapse], float] | None = None,
+    ) -> list[Thought]: ...

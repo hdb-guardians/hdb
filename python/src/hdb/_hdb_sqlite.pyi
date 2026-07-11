@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ._hdb_core import DreamTable, NeuronTable, SynapseTable
+from hdb._hdb_core import DreamTable, NeuronTable, SynapseTable
 
 def open_sqlite(
     db_path: str,

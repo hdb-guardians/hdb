@@ -2,22 +2,12 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_python LANGUAGES CXX)
 
-if(NOT TARGET hdb_api OR NOT TARGET hdb_sqlite)
-  # Standalone python-package build path (e.g. wheel build via pyproject).
-  # Reuse the same core/api/sqlite targets from the repository tree.
-  if(NOT TARGET hdb_core)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_BINARY_DIR}/hdb_core")
-  endif()
-  if(NOT TARGET hdb_api)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../api" "${CMAKE_CURRENT_BINARY_DIR}/hdb_api")
-  endif()
-  if(NOT TARGET hdb_sqlite)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../sqlite" "${CMAKE_CURRENT_BINARY_DIR}/hdb_sqlite")
-  endif()
+# Standalone build path (e.g. wheel build via pyproject).
+if(NOT TARGET hdb_core)
+  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_BINARY_DIR}/hdb_core")
 endif()
-
-if(NOT TARGET hdb_api)
-  message(FATAL_ERROR "hdb/python: required target hdb_api is missing. hint: add_subdirectory(api) before python")
+if(NOT TARGET hdb_sqlite)
+  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../store/sqlite" "${CMAKE_CURRENT_BINARY_DIR}/hdb_sqlite")
 endif()
 
 # Auto-detect venv Python executable if not explicitly provided via -DPython_EXECUTABLE=...
@@ -51,7 +41,6 @@ endif()
 find_package(pybind11 CONFIG REQUIRED)
 
 add_subdirectory(bindings_core)
-add_subdirectory(bindings_api)
 
 if(TARGET hdb_sqlite)
   add_subdirectory(bindings_sqlite)

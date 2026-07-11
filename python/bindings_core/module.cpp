@@ -1,4 +1,5 @@
 #include <pybind11/chrono.h>
+#include <pybind11/functional.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -9,7 +10,12 @@
 #include <vector>
 
 #include <hdb/atom/engram.hpp>
+#include <hdb/atom/impulse.hpp>
 #include <hdb/atom/thought.hpp>
+#include <hdb/molecule/cortex.hpp>
+#include <hdb/molecule/hippocampus.hpp>
+#include <hdb/molecule/prefrontal.hpp>
+#include <hdb/molecule/thalamus.hpp>
 #include <hdb/python/byte_caster.hpp>
 #include <hdb/quark/dream.hpp>
 #include <hdb/quark/neuron.hpp>
@@ -113,10 +119,23 @@ struct PyDreamTable : hdb::DreamTable {
   }
 };
 
+hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
+  if (impulse_obj.is_none()) {
+    return [](const hdb::Synapse&) { return hdb::Real{1}; };
+  }
+  const py::function impulse_fn = impulse_obj.cast<py::function>();
+  return [impulse_fn](const hdb::Synapse& synapse) -> hdb::Real {
+    py::gil_scoped_acquire gil;
+    return impulse_fn(py::cast(synapse)).cast<hdb::Real>();
+  };
+}
+
 }  // namespace
 
 PYBIND11_MODULE(_hdb_core, m) {
-  m.doc() = "HDB core type bindings";
+  m.doc() = "HDB core bindings";
+
+  // ── quark ────────────────────────────────────────────────────────────────
 
   py::class_<hdb::Neuron>(m, "Neuron")
       .def(py::init<>())
@@ -206,4 +225,146 @@ PYBIND11_MODULE(_hdb_core, m) {
           },
           py::arg("payload"),
           py::arg("limit") = std::size_t{10});
+
+  // ── molecule ──────────────────────────────────────────────────────────────
+  py::class_<hdb::Prefrontal>(m, "Prefrontal")
+      .def(
+          py::init([](std::shared_ptr<hdb::NeuronTable> neurons,
+                      std::shared_ptr<hdb::SynapseTable> synapses) {
+            return std::make_unique<hdb::Prefrontal>(*neurons, *synapses);
+          }),
+          py::arg("neurons"),
+          py::arg("synapses"),
+          py::keep_alive<1, 2>(),
+          py::keep_alive<1, 3>())
+      .def(
+          "sprout",
+          [](hdb::Prefrontal& self,
+             const hdb::Nid& name,
+             std::vector<std::byte> actor,
+             std::vector<std::byte> payload,
+             std::optional<std::vector<std::byte>> meta)
+              -> std::optional<hdb::Neuron> {
+            std::optional<std::span<const std::byte>> meta_span;
+            if (meta.has_value()) {
+              meta_span = std::span<const std::byte>(*meta);
+            }
+            return self.Sprout(name, actor, payload, meta_span);
+          },
+          py::arg("name"),
+          py::arg("actor"),
+          py::arg("payload"),
+          py::arg("meta") = py::none())
+      .def(
+          "awaken",
+          [](hdb::Prefrontal& self, const hdb::Nid& name) {
+            return self.Awaken(name);
+          },
+          py::arg("name"))
+      .def(
+          "fire",
+          [](hdb::Prefrontal& self,
+             const hdb::Sid& name,
+             std::vector<std::byte> actor,
+             const hdb::Nid& source,
+             const hdb::Nid& target,
+             std::optional<std::vector<std::byte>> meta)
+              -> std::optional<hdb::Synapse> {
+            std::optional<std::span<const std::byte>> meta_span;
+            if (meta.has_value()) {
+              meta_span = std::span<const std::byte>(*meta);
+            }
+            return self.Fire(name, actor, source, target, meta_span);
+          },
+          py::arg("name"),
+          py::arg("actor"),
+          py::arg("source"),
+          py::arg("target"),
+          py::arg("meta") = py::none());
+
+  py::class_<hdb::Thalamus>(m, "Thalamus")
+      .def(
+          py::init([](std::shared_ptr<hdb::DreamTable> dreams) {
+            return std::make_unique<hdb::Thalamus>(*dreams);
+          }),
+          py::arg("dreams"),
+          py::keep_alive<1, 2>())
+      .def(
+          "consolidate",
+          [](hdb::Thalamus& self,
+             const hdb::Did& name,
+             std::vector<std::byte> actor,
+             const hdb::Nid& neuron,
+             std::vector<std::byte> payload,
+             std::optional<std::vector<std::byte>> meta)
+              -> std::optional<hdb::Dream> {
+            std::optional<std::span<const std::byte>> meta_span;
+            if (meta.has_value()) {
+              meta_span = std::span<const std::byte>(*meta);
+            }
+            return self.Consolidate(name, actor, neuron, payload, meta_span);
+          },
+          py::arg("name"),
+          py::arg("actor"),
+          py::arg("neuron"),
+          py::arg("payload"),
+          py::arg("meta") = py::none());
+
+  py::class_<hdb::Hippocampus>(m, "Hippocampus")
+      .def(
+          py::init([](std::shared_ptr<hdb::NeuronTable> neurons,
+                      std::shared_ptr<hdb::SynapseTable> synapses,
+                      std::shared_ptr<hdb::DreamTable> dreams) {
+            return std::make_unique<hdb::Hippocampus>(
+                *neurons, *synapses, *dreams);
+          }),
+          py::arg("neurons"),
+          py::arg("synapses"),
+          py::arg("dreams"),
+          py::keep_alive<1, 2>(),
+          py::keep_alive<1, 3>(),
+          py::keep_alive<1, 4>())
+      .def(
+          "resonate",
+          [](hdb::Hippocampus& self,
+             std::vector<std::byte> stimulus,
+             const std::size_t limit) -> std::vector<hdb::Resonance> {
+            return self.Resonate(stimulus, limit);
+          },
+          py::arg("stimulus"),
+          py::arg("limit") = std::size_t{10})
+      .def(
+          "reminisce",
+          [](hdb::Hippocampus& self,
+             const py::object& since_obj,
+             const py::object& until_obj) -> std::optional<hdb::Engram> {
+            const hdb::Moment since = since_obj.is_none()
+                                          ? hdb::Moment::min()
+                                          : since_obj.cast<hdb::Moment>();
+            const hdb::Moment until = until_obj.is_none()
+                                          ? hdb::Moment::max()
+                                          : until_obj.cast<hdb::Moment>();
+            return self.Reminisce(since, until);
+          },
+          py::arg("since") = py::none(),
+          py::arg("until") = py::none());
+
+  py::class_<hdb::Cortex>(m, "Cortex")
+      .def(py::init<>())
+      .def(
+          "imagine",
+          [](hdb::Cortex& self,
+             const hdb::Engram& engram,
+             const hdb::Nid& start,
+             const std::size_t epochs,
+             const hdb::Real creativity,
+             const py::object& impulse_obj) -> hdb::Imagination {
+            return self.Imagine(
+                engram, start, epochs, creativity, BuildImpulse(impulse_obj));
+          },
+          py::arg("engram"),
+          py::arg("start"),
+          py::arg("epochs"),
+          py::arg("creativity"),
+          py::arg("impulse") = py::none());
 }

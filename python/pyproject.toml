@@ -22,6 +22,3 @@ dev = [
 
 [tool.scikit-build]
 cmake.build-type = "Release"
-
-[tool.ruff.lint.per-file-ignores]
-"src/hdb/_hdb.py" = ["F401"]
