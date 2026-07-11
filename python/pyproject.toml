@@ -16,7 +16,6 @@ dependencies = []
 [dependency-groups]
 dev = [
   "pybind11",
-  "ruff",
   "scikit-build-core",
 ]
 
