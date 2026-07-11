@@ -12,8 +12,8 @@ class SqliteSynapseTable : public SynapseTable {
   explicit SqliteSynapseTable(std::shared_ptr<SqliteContext> ctx);
 
   std::optional<Synapse> insert(const Synapse& synapse) override;
-  std::optional<Synapse> find(const Sid& name) const override;
-  std::vector<Synapse> find(Moment since, Moment until) const override;
+  std::optional<Synapse> find_by_id(const Sid& name) const override;
+  std::vector<Synapse> find_by_range(Moment since, Moment until) const override;
 
  private:
   std::shared_ptr<SqliteContext> ctx_;

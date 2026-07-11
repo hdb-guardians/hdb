@@ -23,8 +23,8 @@ std::vector<Resonance> Hippocampus::Resonate(
 std::optional<Engram> Hippocampus::Reminisce(
     const Moment since,
     const Moment until) {
-  auto neurons_ = neurons.find(since, until);
-  auto synapses_ = synapses.find(since, until);
+  auto neurons_ = neurons.find_by_range(since, until);
+  auto synapses_ = synapses.find_by_range(since, until);
 
   if (neurons_.empty() && synapses_.empty()) {
     return std::nullopt;

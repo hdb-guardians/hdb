@@ -31,7 +31,7 @@ std::optional<Neuron> Prefrontal::Sprout(
 }
 
 std::optional<Neuron> Prefrontal::Awaken(const Nid& name) {
-  return neurons.find(name);
+  return neurons.find_by_id(name);
 }
 
 std::optional<Synapse> Prefrontal::Fire(

@@ -12,8 +12,8 @@ class SqliteNeuronTable : public NeuronTable {
   explicit SqliteNeuronTable(std::shared_ptr<SqliteContext> ctx);
 
   std::optional<Neuron> insert(const Neuron& neuron) override;
-  std::optional<Neuron> find(const Nid& name) const override;
-  std::vector<Neuron> find(Moment since, Moment until) const override;
+  std::optional<Neuron> find_by_id(const Nid& name) const override;
+  std::vector<Neuron> find_by_range(Moment since, Moment until) const override;
 
  private:
   std::shared_ptr<SqliteContext> ctx_;

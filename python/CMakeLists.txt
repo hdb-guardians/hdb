@@ -37,6 +37,7 @@ endif()
 
 find_package(pybind11 CONFIG REQUIRED)
 
+add_subdirectory(bindings_core)
 add_subdirectory(bindings_api)
 
 if(TARGET hdb_sqlite)

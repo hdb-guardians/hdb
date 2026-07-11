@@ -1,168 +1,29 @@
+#include <pybind11/chrono.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <chrono>
 #include <cstddef>
-#include <cstdint>
-#include <cstring>
-#include <hdb/api/session.hpp>
 #include <memory>
 #include <optional>
 #include <span>
-#include <stdexcept>
-#include <string>
-#include <utility>
 #include <vector>
+
+#include <hdb/api/session.hpp>
+#include <hdb/atom/engram.hpp>
+#include <hdb/atom/imagination.hpp>
+#include <hdb/atom/impulse.hpp>
+#include <hdb/python/byte_caster.hpp>
+#include <hdb/quark/neuron.hpp>
+#include <hdb/quark/resonance.hpp>
+#include <hdb/quark/synapse.hpp>
+#include <hdb/store/dream_table.hpp>
+#include <hdb/store/neuron_table.hpp>
+#include <hdb/store/synapse_table.hpp>
+#include <hdb/types.hpp>
 
 namespace py = pybind11;
 
 namespace {
-
-std::vector<std::byte> ToBytes(const py::bytes& raw) {
-  const std::string s = raw;
-  std::vector<std::byte> out(s.size());
-  if (!s.empty()) {
-    std::memcpy(out.data(), s.data(), s.size());
-  }
-  return out;
-}
-
-py::bytes FromBytes(const std::vector<std::byte>& raw) {
-  if (raw.empty()) {
-    return py::bytes();
-  }
-
-  return py::bytes(
-      reinterpret_cast<const char*>(raw.data()),
-      static_cast<py::ssize_t>(raw.size()));
-}
-
-std::optional<std::vector<std::byte>> ToOptionalBytes(const py::object& obj) {
-  if (obj.is_none()) {
-    return std::nullopt;
-  }
-  return ToBytes(obj.cast<py::bytes>());
-}
-
-py::object FromOptionalBytes(const std::optional<std::vector<std::byte>>& obj) {
-  if (!obj.has_value()) {
-    return py::none();
-  }
-  return FromBytes(*obj);
-}
-
-std::optional<std::span<const std::byte>> OptionalSpanFromOwned(
-    const std::optional<std::vector<std::byte>>& owned) {
-  if (!owned.has_value()) {
-    return std::nullopt;
-  }
-  return std::span<const std::byte>(*owned);
-}
-
-std::int64_t ToMomentTicks(const hdb::Moment moment) {
-  return static_cast<std::int64_t>(moment.time_since_epoch().count());
-}
-
-hdb::Moment FromMomentTicks(const std::int64_t ticks) {
-  return hdb::Moment{hdb::Clock::duration{ticks}};
-}
-
-hdb::Moment ReadMomentFromDict(const py::dict& obj) {
-  if (obj.contains("moment_ticks")) {
-    return FromMomentTicks(obj["moment_ticks"].cast<std::int64_t>());
-  }
-
-  if (obj.contains("moment_ms")) {
-    using namespace std::chrono;
-    return hdb::Moment{milliseconds{obj["moment_ms"].cast<std::int64_t>()}};
-  }
-
-  throw std::runtime_error(
-      "hdb::python::read_moment: invalid input: moment_ticks is required");
-}
-
-py::dict NeuronToDict(const hdb::Neuron& n) {
-  py::dict out;
-  out["name"] = n.name;
-  out["actor"] = FromBytes(n.actor);
-  out["payload"] = FromBytes(n.payload);
-  out["moment_ticks"] = ToMomentTicks(n.moment);
-  out["meta"] = FromOptionalBytes(n.meta);
-  return out;
-}
-
-py::dict SynapseToDict(const hdb::Synapse& s) {
-  py::dict out;
-  out["name"] = s.name;
-  out["actor"] = FromBytes(s.actor);
-  out["source"] = s.source;
-  out["target"] = s.target;
-  out["moment_ticks"] = ToMomentTicks(s.moment);
-  out["meta"] = FromOptionalBytes(s.meta);
-  return out;
-}
-
-py::dict DreamToDict(const hdb::Dream& d) {
-  py::dict out;
-  out["name"] = d.name;
-  out["actor"] = FromBytes(d.actor);
-  out["neuron"] = d.neuron;
-  out["payload"] = FromBytes(d.payload);
-  out["moment_ticks"] = ToMomentTicks(d.moment);
-  out["meta"] = FromOptionalBytes(d.meta);
-  return out;
-}
-
-hdb::Neuron DictToNeuron(const py::dict& obj) {
-  hdb::Neuron out;
-  out.name = obj["name"].cast<std::string>();
-  out.actor = ToBytes(obj["actor"].cast<py::bytes>());
-  out.payload = ToBytes(obj["payload"].cast<py::bytes>());
-  out.moment = ReadMomentFromDict(obj);
-  if (obj.contains("meta") && !obj["meta"].is_none()) {
-    out.meta = ToBytes(obj["meta"].cast<py::bytes>());
-  }
-  return out;
-}
-
-hdb::Synapse DictToSynapse(const py::dict& obj) {
-  hdb::Synapse out;
-  out.name = obj["name"].cast<std::string>();
-  out.actor = ToBytes(obj["actor"].cast<py::bytes>());
-  out.source = obj["source"].cast<std::string>();
-  out.target = obj["target"].cast<std::string>();
-  out.moment = ReadMomentFromDict(obj);
-  if (obj.contains("meta") && !obj["meta"].is_none()) {
-    out.meta = ToBytes(obj["meta"].cast<py::bytes>());
-  }
-  return out;
-}
-
-hdb::Engram DictToEngram(const py::dict& obj) {
-  std::vector<hdb::Neuron> neurons;
-  std::vector<hdb::Synapse> synapses;
-
-  if (obj.contains("neurons")) {
-    for (const auto& item : obj["neurons"].cast<py::list>()) {
-      neurons.push_back(DictToNeuron(py::reinterpret_borrow<py::dict>(item)));
-    }
-  }
-
-  if (obj.contains("synapses")) {
-    for (const auto& item : obj["synapses"].cast<py::list>()) {
-      synapses.push_back(DictToSynapse(py::reinterpret_borrow<py::dict>(item)));
-    }
-  }
-
-  return hdb::Engram{std::move(neurons), std::move(synapses)};
-}
-
-py::dict ThoughtToDict(const hdb::Thought& thought) {
-  py::dict out;
-  out["neuron"] = NeuronToDict(thought.neuron);
-  out["flux"] = thought.flux;
-  return out;
-}
 
 hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
   if (impulse_obj.is_none()) {
@@ -171,22 +32,14 @@ hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
   const py::function impulse_fn = impulse_obj.cast<py::function>();
   return [impulse_fn](const hdb::Synapse& synapse) -> hdb::Real {
     py::gil_scoped_acquire gil;
-    const py::object value = impulse_fn(SynapseToDict(synapse));
-    return value.cast<hdb::Real>();
+    return impulse_fn(py::cast(synapse)).cast<hdb::Real>();
   };
 }
 
 }  // namespace
 
-PYBIND11_MODULE(_hdb, m) {
+PYBIND11_MODULE(_hdb_api, m) {
   m.doc() = "HDB API bindings";
-
-  py::class_<hdb::NeuronTable, std::shared_ptr<hdb::NeuronTable>>(
-      m, "NeuronTable");
-  py::class_<hdb::SynapseTable, std::shared_ptr<hdb::SynapseTable>>(
-      m, "SynapseTable");
-  py::class_<hdb::DreamTable, std::shared_ptr<hdb::DreamTable>>(
-      m, "DreamTable");
 
   py::class_<hdb::api::Session>(m, "Session")
       .def(
@@ -198,24 +51,23 @@ PYBIND11_MODULE(_hdb, m) {
           }),
           py::arg("neurons"),
           py::arg("synapses"),
-          py::arg("dreams"))
+          py::arg("dreams"),
+          py::keep_alive<1, 2>(),
+          py::keep_alive<1, 3>(),
+          py::keep_alive<1, 4>())
       .def(
           "sprout",
           [](hdb::api::Session& self,
-             const std::string& name,
-             const py::bytes actor,
-             const py::bytes payload,
-             const py::object meta_obj) {
-            const auto actor_bytes = ToBytes(actor);
-            const auto payload_bytes = ToBytes(payload);
-            const auto meta_bytes = ToOptionalBytes(meta_obj);
-            const auto meta_span = OptionalSpanFromOwned(meta_bytes);
-
-            auto out = self.Sprout(name, actor_bytes, payload_bytes, meta_span);
-            if (!out.has_value()) {
-              return py::object(py::none());
+             const hdb::Nid& name,
+             std::vector<std::byte> actor,
+             std::vector<std::byte> payload,
+             std::optional<std::vector<std::byte>> meta)
+              -> std::optional<hdb::Neuron> {
+            std::optional<std::span<std::byte>> meta_span;
+            if (meta.has_value()) {
+              meta_span = std::span<std::byte>(*meta);
             }
-            return py::object(NeuronToDict(*out));
+            return self.Sprout(name, actor, payload, meta_span);
           },
           py::arg("name"),
           py::arg("actor"),
@@ -223,31 +75,23 @@ PYBIND11_MODULE(_hdb, m) {
           py::arg("meta") = py::none())
       .def(
           "awaken",
-          [](hdb::api::Session& self, const std::string& name) {
-            auto out = self.Awaken(name);
-            if (!out.has_value()) {
-              return py::object(py::none());
-            }
-            return py::object(NeuronToDict(*out));
-          },
+          [](hdb::api::Session& self, const hdb::Nid& name)
+              -> std::optional<hdb::Neuron> { return self.Awaken(name); },
           py::arg("name"))
       .def(
           "fire",
           [](hdb::api::Session& self,
-             const std::string& name,
-             const py::bytes actor,
-             const std::string& source,
-             const std::string& target,
-             const py::object meta_obj) {
-            const auto actor_bytes = ToBytes(actor);
-            const auto meta_bytes = ToOptionalBytes(meta_obj);
-            const auto meta_span = OptionalSpanFromOwned(meta_bytes);
-
-            auto out = self.Fire(name, actor_bytes, source, target, meta_span);
-            if (!out.has_value()) {
-              return py::object(py::none());
+             const hdb::Sid& name,
+             std::vector<std::byte> actor,
+             const hdb::Nid& source,
+             const hdb::Nid& target,
+             std::optional<std::vector<std::byte>> meta)
+              -> std::optional<hdb::Synapse> {
+            std::optional<std::span<std::byte>> meta_span;
+            if (meta.has_value()) {
+              meta_span = std::span<std::byte>(*meta);
             }
-            return py::object(SynapseToDict(*out));
+            return self.Fire(name, actor, source, target, meta_span);
           },
           py::arg("name"),
           py::arg("actor"),
@@ -257,22 +101,17 @@ PYBIND11_MODULE(_hdb, m) {
       .def(
           "consolidate",
           [](hdb::api::Session& self,
-             const std::string& name,
-             const py::bytes actor,
-             const std::string& neuron,
-             const py::bytes payload,
-             const py::object meta_obj) {
-            const auto actor_bytes = ToBytes(actor);
-            const auto payload_bytes = ToBytes(payload);
-            const auto meta_bytes = ToOptionalBytes(meta_obj);
-            const auto meta_span = OptionalSpanFromOwned(meta_bytes);
-
-            auto out = self.Consolidate(
-                name, actor_bytes, neuron, payload_bytes, meta_span);
-            if (!out.has_value()) {
-              return py::object(py::none());
+             const hdb::Did& name,
+             std::vector<std::byte> actor,
+             const hdb::Nid& neuron,
+             std::vector<std::byte> payload,
+             std::optional<std::vector<std::byte>> meta)
+              -> std::optional<hdb::Dream> {
+            std::optional<std::span<std::byte>> meta_span;
+            if (meta.has_value()) {
+              meta_span = std::span<std::byte>(*meta);
             }
-            return py::object(DreamToDict(*out));
+            return self.Consolidate(name, actor, neuron, payload, meta_span);
           },
           py::arg("name"),
           py::arg("actor"),
@@ -282,65 +121,37 @@ PYBIND11_MODULE(_hdb, m) {
       .def(
           "resonate",
           [](hdb::api::Session& self,
-             const py::bytes stimulus,
-             const std::size_t limit) {
-            const auto stimulus_bytes = ToBytes(stimulus);
-            const auto out = self.Resonate(stimulus_bytes, limit);
-
-            py::list rows;
-            for (const auto& r : out) {
-              rows.append(py::make_tuple(r.neuron, r.fidelity));
-            }
-            return rows;
+             std::vector<std::byte> stimulus,
+             const hdb::Natural limit) -> std::vector<hdb::Resonance> {
+            return self.Resonate(stimulus, limit);
           },
           py::arg("stimulus"),
-          py::arg("limit") = 10)
+          py::arg("limit") = hdb::Natural{10})
       .def(
           "reminisce",
           [](hdb::api::Session& self,
-             const std::int64_t since_ticks,
-             const std::int64_t until_ticks) {
-            auto out = self.Reminisce(
-                FromMomentTicks(since_ticks), FromMomentTicks(until_ticks));
-            if (!out.has_value()) {
-              return py::object(py::none());
-            }
-
-            py::dict result;
-            py::list neurons;
-            for (const auto& n : out->Neurons()) {
-              neurons.append(NeuronToDict(n));
-            }
-
-            py::list synapses;
-            for (const auto& s : out->Synapses()) {
-              synapses.append(SynapseToDict(s));
-            }
-
-            result["neurons"] = neurons;
-            result["synapses"] = synapses;
-            return py::object(result);
+             const py::object& since_obj,
+             const py::object& until_obj) -> std::optional<hdb::Engram> {
+            const hdb::Moment since = since_obj.is_none()
+                                          ? hdb::Moment::min()
+                                          : since_obj.cast<hdb::Moment>();
+            const hdb::Moment until = until_obj.is_none()
+                                          ? hdb::Moment::max()
+                                          : until_obj.cast<hdb::Moment>();
+            return self.Reminisce(since, until);
           },
-          py::arg("since_ticks") = ToMomentTicks(hdb::Moment::min()),
-          py::arg("until_ticks") = ToMomentTicks(hdb::Moment::max()))
+          py::arg("since") = py::none(),
+          py::arg("until") = py::none())
       .def(
           "imagine",
           [](hdb::api::Session& self,
-             const py::dict engram_obj,
-             const std::string& start,
-             const std::size_t epochs,
+             const hdb::Engram& engram,
+             const hdb::Nid& start,
+             const hdb::Natural epochs,
              const hdb::Real creativity,
-             const py::object impulse_obj) {
-            const hdb::Engram engram = DictToEngram(engram_obj);
-            const hdb::Impulse impulse = BuildImpulse(impulse_obj);
-            const hdb::Imagination out =
-                self.Imagine(engram, start, epochs, creativity, impulse);
-
-            py::list result;
-            for (const auto& thought : out) {
-              result.append(ThoughtToDict(thought));
-            }
-            return result;
+             const py::object& impulse_obj) -> hdb::Imagination {
+            return self.Imagine(
+                engram, start, epochs, creativity, BuildImpulse(impulse_obj));
           },
           py::arg("engram"),
           py::arg("start"),

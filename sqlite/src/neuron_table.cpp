@@ -38,7 +38,7 @@ std::optional<Neuron> SqliteNeuronTable::insert(const Neuron& neuron) {
   return neuron;
 }
 
-std::optional<Neuron> SqliteNeuronTable::find(const Nid& name) const {
+std::optional<Neuron> SqliteNeuronTable::find_by_id(const Nid& name) const {
   static constexpr const char* kSql =
       "SELECT name, actor, payload, moment, meta "
       "FROM neurons WHERE name = ?1 LIMIT 1;";
@@ -67,7 +67,7 @@ std::optional<Neuron> SqliteNeuronTable::find(const Nid& name) const {
   return out;
 }
 
-std::vector<Neuron> SqliteNeuronTable::find(
+std::vector<Neuron> SqliteNeuronTable::find_by_range(
     const Moment since,
     const Moment until) const {
   static constexpr const char* kSql =

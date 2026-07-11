@@ -1,12 +1,8 @@
 {
-  "cmake.configureOnOpen": true,
-  "cmake.buildDirectory": "${workspaceFolder}/build",
-  "cmake.configureSettings": {
-    "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-    "HDB_BUILD_SQLITE": "ON",
-    "HDB_BUILD_PYTHON": "ON"
-  },
+  "cmake.useCMakePresets": "always",
+  "cmake.configurePreset": "debug",
+  "cmake.buildPreset": "debug",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
   "C_Cpp.formatting": "clangFormat"
 }

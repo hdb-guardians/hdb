@@ -12,9 +12,10 @@ class SynapseTable {
   virtual ~SynapseTable() = default;
 
   virtual std::optional<Synapse> insert(const Synapse&) = 0;
-  virtual std::optional<Synapse> find(const Sid&) const = 0;
-  virtual std::vector<Synapse> find(const Moment since, const Moment until)
-      const = 0;
+  virtual std::optional<Synapse> find_by_id(const Sid&) const = 0;
+  virtual std::vector<Synapse> find_by_range(
+      const Moment since,
+      const Moment until) const = 0;
 };
 
 }  // namespace hdb

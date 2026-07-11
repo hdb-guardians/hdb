@@ -5,22 +5,14 @@
       "label": "cmake: configure",
       "type": "shell",
       "command": "cmake",
-      "args": [
-        "-S",
-        "${workspaceFolder}",
-        "-B",
-        "${workspaceFolder}/build",
-        "-DHDB_BUILD_SQLITE=ON",
-        "-DHDB_BUILD_PYTHON=ON",
-        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
-      ],
+      "args": ["--preset", "debug"],
       "problemMatcher": []
     },
     {
       "label": "cmake: build",
       "type": "shell",
       "command": "cmake",
-      "args": ["--build", "${workspaceFolder}/build"],
+      "args": ["--build", "--preset", "debug"],
       "dependsOn": ["cmake: configure"],
       "group": "build",
       "problemMatcher": []

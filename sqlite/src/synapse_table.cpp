@@ -39,7 +39,7 @@ std::optional<Synapse> SqliteSynapseTable::insert(const Synapse& synapse) {
   return synapse;
 }
 
-std::optional<Synapse> SqliteSynapseTable::find(const Sid& name) const {
+std::optional<Synapse> SqliteSynapseTable::find_by_id(const Sid& name) const {
   static constexpr const char* kSql =
       "SELECT name, actor, source, target, moment, meta "
       "FROM synapses WHERE name = ?1 LIMIT 1;";
@@ -69,7 +69,7 @@ std::optional<Synapse> SqliteSynapseTable::find(const Sid& name) const {
   return out;
 }
 
-std::vector<Synapse> SqliteSynapseTable::find(
+std::vector<Synapse> SqliteSynapseTable::find_by_range(
     const Moment since,
     const Moment until) const {
   static constexpr const char* kSql =

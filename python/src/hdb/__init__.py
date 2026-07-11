@@ -1,4 +1,30 @@
-from ._hdb import DreamTable, NeuronTable, Session, SynapseTable
-from ._hdb_sqlite import open_sqlite
+from ._hdb import (
+    Dream,
+    DreamTable,
+    Engram,
+    Neuron,
+    NeuronTable,
+    Resonance,
+    Session,
+    Synapse,
+    SynapseTable,
+    Thought,
+)
 
-__all__ = ["NeuronTable", "SynapseTable", "DreamTable", "Session", "open_sqlite"]
+try:
+    from ._hdb import make_session, open_sqlite  # type: ignore[attr-defined]
+except ImportError:
+    pass
+
+__all__ = [
+    "Dream",
+    "DreamTable",
+    "Engram",
+    "Neuron",
+    "NeuronTable",
+    "Resonance",
+    "Session",
+    "Synapse",
+    "SynapseTable",
+    "Thought",
+]
