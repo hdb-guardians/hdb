@@ -16,8 +16,8 @@ inline sqlite3_int64 ToSqlMoment(const Moment moment) {
   return static_cast<sqlite3_int64>(moment.time_since_epoch().count());
 }
 
-inline Moment FromSqlMoment(const sqlite3_int64 moment_ticks) {
-  return Moment{Clock::duration{moment_ticks}};
+inline Moment FromSqlMoment(const sqlite3_int64 moment) {
+  return Moment{Clock::duration{moment}};
 }
 
 inline void
