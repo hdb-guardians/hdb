@@ -47,7 +47,7 @@ class Session {
 
   std::vector<Resonance> Resonate(
       std::span<const std::byte> stimulus,
-      Natural limit = 10);
+      std::size_t limit = 10);
 
   std::optional<Engram> Reminisce(
       Moment since = Moment::min(),
@@ -56,7 +56,7 @@ class Session {
   Imagination Imagine(
       const Engram& engram,
       const Nid& start,
-      Natural epochs,
+      std::size_t epochs,
       Real creativity,
       const Impulse& impulse);
 

@@ -20,7 +20,7 @@ class Hippocampus {
 
   std::vector<Resonance> Resonate(
       std::span<const std::byte> stimulus,
-      const Natural limit = 10);
+      std::size_t limit = 10);
 
   std::optional<Engram> Reminisce(
       const Moment since = Moment::min(),

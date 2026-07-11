@@ -12,8 +12,9 @@ class SqliteDreamTable : public DreamTable {
   explicit SqliteDreamTable(std::shared_ptr<SqliteContext> ctx);
 
   std::optional<Dream> insert(const Dream& dream) override;
-  std::vector<Resonance> find(std::span<const std::byte> payload, Natural limit)
-      const override;
+  std::vector<Resonance> find(
+      std::span<const std::byte> payload,
+      std::size_t limit) const override;
 
  private:
   std::shared_ptr<SqliteContext> ctx_;

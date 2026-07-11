@@ -11,7 +11,7 @@ class Cortex {
   Imagination Imagine(
       const Engram& engram,
       const Nid& start,
-      const Natural epochs,
+      const std::size_t epochs,
       const Real creativity,
       const Impulse& impulse);
 };

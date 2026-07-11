@@ -98,7 +98,7 @@ struct PyDreamTable : hdb::DreamTable {
 
   std::vector<hdb::Resonance> find(
       std::span<const std::byte> payload,
-      const hdb::Natural limit) const override {
+      const std::size_t limit) const override {
     py::gil_scoped_acquire gil;
     py::function override_fn = py::get_override(this, "find");
     if (!override_fn) {
@@ -196,7 +196,7 @@ PYBIND11_MODULE(_hdb_core, m) {
           "find",
           [](const hdb::DreamTable& self,
              const py::bytes& payload,
-             const hdb::Natural limit) {
+             const std::size_t limit) {
             const char* buf = PyBytes_AS_STRING(payload.ptr());
             const Py_ssize_t len = PyBytes_GET_SIZE(payload.ptr());
             const std::span<const std::byte> sp{
@@ -205,5 +205,5 @@ PYBIND11_MODULE(_hdb_core, m) {
             return self.find(sp, limit);
           },
           py::arg("payload"),
-          py::arg("limit") = hdb::Natural{10});
+          py::arg("limit") = std::size_t{10});
 }

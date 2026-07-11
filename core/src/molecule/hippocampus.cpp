@@ -16,7 +16,7 @@ Hippocampus::Hippocampus(
 
 std::vector<Resonance> Hippocampus::Resonate(
     std::span<const std::byte> stimulus,
-    const Natural limit) {
+    const std::size_t limit) {
   return dreams.find(stimulus, limit);
 }
 

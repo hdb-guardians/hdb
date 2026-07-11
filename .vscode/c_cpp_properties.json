@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "windows-clang-x64",
+      "name": "default",
       "includePath": [
         "${workspaceFolder}/core/include",
         "${workspaceFolder}/api/include",
@@ -13,7 +13,6 @@
         "${workspaceFolder}/python/.venv/Lib/site-packages/pybind11/include"
       ],
       "compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
-      "intelliSenseMode": "windows-clang-x64",
       "cppStandard": "c++23",
       "cStandard": "c23"
     }

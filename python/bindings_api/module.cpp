@@ -122,11 +122,11 @@ PYBIND11_MODULE(_hdb_api, m) {
           "resonate",
           [](hdb::api::Session& self,
              std::vector<std::byte> stimulus,
-             const hdb::Natural limit) -> std::vector<hdb::Resonance> {
+             const std::size_t limit) -> std::vector<hdb::Resonance> {
             return self.Resonate(stimulus, limit);
           },
           py::arg("stimulus"),
-          py::arg("limit") = hdb::Natural{10})
+          py::arg("limit") = std::size_t{10})
       .def(
           "reminisce",
           [](hdb::api::Session& self,
@@ -147,7 +147,7 @@ PYBIND11_MODULE(_hdb_api, m) {
           [](hdb::api::Session& self,
              const hdb::Engram& engram,
              const hdb::Nid& start,
-             const hdb::Natural epochs,
+             const std::size_t epochs,
              const hdb::Real creativity,
              const py::object& impulse_obj) -> hdb::Imagination {
             return self.Imagine(

@@ -20,6 +20,19 @@ if(NOT TARGET hdb_api)
   message(FATAL_ERROR "hdb/python: required target hdb_api is missing. hint: add_subdirectory(api) before python")
 endif()
 
+# Auto-detect venv Python executable if not explicitly provided via -DPython_EXECUTABLE=...
+if(NOT Python_EXECUTABLE)
+  if(WIN32)
+    set(_hdb_venv_python "${CMAKE_SOURCE_DIR}/python/.venv/Scripts/python.exe")
+  else()
+    set(_hdb_venv_python "${CMAKE_SOURCE_DIR}/python/.venv/bin/python")
+  endif()
+  if(EXISTS "${_hdb_venv_python}")
+    set(Python_EXECUTABLE "${_hdb_venv_python}" CACHE FILEPATH "Python interpreter" FORCE)
+  endif()
+  unset(_hdb_venv_python)
+endif()
+
 set(Python_FIND_VIRTUALENV FIRST)
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 

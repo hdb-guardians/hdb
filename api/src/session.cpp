@@ -45,7 +45,7 @@ std::optional<Dream> Session::Consolidate(
 
 std::vector<Resonance> Session::Resonate(
     std::span<const std::byte> stimulus,
-    const Natural limit) {
+    const std::size_t limit) {
   return hippocampus_.Resonate(stimulus, limit);
 }
 
@@ -58,7 +58,7 @@ std::optional<Engram> Session::Reminisce(
 Imagination Session::Imagine(
     const Engram& engram,
     const Nid& start,
-    const Natural epochs,
+    const std::size_t epochs,
     const Real creativity,
     const Impulse& impulse) {
   return cortex_.Imagine(engram, start, epochs, creativity, impulse);

@@ -17,7 +17,7 @@ class DreamTable {
   virtual std::optional<Dream> insert(const Dream&) = 0;
   virtual std::vector<Resonance> find(
       std::span<const std::byte> payload,
-      const Natural limit) const = 0;
+      std::size_t limit) const = 0;
 };
 
 }  // namespace hdb

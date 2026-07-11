@@ -10,7 +10,7 @@ namespace hdb {
 Imagination Cortex::Imagine(
     const Engram& engram,
     const Nid& start,
-    const Natural epochs,
+    const std::size_t epochs,
     const Real creativity,
     const Impulse& impulse) {
   const auto& synapses = engram.Synapses();
@@ -26,7 +26,7 @@ Imagination Cortex::Imagine(
   thread_local std::mt19937 rng{std::random_device{}()};
   std::uniform_real_distribution<Real> noise{Real{-1}, Real{1}};
 
-  for (Natural epoch = 0; epoch < epochs; ++epoch) {
+  for (std::size_t epoch = 0; epoch < epochs; ++epoch) {
     std::unordered_map<Nid, Real> next_wave_map;
 
     for (const auto& [nid, flux] : wave_map) {
