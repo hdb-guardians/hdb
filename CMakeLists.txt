@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb LANGUAGES CXX)
 
-option(HDB_BUILD_SQLITE "Build SQLite-backed runtime" ON)
+option(HDB_BUILD_SQLITE "Build SQLite-backed store" ON)
 
 add_subdirectory(core)
 add_subdirectory(api)

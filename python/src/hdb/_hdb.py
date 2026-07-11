@@ -15,14 +15,6 @@ from ._hdb_api import Session
 
 try:
     from ._hdb_sqlite import open_sqlite
-
-    def make_session(
-        db_path: str,
-        sqlite_vec_extension_path: str = "",
-    ) -> Session:
-        neurons, synapses, dreams = open_sqlite(db_path, sqlite_vec_extension_path)
-        return Session(neurons, synapses, dreams)
-
 except ImportError:
     pass
 

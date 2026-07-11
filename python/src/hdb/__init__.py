@@ -12,7 +12,7 @@ from ._hdb import (
 )
 
 try:
-    from ._hdb import make_session, open_sqlite  # type: ignore[attr-defined]
+    from ._hdb import open_sqlite  # type: ignore[attr-defined]
 except ImportError:
     pass
 
