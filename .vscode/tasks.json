@@ -2,19 +2,61 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "cmake: configure",
+      "label": "cmake: configure (debug)",
       "type": "shell",
       "command": "cmake",
       "args": ["--preset", "debug"],
       "problemMatcher": []
     },
     {
-      "label": "cmake: build",
+      "label": "cmake: configure (release)",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--preset", "release"],
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake: build (debug)",
       "type": "shell",
       "command": "cmake",
       "args": ["--build", "--preset", "debug"],
-      "dependsOn": ["cmake: configure"],
+      "dependsOn": ["cmake: configure (debug)"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake: build (release)",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "--preset", "release"],
+      "dependsOn": ["cmake: configure (release)"],
       "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "python: sync",
+      "type": "shell",
+      "command": "uv",
+      "args": ["sync", "--no-install-project", "--group", "dev"],
+      "options": { "cwd": "${workspaceFolder}/python" },
+      "problemMatcher": []
+    },
+    {
+      "label": "python: build",
+      "type": "shell",
+      "command": "uv",
+      "args": ["build", "--wheel"],
+      "options": { "cwd": "${workspaceFolder}/python" },
+      "dependsOn": ["python: sync"],
+      "problemMatcher": []
+    },
+    {
+      "label": "python: dist",
+      "type": "shell",
+      "command": "uv",
+      "args": ["build"],
+      "options": { "cwd": "${workspaceFolder}/python" },
+      "dependsOn": ["python: sync"],
       "problemMatcher": []
     }
   ]

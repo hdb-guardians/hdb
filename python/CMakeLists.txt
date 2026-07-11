@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.26)
 
 project(hdb_python LANGUAGES CXX)
 
-# Standalone build path (e.g. wheel build via pyproject).
 if(NOT TARGET hdb_core)
   add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_BINARY_DIR}/hdb_core")
 endif()
@@ -10,7 +9,6 @@ if(NOT TARGET hdb_sqlite)
   add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../store/sqlite" "${CMAKE_CURRENT_BINARY_DIR}/hdb_sqlite")
 endif()
 
-# Auto-detect venv Python executable if not explicitly provided via -DPython_EXECUTABLE=...
 if(NOT Python_EXECUTABLE)
   if(WIN32)
     set(_hdb_venv_python "${CMAKE_SOURCE_DIR}/python/.venv/Scripts/python.exe")

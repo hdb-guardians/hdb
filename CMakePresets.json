@@ -9,8 +9,7 @@
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_MAKE_PROGRAM": "mingw32-make",
-        "HDB_BUILD_SQLITE": "ON",
-        "HDB_BUILD_PYTHON": "ON",
+        "HDB_BUILD_STORE": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
