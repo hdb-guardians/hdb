@@ -4,23 +4,15 @@
       "name": "windows-clang-x64",
       "includePath": [
         "${workspaceFolder}/core/include",
-        "${workspaceFolder}/core/src",
         "${workspaceFolder}/api/include",
         "${workspaceFolder}/sqlite/include",
-        "${workspaceFolder}/sqlite/src",
-        "${workspaceFolder}/python/bindings"
+        "${workspaceFolder}/python/include",
+        "${workspaceFolder}/python/bindings_core",
+        "${workspaceFolder}/python/bindings_api",
+        "${workspaceFolder}/python/bindings_sqlite",
+        "${workspaceFolder}/python/.venv/Lib/site-packages/pybind11/include"
       ],
-      "browse": {
-        "path": [
-          "${workspaceFolder}/core/include",
-          "${workspaceFolder}/core/src",
-          "${workspaceFolder}/api/include",
-          "${workspaceFolder}/sqlite/include",
-          "${workspaceFolder}/sqlite/src",
-          "${workspaceFolder}/python/bindings"
-        ],
-        "limitSymbolsToIncludedHeaders": true
-      },
+      "compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
       "intelliSenseMode": "windows-clang-x64",
       "cppStandard": "c++23",
       "cStandard": "c23"
