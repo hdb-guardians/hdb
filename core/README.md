@@ -145,9 +145,13 @@ Core operations use return types to express failure:
 
 ## Out of Scope
 
-The following concerns belong to [standard/README.md](../standard/README.md):
+The following concerns belong to [sqlite/README.md](../sqlite/README.md):
 
 - SQLite schema and indices
 - SQLite connection and pragmas
 - sqlite-vec extension loading
-- runtime facade construction (`hdb::standard::Session`)
+
+The following concerns belong to [api/README.md](../api/README.md):
+
+- Session facade construction (`hdb::api::Session`)
+- Molecule wiring and store ownership

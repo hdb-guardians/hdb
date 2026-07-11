@@ -1,130 +1,146 @@
 # HDB Python Bindings
 
 **Parent project**: [HDB](../README.md)  
-**Depends on**: [core](../core), [standard](../standard)
+**Depends on**: [core](../core), [api](../api), [sqlite](../sqlite)  
+**License**: [GNU AGPL-3.0](../LICENSE)
 
 ## Responsibility
 
-`python` exposes the `hdb::standard::Session` runtime as a Python extension module.
+`python` exposes `hdb::api::Session` and `hdb::sqlite::open_sqlite` as Python extension modules via pybind11.
 
 It focuses on:
 
-- Python-friendly input and output conversion
-- byte payload/meta transport via `bytes`
-- session orchestration from Python
+- Python-friendly input/output conversion
+- byte payload and meta transport via `bytes`
+- session and store construction from Python
 
 It does not define:
 
 - domain semantics (owned by `core`)
-- persistence/runtime internals (owned by `standard`)
-
-## Build Prerequisites
-
-- Python 3.9+
-- pybind11 with CMake config package (`pybind11Config.cmake`)
-- CMake 3.26+
-
-Root build option:
-
-- `HDB_BUILD_PYTHON` (default: `ON`)
-
-## Development Flow (uv)
-
-From the repository root:
-
-```powershell
-uv sync --project python --group dev --no-install-project
-cmake -S . -B build -DHDB_BUILD_STANDARD=ON -DHDB_BUILD_PYTHON=ON -DPython_EXECUTABLE="c:/Devs/generals/hdb/python/.venv/Scripts/python.exe"
-cmake --build build
-```
-
-What this produces:
-
-- `build/standard/libhdb_standard.a` (native intermediate static library)
-- `build/python/bindings/_hdb.<python-tag>.pyd` (Python extension module)
-
-## How Python Consumption Works
-
-`hdb_standard` is a native build input for the binding module.
-Python users do not link `libhdb_standard.a` directly.
-
-Python-facing artifact is the package:
-
-```text
-hdb/
-|- __init__.py
-`- _hdb.<python-tag>.pyd
-```
-
-The package entrypoint is `hdb.Session`.
-
-## Use In Another Python Project
-
-Recommended path is wheel-based installation.
-
-1. Build a wheel from this repository.
-2. Install that wheel into the target project's virtual environment.
-3. Import and use `hdb`.
-
-Example workflow:
-
-```powershell
-uv sync --project python --group dev --no-install-project
-uv build ./python --wheel -o ./dist
-uv pip install --python python/.venv/Scripts/python.exe ./dist/hdb-0.1.0-*.whl
-python/.venv/Scripts/python.exe -c "import hdb; print(hdb.Session)"
-```
-
-Note:
-
-- CMake install rules place `__init__.py` and `_hdb` under the `hdb` package path used by wheel builds.
-- `python/CMakeLists.txt` resolves `pybind11` from the selected interpreter via `python -m pybind11 --cmakedir`, so `uv` virtual environments work without manually setting `pybind11_DIR`.
-- `uv sync` can be run with `--no-install-project` during initial environment provisioning to avoid editable-build failures when a C/C++ toolchain is not yet fully configured.
-- This package intentionally avoids OS-specific runtime DLL bundling.
-- `sqlite-vec` is treated as an external runtime dependency.
-- `Session(db_path)` requires either `sqlite_vec_extension_path` argument or environment variable `HDB_SQLITE_VEC_EXTENSION`.
-
-Example:
-
-```powershell
-$env:HDB_SQLITE_VEC_EXTENSION="C:/path/to/sqlite_vec.dll"
-python/.venv/Scripts/python.exe -c "import hdb; s=hdb.Session('hdb.db')"
-```
+- session or storage internals (owned by `api` and `sqlite`)
 
 ## Module Layout
 
 ```text
 python/
-|- bindings/
-|  |- CMakeLists.txt
-|  `- module.cpp
-|- src/hdb/__init__.py
-`- pyproject.toml
+├── bindings_api/        → builds _hdb (Session, abstract table types)
+├── bindings_sqlite/     → builds _hdb_sqlite (open_sqlite)
+├── src/hdb/
+│   ├── __init__.py      → re-exports all public symbols
+│   ├── _hdb.pyi         → type stubs for _hdb
+│   └── _hdb_sqlite.pyi  → type stubs for _hdb_sqlite
+└── pyproject.toml
 ```
+
+## Build Prerequisites
+
+- Python 3.9+
+- pybind11 with CMake config package
+- CMake 3.26+
+- sqlite-vec shared library (runtime dependency; not bundled)
+
+Root CMake option: `HDB_BUILD_PYTHON` (default: `ON`).
+
+## Development Flow (uv)
+
+```powershell
+# 1. Create venv and install dev dependencies
+uv sync --project python --group dev
+
+# 2. Configure CMake pointing at the venv interpreter
+cmake -S . -B build `
+  -DHDB_BUILD_SQLITE=ON `
+  -DHDB_BUILD_PYTHON=ON `
+  -DPython_EXECUTABLE="python/.venv/Scripts/python.exe"
+
+# 3. Build
+cmake --build build
+```
+
+This produces:
+
+- `build/python/bindings_api/_hdb.<python-tag>.pyd`
+- `build/python/bindings_sqlite/_hdb_sqlite.<python-tag>.pyd`
 
 ## Python API
 
-Entry point: `hdb.Session`
+### Store Construction
 
-Methods:
+```python
+import hdb
 
-- `sprout(name, actor, payload, meta=None)`
-- `awaken(name)`
-- `fire(name, actor, from, to, meta=None)`
-- `consolidate(name, actor, neuron, payload, meta=None)`
-- `resonate(stimulus, limit=10)`
-- `reminisce(since_ticks, until_ticks)`
-- `imagine(engram, start, epochs, creativity, impulse=None)`
+neurons, synapses, dreams = hdb.open_sqlite(db_path, sqlite_vec_extension_path="")
+```
+
+`sqlite_vec_extension_path` defaults to `""`, which causes `resolve_vec_extension_path` to fall back to the `HDB_SQLITE_VEC_EXTENSION` environment variable.
+
+### Session
+
+```python
+session = hdb.Session(neurons, synapses, dreams)
+```
+
+#### Write (Prefrontal)
+
+```python
+session.sprout(name, actor, payload, meta=None)             -> dict | None
+session.awaken(name)                                        -> dict | None
+session.fire(name, actor, source, target, meta=None)        -> dict | None
+```
+
+#### Consolidate (Thalamus)
+
+```python
+session.consolidate(name, actor, neuron, payload, meta=None) -> dict | None
+```
+
+#### Retrieve (Hippocampus)
+
+```python
+session.resonate(stimulus, limit=10)                       -> list[tuple[str, float]]
+session.reminisce(since_ticks=..., until_ticks=...)        -> dict | None
+```
+
+- `resonate` returns `[(neuron_name, fidelity), ...]` ordered by descending fidelity
+- `reminisce` returns `{"neurons": [...], "synapses": [...]}`
+
+#### Simulate (Cortex)
+
+```python
+session.imagine(engram, start, epochs, creativity, impulse=None) -> list[dict]
+```
+
+- `engram`: `{"neurons": [...], "synapses": [...]}`
+- `impulse`: `Callable[[dict], float]` — edge-weighting function; `None` defaults to uniform weight `1.0`
+- Returns `[{"neuron": {...}, "flux": float}, ...]`
 
 ## Data Conventions
 
-- Binary fields (`actor`, `payload`, `meta`) are Python `bytes`.
-- `moment` is exposed as `moment_ticks` (`Clock::duration::rep` cast to integer).
-- `reminisce` returns a dict with `neurons` and `synapses`.
-- `imagine` returns a list of `{ neuron, flux }` dictionaries.
+| Field                      | Python type         | Notes                                    |
+| -------------------------- | ------------------- | ---------------------------------------- |
+| `actor`, `payload`, `meta` | `bytes`             | Core treats these as opaque blobs        |
+| `moment`                   | `moment_ticks: int` | `Clock::duration::rep` cast to `int`     |
+| synapse `from` / `to`      | `source` / `target` | Renamed to avoid Python keyword conflict |
 
-## Planned Details
+## Wheel Build
 
-- Packaging and wheel strategy: maintained via scikit-build-core and CMake install rules
-- Type hints and stubs: _내용 작성 예정_
-- Compatibility policy across API revisions: _내용 작성 예정_
+```powershell
+uv sync --project python --group dev
+uv build ./python --wheel -o ./dist
+uv pip install --python python/.venv/Scripts/python.exe ./dist/hdb-*.whl
+python/.venv/Scripts/python.exe -c "import hdb; print(hdb.Session)"
+```
+
+`python/CMakeLists.txt` bootstraps `core`, `api`, and `sqlite` automatically during standalone wheel builds (e.g. `scikit-build-core`), so the `python/` directory can be built independently.
+
+## sqlite-vec Runtime Dependency
+
+sqlite-vec is loaded at connection time by `open_sqlite`. Provide the path via:
+
+1. Explicit argument: `hdb.open_sqlite(db_path, "/path/to/vec0.dll")`
+2. Environment variable: `HDB_SQLITE_VEC_EXTENSION`
+
+```powershell
+$env:HDB_SQLITE_VEC_EXTENSION = "C:/path/to/vec0.dll"
+python -c "import hdb; neurons, synapses, dreams = hdb.open_sqlite('hdb.db')"
+```
