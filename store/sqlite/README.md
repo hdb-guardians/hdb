@@ -1,12 +1,12 @@
 # HDB SQLite
 
-**Parent project**: [HDB](../README.md)  
-**Depends on**: [core](../core)  
-**License**: [GNU AGPL-3.0](../LICENSE)
+**Parent project**: [HDB](../../README.md)  
+**Depends on**: [core](../../core)  
+**License**: [GNU AGPL-3.0](../../LICENSE)
 
 ## Responsibility
 
-`sqlite` provides SQLite-backed implementations of the three core store interfaces.
+`store/sqlite` provides SQLite-backed implementations of the three core store interfaces.
 
 It owns:
 
@@ -18,7 +18,6 @@ It owns:
 It does not define:
 
 - domain semantics (owned by `core`)
-- session orchestration (owned by `api`)
 
 Enabled via CMake option `HDB_BUILD_SQLITE` (default: `ON`).
 

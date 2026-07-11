@@ -9,7 +9,7 @@
 
 It defines:
 
-- common types (`Nid`, `Sid`, `Did`, `Moment`, `Real`, `Natural`)
+- common types (`Nid`, `Sid`, `Did`, `Moment`, `Real`)
 - value objects (`Neuron`, `Synapse`, `Dream`, `Engram`, `Resonance`, `Thought`, `Imagination`)
 - storage interfaces (`NeuronTable`, `SynapseTable`, `DreamTable`)
 - cognitive operations (`Prefrontal`, `Thalamus`, `Hippocampus`, `Cortex`)
@@ -39,38 +39,22 @@ Dependency direction:
 types.hpp -> quark/ -> atom/ -> store/ -> molecule/
 ```
 
-## Configurable Types
+## Fixed Types
 
-All four primitive types can be replaced at compile time via CMake cache variables.
+All primitive types are fixed at compile time.
 
-| CMake option       | Default                     | Alias                                 |
-| ------------------ | --------------------------- | ------------------------------------- |
-| `HDB_ID_TYPE`      | `std::string`               | `Nid`, `Sid`, `Did`                   |
-| `HDB_CLOCK_TYPE`   | `std::chrono::system_clock` | `Clock`; `Moment = Clock::time_point` |
-| `HDB_REAL_TYPE`    | `float`                     | `Real`                                |
-| `HDB_NATURAL_TYPE` | `std::size_t`               | `Natural`                             |
+| Type     | Definition                                                  | Aliases             |
+| -------- | ----------------------------------------------------------- | ------------------- |
+| `Id`     | `std::string`                                               | `Nid`, `Sid`, `Did` |
+| `Clock`  | `std::chrono::system_clock`                                 |                     |
+| `Moment` | `std::chrono::time_point<Clock, std::chrono::microseconds>` |                     |
+| `Real`   | `double`                                                    |                     |
 
-### Id
+`Nid`, `Sid`, `Did` are aliases of `Id`. To the compiler they are the same type; to the reader they signal which table a value belongs to.
 
-`Nid`, `Sid`, `Did` are aliases of `Id` (`HDB_ID_TYPE`). To the compiler they are the same type; to the reader they signal which table a value belongs to.
+`Moment` uses microsecond resolution. Append-only semantics depend on `Moment`: the same thought recurring at a later moment is a new event, even if `actor` and `payload` are identical.
 
-The true composite identity of a record is `(moment, actor, payload, meta)`. `name` is a human-readable handle that compresses that fingerprint — UUID is the natural default implementation. For performance-critical deployments replace with `-DHDB_ID_TYPE=uint64_t`.
-
-### Clock / Moment
-
-`Moment` is `Clock::time_point`. The default clock is `std::chrono::system_clock`.
-
-On most platforms `system_clock` stores nanoseconds in a 64-bit integer — representable range is approximately ±292 years around Unix epoch. If the domain requires a longer historical or future range, override with a coarser-duration clock via `-DHDB_CLOCK_TYPE`.
-
-Append-only semantics depend on `Moment`: the same thought recurring at a later moment is a new event, even if `actor` and `payload` are identical.
-
-### Real
-
-Floating-point scalar. Default `float`. Used for `Resonance.fidelity`, `Thought.flux`, and the `creativity` and `Impulse` weight parameters of `Cortex::Imagine`. Override with `-DHDB_REAL_TYPE=double` to change precision globally across all cognitive computations.
-
-### Natural
-
-Non-negative integer — ISO 80000-2 natural numbers including zero. Default `std::size_t`. Used for counts and iteration limits (`limit`, `epochs`). Override with `-DHDB_NATURAL_TYPE=uint32_t`.
+`Real` is used for `Resonance.fidelity`, `Thought.flux`, `creativity`, and `Impulse` weights in `Cortex::Imagine`.
 
 ### Raw bytes — `std::vector<std::byte>`
 

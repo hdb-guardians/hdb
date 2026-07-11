@@ -8,60 +8,75 @@ Human Database (HDB) is a C++23 engine for storing, retrieving, and simulating t
 ## Project Structure
 
 ```
-core/   → storage-agnostic domain model and cognitive operations
-api/    → Session facade (composes core molecules); always built
-sqlite/ → SQLite-backed store implementations (optional)
-python/ → Python bindings (optional)
+core/         → storage-agnostic domain model and cognitive operations
+store/
+  sqlite/     → SQLite-backed store implementations (optional)
+python/       → Python bindings (always built)
 ```
 
 Dependency direction:
 
 ```
-core ──► api
-core ──► sqlite
-api + sqlite ──► python
+core ──► store/sqlite
+core + store/sqlite ──► python
 ```
 
-- [core](core): types, quarks, atoms, store interfaces, and molecule orchestration surfaces
-- [api](api): `Session` facade that wires all four molecules to a store bundle
-- [sqlite](sqlite): `SqliteNeuronTable`, `SqliteSynapseTable`, `SqliteDreamTable`, and `open_sqlite`
-- [python](python): pybind11 bindings — `_hdb` (api) and `_hdb_sqlite` (sqlite)
+- [core](core): types, quarks, atoms, store interfaces, and molecule operations
+- [store/sqlite](store/sqlite): `SqliteNeuronTable`, `SqliteSynapseTable`, `SqliteDreamTable`, and `open_sqlite`
+- [python](python): pybind11 bindings — `hdb.quark`, `hdb.atom`, `hdb.store`, `hdb.molecule`
 
 ## Build
 
 Requirements:
 
 - CMake 3.26+
-- C++23 compiler
-- SQLite3 development package (when building `sqlite`)
+- C++23 compiler (Clang 17+ or GCC 13+ recommended)
+- SQLite3 development package (when building `store/sqlite`)
 - pybind11 CMake package (when building `python`)
+
+### Toolchain
+
+CMake auto-detects the compiler from `PATH`. For local overrides (custom compiler path, generator, etc.) create `CMakeUserPresets.json` — it is gitignored:
+
+```json
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "/path/to/clang++"
+      }
+    }
+  ]
+}
+```
 
 Configure:
 
 ```bash
-cmake -S . -B build -DHDB_BUILD_SQLITE=ON -DHDB_BUILD_PYTHON=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --preset debug
 ```
 
 Build:
 
 ```bash
-cmake --build build
+cmake --build --preset debug
 ```
 
-Root CMake options:
+Root CMake option:
 
 | Option             | Default | Description                               |
 | ------------------ | ------- | ----------------------------------------- |
 | `HDB_BUILD_SQLITE` | `ON`    | Build SQLite-backed store implementations |
-| `HDB_BUILD_PYTHON` | `ON`    | Build Python bindings                     |
 
-`core` and `api` are always built.
+`core` and `python` are always built.
 
 ## Documentation
 
 - Domain model and cognitive operations: [core/README.md](core/README.md)
-- Session facade: [api/README.md](api/README.md)
-- SQLite runtime: [sqlite/README.md](sqlite/README.md)
+- SQLite runtime: [store/sqlite/README.md](store/sqlite/README.md)
 - Python bindings: [python/README.md](python/README.md)
 
 ## Stewardship
