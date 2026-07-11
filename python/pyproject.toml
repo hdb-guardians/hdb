@@ -10,7 +10,7 @@ name = "hdb"
 version = "0.1.0"
 description = "Python bindings for HDB standard runtime"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.14"
 dependencies = []
 
 [dependency-groups]
@@ -22,6 +22,7 @@ dev = [
 
 [tool.scikit-build]
 cmake.build-type = "Release"
+cmake.args = ["-GNinja"]
 
 [tool.scikit-build.cmake.define]
 CMAKE_CXX_COMPILER = "clang++"
