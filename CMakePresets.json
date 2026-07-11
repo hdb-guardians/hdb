@@ -4,12 +4,10 @@
     {
       "name": "base",
       "hidden": true,
-      "generator": "MinGW Makefiles",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_MAKE_PROGRAM": "mingw32-make",
-        "HDB_BUILD_STORE": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
