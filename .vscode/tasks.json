@@ -49,15 +49,6 @@
       "options": { "cwd": "${workspaceFolder}/python" },
       "dependsOn": ["python: sync"],
       "problemMatcher": []
-    },
-    {
-      "label": "python: dist",
-      "type": "shell",
-      "command": "uv",
-      "args": ["build"],
-      "options": { "cwd": "${workspaceFolder}/python" },
-      "dependsOn": ["python: sync"],
-      "problemMatcher": []
     }
   ]
 }
