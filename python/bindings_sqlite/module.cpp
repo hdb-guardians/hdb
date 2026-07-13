@@ -15,6 +15,6 @@ PYBIND11_MODULE(_hdb_sqlite, m) {
             db_path, hdb::sqlite::resolve_vec_extension_path(vec_ext));
         return py::make_tuple(neurons, synapses, dreams);
       },
-      py::arg("db_path") = "h.db",
+      py::arg("db_path") = "human.db",
       py::arg("sqlite_vec_extension_path") = "");
 }

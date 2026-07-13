@@ -11,7 +11,7 @@ Human Database (HDB) is a C++23 engine for storing, retrieving, and simulating t
 core/         → storage-agnostic domain model and cognitive operations
 store/
   sqlite/     → SQLite-backed store implementations (optional)
-python/       → Python bindings (always built)
+python/       → Python bindings (optional)
 ```
 
 Dependency direction:
@@ -23,56 +23,7 @@ core + store/sqlite ──► python
 
 - [core](core): types, quarks, atoms, store interfaces, and molecule operations
 - [store/sqlite](store/sqlite): `SqliteNeuronTable`, `SqliteSynapseTable`, `SqliteDreamTable`, and `open_sqlite`
-- [python](python): pybind11 bindings — `hdb.quark`, `hdb.atom`, `hdb.store`, `hdb.molecule`
-
-## Build
-
-Requirements:
-
-- CMake 3.26+
-- C++23 compiler (Clang 17+ or GCC 13+ recommended)
-- SQLite3 development package (when building `store/sqlite`)
-- pybind11 CMake package (when building `python`)
-
-### Toolchain
-
-CMake auto-detects the compiler from `PATH`. For local overrides (custom compiler path, generator, etc.) create `CMakeUserPresets.json` — it is gitignored:
-
-```json
-{
-  "version": 6,
-  "configurePresets": [
-    {
-      "name": "base",
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "/path/to/clang++"
-      }
-    }
-  ]
-}
-```
-
-Configure:
-
-```bash
-cmake --preset debug
-```
-
-Build:
-
-```bash
-cmake --build --preset debug
-```
-
-Root CMake options:
-
-| Option             | Default | Description                   |
-| ------------------ | ------- | ----------------------------- |
-| `HDB_BUILD_STORE`  | `ON`    | Build store backends (SQLite) |
-| `HDB_BUILD_PYTHON` | `OFF`   | Build Python bindings         |
-
-`core` is always built.
+- [python](python): pybind11 bindings — `hdb.quark`, `hdb.atom`, `hdb.store`, `hdb.molecule` (optional)
 
 ## Documentation
 

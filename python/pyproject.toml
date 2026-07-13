@@ -8,10 +8,23 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "hdb"
 version = "0.1.0"
-description = "Python bindings for HDB"
+description = "Human Database"
 readme = "README.md"
+license = { file = "../LICENSE" }
+authors = [{ name = "DPChanny", email = "kyoungchan0516@gmail.com" }]
 requires-python = ">=3.14"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: C++",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
+  "Operating System :: OS Independent",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/hdb-guardians/hdb"
+Repository = "https://github.com/hdb-guardians/hdb"
+"Bug Tracker" = "https://github.com/hdb-guardians/hdb/issues"
 
 [dependency-groups]
 dev = [
@@ -22,6 +35,21 @@ dev = [
 [tool.scikit-build]
 cmake.build-type = "Release"
 cmake.args = ["-GNinja"]
+sdist.include = [
+  "../core/",
+  "../store/",
+]
 
 [tool.scikit-build.cmake.define]
 CMAKE_CXX_COMPILER = "clang++"
+
+[tool.cibuildwheel]
+build = "cp314-*"
+
+[tool.cibuildwheel.linux]
+manylinux-x86_64-image = "manylinux_2_28"
+before-all = "dnf install -y clang"
+environment = { CMAKE_CXX_COMPILER = "clang++" }
+
+[tool.cibuildwheel.macos]
+environment = { MACOSX_DEPLOYMENT_TARGET = "11.0" }
