@@ -1,6 +1,5 @@
 {
   "cmake.configureSettings": {
     "Python_EXECUTABLE": "${workspaceFolder}/python/.venv/Scripts/python.exe"
-  },
-  "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json"
+  }
 }

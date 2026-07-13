@@ -2,6 +2,7 @@
   "configurations": [
     {
       "name": "default",
+      "compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
       "includePath": [
         "${workspaceFolder}/core/include",
         "${workspaceFolder}/store/sqlite/include",
