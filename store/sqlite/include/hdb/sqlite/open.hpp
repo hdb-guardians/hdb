@@ -17,7 +17,7 @@ std::tuple<
     std::shared_ptr<SynapseTable>,
     std::shared_ptr<DreamTable>>
 open_sqlite(
-    const std::string& db_path,
+    const std::string& db_path = "h.db",
     const std::string& sqlite_vec_extension_path = "");
 
 }  // namespace hdb::sqlite
