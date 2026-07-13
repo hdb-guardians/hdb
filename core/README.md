@@ -36,7 +36,8 @@ core/include/
 Dependency direction:
 
 ```text
-types.hpp -> quark/ -> atom/ -> store/ -> molecule/
+types.hpp -> quark/ -> atom/ ──────────────► molecule/
+                    `- store/ ────────────►
 ```
 
 ## Fixed Types

@@ -65,13 +65,14 @@ Build:
 cmake --build --preset debug
 ```
 
-Root CMake option:
+Root CMake options:
 
-| Option             | Default | Description                               |
-| ------------------ | ------- | ----------------------------------------- |
-| `HDB_BUILD_SQLITE` | `ON`    | Build SQLite-backed store implementations |
+| Option             | Default | Description                   |
+| ------------------ | ------- | ----------------------------- |
+| `HDB_BUILD_STORE`  | `ON`    | Build store backends (SQLite) |
+| `HDB_BUILD_PYTHON` | `OFF`   | Build Python bindings         |
 
-`core` and `python` are always built.
+`core` is always built.
 
 ## Documentation
 

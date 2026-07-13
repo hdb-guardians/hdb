@@ -19,7 +19,7 @@ It does not define:
 
 - domain semantics (owned by `core`)
 
-Enabled via CMake option `HDB_BUILD_SQLITE` (default: `ON`).
+Enabled via CMake option `HDB_BUILD_STORE` (default: `ON`).
 
 ## Components
 
@@ -66,12 +66,6 @@ auto [neurons, synapses, dreams] =
 ```
 
 Returns `std::tuple<shared_ptr<NeuronTable>, shared_ptr<SynapseTable>, shared_ptr<DreamTable>>`.
-
-Pass these directly to `hdb::api::Session`:
-
-```cpp
-hdb::api::Session session(neurons, synapses, dreams);
-```
 
 ### resolve_vec_extension_path
 
@@ -121,7 +115,7 @@ Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dre
 ## Build
 
 ```bash
-cmake -S . -B build -DHDB_BUILD_SQLITE=ON
+cmake -S . -B build -DHDB_BUILD_STORE=ON
 cmake --build build
 ```
 
