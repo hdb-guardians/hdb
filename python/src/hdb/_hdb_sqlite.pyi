@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from hdb._hdb_core import DreamTable, NeuronTable, SynapseTable
 
 def open_sqlite(
