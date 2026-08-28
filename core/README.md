@@ -192,7 +192,7 @@ Imagine(engram, start, epochs, creativity, impulse) -> Imagination
 - `> 0` — noise added; weaker connections can activate (divergent association)
 - `< 0` — noise subtracted; only strong connections survive (convergent association)
 
-If `start` is not in the Engram, returns an empty `Imagination`. `Cortex` has no constructor dependencies.
+`Cortex` has no constructor dependencies.
 
 ## Error Model
 
@@ -224,13 +224,8 @@ Quantum mechanics terms used in value objects:
 
 ## Out of Scope
 
-The following concerns belong to [sqlite/README.md](../sqlite/README.md):
+The following concerns belong to [store/sqlite/README.md](../store/sqlite/README.md):
 
 - SQLite schema and indices
 - SQLite connection and pragmas
 - sqlite-vec extension loading
-
-The following concerns belong to [api/README.md](../api/README.md):
-
-- Session facade construction (`hdb::api::Session`)
-- Molecule wiring and store ownership
