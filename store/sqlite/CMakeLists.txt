@@ -6,7 +6,7 @@ if(NOT TARGET hdb_core)
   message(FATAL_ERROR "hdb/sqlite: required target hdb_core is missing. hint: add_subdirectory(core) before sqlite")
 endif()
 
-find_package(SQLite3 REQUIRED)
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/vendor_sqlite.cmake")
 
 add_library(hdb_sqlite STATIC
   src/context.cpp
@@ -27,7 +27,7 @@ target_link_libraries(hdb_sqlite
   PUBLIC
     hdb_core
   PRIVATE
-    SQLite3::SQLite3
+    hdb_vendor_sqlite
 )
 
 target_compile_features(hdb_sqlite PUBLIC cxx_std_23)

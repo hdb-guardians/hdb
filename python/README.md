@@ -58,7 +58,7 @@ from hdb.store import open_sqlite
 neurons, synapses, dreams = open_sqlite(db_path, sqlite_vec_extension_path="")
 ```
 
-`sqlite_vec_extension_path` defaults to `""`, which causes `resolve_vec_extension_path` to fall back to the `HDB_SQLITE_VEC_EXTENSION` environment variable.
+`sqlite_vec_extension_path` defaults to `""`. `hdb.store.open_sqlite` (the Python wrapper) then falls back, in order, to: the `HDB_SQLITE_VEC_EXTENSION` environment variable, then the bundled `sqlite-vec` PyPI package (`sqlite_vec.loadable_path()`) — installed automatically as a dependency of `hdb`, so no extra configuration is needed.
 
 ### Molecules
 
@@ -117,12 +117,13 @@ uv build ./python --wheel -o ./dist
 
 ## sqlite-vec Runtime Dependency
 
-sqlite-vec is loaded at connection time by `open_sqlite`. Provide the path via:
+sqlite-vec is loaded at connection time by `open_sqlite`. `hdb` depends on the `sqlite-vec` PyPI package, which bundles the loadable extension for each platform, so this works out of the box with no configuration:
+
+```powershell
+python -c "from hdb.store import open_sqlite; neurons, synapses, dreams = open_sqlite('hdb.db')"
+```
+
+To override with a different build of sqlite-vec, provide the path via:
 
 1. Explicit argument: `hdb.store.open_sqlite(db_path, "/path/to/vec0.dll")`
 2. Environment variable: `HDB_SQLITE_VEC_EXTENSION`
-
-```powershell
-$env:HDB_SQLITE_VEC_EXTENSION = "C:/path/to/vec0.dll"
-python -c "from hdb.store import open_sqlite; neurons, synapses, dreams = open_sqlite('hdb.db')"
-```

@@ -1,7 +1,22 @@
+import os
+
 from hdb._hdb_core import DreamTable, NeuronTable, SynapseTable
 
 try:
-    from hdb._hdb_sqlite import open_sqlite
+    from hdb._hdb_sqlite import open_sqlite as _open_sqlite
+
+    def open_sqlite(
+        db_path: str = "human.db",
+        sqlite_vec_extension_path: str = "",
+    ) -> tuple[NeuronTable, SynapseTable, DreamTable]:
+        if (
+            not sqlite_vec_extension_path
+            and "HDB_SQLITE_VEC_EXTENSION" not in os.environ
+        ):
+            import sqlite_vec
+
+            sqlite_vec_extension_path = sqlite_vec.loadable_path()
+        return _open_sqlite(db_path, sqlite_vec_extension_path)
 except ImportError:
     pass
 

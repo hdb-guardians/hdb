@@ -119,4 +119,4 @@ cmake -S . -B build -DHDB_BUILD_STORE=ON
 cmake --build build
 ```
 
-Requires: SQLite3 development package (`find_package(SQLite3 REQUIRED)`).
+SQLite3 is vendored via `FetchContent` and statically linked (see `cmake/vendor_sqlite.cmake`) — no system SQLite3 package is required.

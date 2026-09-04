@@ -11,6 +11,13 @@ elseif(MSVC)
   target_compile_options(_hdb_sqlite PRIVATE /W4)
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT APPLE)
+  target_link_options(_hdb_sqlite PRIVATE
+    -static-libgcc
+    -Wl,-Bstatic -lc++ -lc++abi -lunwind -Wl,-Bdynamic
+  )
+endif()
+
 install(
   TARGETS _hdb_sqlite
   LIBRARY DESTINATION hdb
