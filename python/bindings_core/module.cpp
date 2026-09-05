@@ -17,6 +17,7 @@
 #include <hdb/molecule/prefrontal.hpp>
 #include <hdb/molecule/thalamus.hpp>
 #include <hdb/python/byte_caster.hpp>
+#include <hdb/python/moment_caster.hpp>
 #include <hdb/quark/dream.hpp>
 #include <hdb/quark/neuron.hpp>
 #include <hdb/quark/resonance.hpp>
