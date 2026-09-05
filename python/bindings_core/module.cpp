@@ -136,8 +136,6 @@ hdb::Impulse BuildImpulse(const py::object& impulse_obj) {
 PYBIND11_MODULE(_hdb_core, m) {
   m.doc() = "HDB core bindings";
 
-  // ── quark ────────────────────────────────────────────────────────────────
-
   py::class_<hdb::Neuron>(m, "Neuron")
       .def(py::init<>())
       .def_readwrite("name", &hdb::Neuron::name)
@@ -227,7 +225,6 @@ PYBIND11_MODULE(_hdb_core, m) {
           py::arg("payload"),
           py::arg("limit") = std::size_t{10});
 
-  // ── molecule ──────────────────────────────────────────────────────────────
   py::class_<hdb::Prefrontal>(m, "Prefrontal")
       .def(
           py::init([](std::shared_ptr<hdb::NeuronTable> neurons,

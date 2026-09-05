@@ -13,15 +13,6 @@ namespace pybind11 {
 namespace detail {
 
 // hdb::Moment <-> Python datetime.datetime.
-//
-// pybind11's built-in chrono caster (pybind11/chrono.h) round-trips through
-// mktime()/localtime(), which silently ignores tzinfo and reinterprets
-// wall-clock fields in the process's local timezone. hdb stores Moment as a
-// UTC epoch (see Clock::now() in Prefrontal::Sprout/Fire), so this caster
-// instead uses pure calendar arithmetic: naive datetimes are treated as
-// already-UTC wall time (hdb's storage convention), tz-aware datetimes are
-// shifted by their own utcoffset(), and values are always produced as
-// tz-aware UTC datetimes.
 template <>
 struct type_caster<hdb::Moment> {
  public:
