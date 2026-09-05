@@ -20,7 +20,7 @@ std::optional<Dream> Thalamus::Consolidate(
       .actor = {actor.begin(), actor.end()},
       .neuron = neuron,
       .payload = {payload.begin(), payload.end()},
-      .moment = Clock::now(),
+      .moment = std::chrono::time_point_cast<Moment::duration>(Clock::now()),
       .meta = std::nullopt,
   };
 

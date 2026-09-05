@@ -19,7 +19,7 @@ std::optional<Neuron> Prefrontal::Sprout(
       .name = name,
       .actor = {actor.begin(), actor.end()},
       .payload = {payload.begin(), payload.end()},
-      .moment = Clock::now(),
+      .moment = std::chrono::time_point_cast<Moment::duration>(Clock::now()),
       .meta = std::nullopt,
   };
 
@@ -45,7 +45,7 @@ std::optional<Synapse> Prefrontal::Fire(
       .actor = {actor.begin(), actor.end()},
       .source = source,
       .target = target,
-      .moment = Clock::now(),
+      .moment = std::chrono::time_point_cast<Moment::duration>(Clock::now()),
       .meta = std::nullopt,
   };
 

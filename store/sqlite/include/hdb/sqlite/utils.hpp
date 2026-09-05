@@ -17,7 +17,7 @@ inline sqlite3_int64 ToSqlMoment(const Moment moment) {
 }
 
 inline Moment FromSqlMoment(const sqlite3_int64 moment) {
-  return Moment{Clock::duration{moment}};
+  return Moment{Moment::duration{moment}};
 }
 
 inline void
