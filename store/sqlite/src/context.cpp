@@ -28,7 +28,15 @@ namespace hdb::sqlite {
 
 SqliteContext::SqliteContext(
     const std::string& db_path,
-    const std::string& sqlite_vec_extension_path) {
+    const std::string& sqlite_vec_extension_path,
+    const std::size_t dream_dimension)
+    : dream_dimension_(dream_dimension) {
+  if (dream_dimension_ == 0) {
+    throw std::runtime_error(
+        "hdb::sqlite::SqliteContext: dream_dimension must be non-zero: "
+        "sqlite-vec vec0 requires a fixed vector width");
+  }
+
   const int rc = sqlite3_open_v2(
       db_path.c_str(),
       &db_,
@@ -67,6 +75,10 @@ SqliteContext::~SqliteContext() {
 }
 
 sqlite3* SqliteContext::handle() const noexcept { return db_; }
+
+std::size_t SqliteContext::dream_dimension() const noexcept {
+  return dream_dimension_;
+}
 
 void SqliteContext::initialize_schema() {
   ExecOrThrow(
@@ -107,7 +119,6 @@ void SqliteContext::initialize_schema() {
       "name TEXT PRIMARY KEY,"
       "actor BLOB NOT NULL,"
       "neuron TEXT NOT NULL,"
-      "payload BLOB NOT NULL,"
       "moment INTEGER NOT NULL,"
       "meta BLOB"
       ");");
@@ -116,6 +127,17 @@ void SqliteContext::initialize_schema() {
       db_, "CREATE INDEX IF NOT EXISTS idx_dreams_moment ON dreams(moment);");
   ExecOrThrow(
       db_, "CREATE INDEX IF NOT EXISTS idx_dreams_neuron ON dreams(neuron);");
+
+  // `payload` (the embedding vector) lives in a separate sqlite-vec `vec0`
+  // virtual table so that `find()` can use its ANN index instead of a full
+  // table scan. Rows are joined to `dreams` by `rowid`.
+  const std::string create_dreams_vec =
+      "CREATE VIRTUAL TABLE IF NOT EXISTS dreams_vec USING vec0("
+      "payload float[" +
+      std::to_string(dream_dimension_) +
+      "]"
+      ");";
+  ExecOrThrow(db_, create_dreams_vec.c_str());
 }
 
 }  // namespace hdb::sqlite

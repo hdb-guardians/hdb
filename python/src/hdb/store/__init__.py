@@ -8,6 +8,8 @@ try:
     def open_sqlite(
         db_path: str = "human.db",
         sqlite_vec_extension_path: str = "",
+        *,
+        dream_dimension: int,
     ) -> tuple[NeuronTable, SynapseTable, DreamTable]:
         if (
             not sqlite_vec_extension_path
@@ -16,7 +18,7 @@ try:
             import sqlite_vec
 
             sqlite_vec_extension_path = sqlite_vec.loadable_path()
-        return _open_sqlite(db_path, sqlite_vec_extension_path)
+        return _open_sqlite(db_path, sqlite_vec_extension_path, dream_dimension)
 except ImportError:
     pass
 

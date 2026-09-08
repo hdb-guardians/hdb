@@ -44,17 +44,19 @@ Each class implements the corresponding core abstract interface via a shared `Sq
 | -------------------- | -------------- | ---------------------------------------------------- |
 | `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`       |
 | `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; indexed on `(source, target)` |
-| `SqliteDreamTable`   | `DreamTable`   | `find()` uses `vec_distance_l2` from sqlite-vec      |
+| `SqliteDreamTable`   | `DreamTable`   | `find()` uses sqlite-vec's `vec0` virtual table (`dreams_vec`) KNN index |
 
 ### Resonance Formula
 
 Dream similarity search (implemented in `SqliteDreamTable::find`) uses:
 
 ```
-fidelity = 1.0 / (1.0 + vec_distance_l2(payload, stimulus))
+fidelity = 1.0 / (1.0 + distance)
 ```
 
-`fidelity` is in `(0, 1]`. Higher values mean closer vectors.
+where `distance` is the L2 distance reported by the `dreams_vec` `vec0` KNN
+query (`payload MATCH ?1 AND k = ?2`). `fidelity` is in `(0, 1]`. Higher
+values mean closer vectors.
 
 ### open_sqlite
 
@@ -62,10 +64,15 @@ fidelity = 1.0 / (1.0 + vec_distance_l2(payload, stimulus))
 #include <hdb/sqlite/open.hpp>
 
 auto [neurons, synapses, dreams] =
-    hdb::sqlite::open_sqlite(db_path, sqlite_vec_extension_path);
+    hdb::sqlite::open_sqlite(db_path, sqlite_vec_extension_path, dream_dimension);
 ```
 
 Returns `std::tuple<shared_ptr<NeuronTable>, shared_ptr<SynapseTable>, shared_ptr<DreamTable>>`.
+
+`dream_dimension` is the number of float32 components in each dream
+`payload` vector. It is required and must be non-zero — sqlite-vec's `vec0`
+virtual table needs a fixed vector width to build its index, so it cannot be
+inferred at runtime from the first inserted row.
 
 ### resolve_vec_extension_path
 
@@ -104,13 +111,18 @@ CREATE TABLE dreams (
     name    TEXT PRIMARY KEY,
     actor   BLOB NOT NULL,
     neuron  TEXT NOT NULL,
-    payload BLOB NOT NULL,   -- vector blob consumed by sqlite-vec
     moment  INTEGER NOT NULL,
     meta    BLOB
 );
+
+-- sqlite-vec vec0 virtual table; joined to `dreams` by rowid.
+-- `float[N]` width is fixed at schema-creation time (`dream_dimension`).
+CREATE VIRTUAL TABLE dreams_vec USING vec0(
+    payload float[N]
+);
 ```
 
-Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dreams(moment)`, `dreams(neuron)`.
+Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dreams(moment)`, `dreams(neuron)`. `dreams_vec` maintains its own internal ANN index over `payload`.
 
 ## Build
 

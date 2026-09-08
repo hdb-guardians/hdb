@@ -30,9 +30,10 @@ std::tuple<
     std::shared_ptr<DreamTable>>
 open_sqlite(
     const std::string& db_path,
-    const std::string& sqlite_vec_extension_path) {
-  auto ctx =
-      std::make_shared<SqliteContext>(db_path, sqlite_vec_extension_path);
+    const std::string& sqlite_vec_extension_path,
+    const std::size_t dream_dimension) {
+  auto ctx = std::make_shared<SqliteContext>(
+      db_path, sqlite_vec_extension_path, dream_dimension);
   ctx->initialize_schema();
   return {
       std::shared_ptr<NeuronTable>(std::make_shared<SqliteNeuronTable>(ctx)),

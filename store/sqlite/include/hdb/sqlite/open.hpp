@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -18,6 +19,7 @@ std::tuple<
     std::shared_ptr<DreamTable>>
 open_sqlite(
     const std::string& db_path = "human.db",
-    const std::string& sqlite_vec_extension_path = "");
+    const std::string& sqlite_vec_extension_path = "",
+    std::size_t dream_dimension = 0);
 
 }  // namespace hdb::sqlite

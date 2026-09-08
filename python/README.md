@@ -55,10 +55,14 @@ This produces a wheel in `python/dist/`.
 ```python
 from hdb.store import open_sqlite
 
-neurons, synapses, dreams = open_sqlite(db_path, sqlite_vec_extension_path="")
+neurons, synapses, dreams = open_sqlite(
+    db_path, sqlite_vec_extension_path="", dream_dimension=768
+)
 ```
 
 `sqlite_vec_extension_path` defaults to `""`. `hdb.store.open_sqlite` (the Python wrapper) then falls back, in order, to: the `HDB_SQLITE_VEC_EXTENSION` environment variable, then the bundled `sqlite-vec` PyPI package (`sqlite_vec.loadable_path()`) — installed automatically as a dependency of `hdb`, so no extra configuration is needed.
+
+`dream_dimension` is required (keyword-only): the number of float32 components in each dream `payload` embedding. sqlite-vec's `vec0` virtual table needs a fixed vector width to build its ANN index, so this cannot default to an inferred value.
 
 ### Molecules
 
@@ -120,7 +124,7 @@ uv build ./python --wheel -o ./dist
 sqlite-vec is loaded at connection time by `open_sqlite`. `hdb` depends on the `sqlite-vec` PyPI package, which bundles the loadable extension for each platform, so this works out of the box with no configuration:
 
 ```powershell
-python -c "from hdb.store import open_sqlite; neurons, synapses, dreams = open_sqlite('hdb.db')"
+python -c "from hdb.store import open_sqlite; neurons, synapses, dreams = open_sqlite('hdb.db', dream_dimension=768)"
 ```
 
 To override with a different build of sqlite-vec, provide the path via:
