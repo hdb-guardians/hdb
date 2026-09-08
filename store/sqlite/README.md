@@ -40,10 +40,10 @@ On construction it:
 
 Each class implements the corresponding core abstract interface via a shared `SqliteContext`:
 
-| Class                | Interface      | Notable detail                                       |
-| -------------------- | -------------- | ---------------------------------------------------- |
-| `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`       |
-| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; indexed on `(source, target)` |
+| Class                | Interface      | Notable detail                                                           |
+| -------------------- | -------------- | ------------------------------------------------------------------------ |
+| `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`                           |
+| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; indexed on `(source, target)`                     |
 | `SqliteDreamTable`   | `DreamTable`   | `find()` uses sqlite-vec's `vec0` virtual table (`dreams_vec`) KNN index |
 
 ### Resonance Formula
@@ -123,6 +123,15 @@ CREATE VIRTUAL TABLE dreams_vec USING vec0(
 ```
 
 Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dreams(moment)`, `dreams(neuron)`. `dreams_vec` maintains its own internal ANN index over `payload`.
+
+`synapses(source, target)` and `dreams(neuron)` are not read by any query `SynapseTable`/`DreamTable` currently expose (only `find_by_id` and `find_by_range` on `moment`). They are kept ahead of need because the write-time cost is negligible (single-row inserts, no bulk load path) and they directly enable likely near-term additions:
+
+- `synapses(source, target)`:
+  - outgoing/incoming edge lookup (`WHERE source = ?` / `WHERE target = ?`) for graph traversal directly from a neuron, instead of loading a full moment range via `find_by_range` and walking it in memory
+  - listing all confirmations recorded for a specific `(source, target)` pair — repeated `Prefrontal::Fire` calls on the same pair are intentional (re-confirmation over time) and each produces a distinct row, so this is a listing, not a dedup/existence check
+- `dreams(neuron)`:
+  - reverse lookup "all dreams derived from neuron X" (`WHERE neuron = ?`), the mirror direction of the existing vector-KNN → neuron join in `find()`
+  - repeated `Thalamus::Consolidate` calls on the same neuron are likewise intentional (distinct perspectives across actors/moments), so this index serves listing, not preventing re-consolidation
 
 ## Build
 

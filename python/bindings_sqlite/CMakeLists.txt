@@ -6,9 +6,9 @@ target_compile_features(_hdb_sqlite PRIVATE cxx_std_23)
 set_target_properties(_hdb_sqlite PROPERTIES CXX_EXTENSIONS OFF)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-  target_compile_options(_hdb_sqlite PRIVATE -Wall -Wextra)
+  target_compile_options(_hdb_sqlite PRIVATE -Wall -Wextra -Wpedantic -Werror)
 elseif(MSVC)
-  target_compile_options(_hdb_sqlite PRIVATE /W4)
+  target_compile_options(_hdb_sqlite PRIVATE /W4 /WX)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT APPLE)
