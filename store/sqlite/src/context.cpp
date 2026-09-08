@@ -128,9 +128,6 @@ void SqliteContext::initialize_schema() {
   ExecOrThrow(
       db_, "CREATE INDEX IF NOT EXISTS idx_dreams_neuron ON dreams(neuron);");
 
-  // `payload` (the embedding vector) lives in a separate sqlite-vec `vec0`
-  // virtual table so that `find()` can use its ANN index instead of a full
-  // table scan. Rows are joined to `dreams` by `rowid`.
   const std::string create_dreams_vec =
       "CREATE VIRTUAL TABLE IF NOT EXISTS dreams_vec USING vec0("
       "payload float[" +

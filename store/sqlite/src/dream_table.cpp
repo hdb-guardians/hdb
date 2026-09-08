@@ -55,8 +55,7 @@ std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
       "INSERT INTO dreams_vec(rowid, payload) VALUES(?1, ?2);";
 
   sqlite3_stmt* vec_stmt = nullptr;
-  if (sqlite3_prepare_v2(db, kInsertVec, -1, &vec_stmt, nullptr) !=
-      SQLITE_OK) {
+  if (sqlite3_prepare_v2(db, kInsertVec, -1, &vec_stmt, nullptr) != SQLITE_OK) {
     sqlite3_exec(db, "ROLLBACK;", nullptr, nullptr, nullptr);
     return std::nullopt;
   }
@@ -82,8 +81,6 @@ std::optional<Dream> SqliteDreamTable::insert(const Dream& dream) {
 std::vector<Resonance> SqliteDreamTable::find(
     std::span<const std::byte> payload,
     const std::size_t limit) const {
-  // `dreams_vec` is a sqlite-vec `vec0` virtual table: the `MATCH ... AND
-  // k = ...` clause drives its ANN index instead of a full table scan.
   static constexpr const char* kSql =
       "SELECT d.neuron, "
       "1.0 / (1.0 + v.distance) AS fidelity "

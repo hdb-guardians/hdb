@@ -20,9 +20,6 @@ class SqliteContext {
 
   sqlite3* handle() const noexcept;
 
-  // Number of float32 components in `dreams.payload` vectors. Fixed at
-  // schema-creation time because the sqlite-vec `vec0` virtual table
-  // requires a static dimension per column.
   std::size_t dream_dimension() const noexcept;
 
   void initialize_schema();
