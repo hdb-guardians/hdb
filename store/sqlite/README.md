@@ -31,7 +31,7 @@ On construction it:
 
 - opens the database file (creates it if absent, `SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE`)
 - enables WAL journal mode
-- enables foreign key enforcement
+- sets `PRAGMA foreign_keys = ON` (currently a no-op: no table declares a `FOREIGN KEY` constraint, see below)
 - loads the sqlite-vec extension (required; throws `std::runtime_error` if loading fails)
 
 `initialize_schema()` creates the `neurons`, `synapses`, and `dreams` tables and all necessary indices. It is idempotent (`CREATE TABLE IF NOT EXISTS`).
@@ -40,11 +40,11 @@ On construction it:
 
 Each class implements the corresponding core abstract interface via a shared `SqliteContext`:
 
-| Class                | Interface      | Notable detail                                                           |
-| -------------------- | -------------- | ------------------------------------------------------------------------ |
-| `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`                           |
-| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; indexed on `(source, target)`                     |
-| `SqliteDreamTable`   | `DreamTable`   | `find()` uses sqlite-vec's `vec0` virtual table (`dreams_vec`) KNN index |
+| Class                | Interface      | Notable detail                                                                                                                                                                      |
+| -------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`                                                                                                                                      |
+| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; range query on `moment`; indexed on `(source, target)`; `source`/`target` reference `neurons(name)` by convention only, no `FOREIGN KEY` declared            |
+| `SqliteDreamTable`   | `DreamTable`   | `find()` uses sqlite-vec's `vec0` virtual table (`dreams_vec`) for an exact brute-force KNN scan; `neuron` references `neurons(name)` by convention only, no `FOREIGN KEY` declared |
 
 ### Resonance Formula
 
@@ -122,7 +122,7 @@ CREATE VIRTUAL TABLE dreams_vec USING vec0(
 );
 ```
 
-Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dreams(moment)`, `dreams(neuron)`. `dreams_vec` maintains its own internal ANN index over `payload`.
+Indices: `neurons(moment)`, `synapses(moment)`, `synapses(source, target)`, `dreams(moment)`, `dreams(neuron)`. `dreams_vec` has no index over `payload` — it performs an exact, SIMD-accelerated brute-force KNN scan (distance computed against every row), not an approximate nearest-neighbor (ANN) index. sqlite-vec's opt-in ANN index types (IVF, DiskANN) are not enabled by this schema.
 
 `synapses(source, target)` and `dreams(neuron)` are not read by any query `SynapseTable`/`DreamTable` currently expose (only `find_by_id` and `find_by_range` on `moment`). They are kept ahead of need because the write-time cost is negligible (single-row inserts, no bulk load path) and they directly enable likely near-term additions:
 
