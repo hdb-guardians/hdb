@@ -70,7 +70,7 @@ neurons, synapses, dreams = open_sqlite(
 from hdb.molecule import Prefrontal, Thalamus, Hippocampus, Cortex
 
 prefrontal  = Prefrontal(neurons, synapses)
-thalamus    = Thalamus(dreams)
+thalamus    = Thalamus(neurons, dreams)
 hippocampus = Hippocampus(neurons, synapses, dreams)
 cortex      = Cortex()
 ```

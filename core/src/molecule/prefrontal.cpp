@@ -40,6 +40,10 @@ std::optional<Synapse> Prefrontal::Fire(
     const Nid& source,
     const Nid& target,
     std::optional<std::span<const std::byte>> meta) {
+  if (!neurons.find_by_id(source) || !neurons.find_by_id(target)) {
+    return std::nullopt;
+  }
+
   Synapse synapse{
       .name = name,
       .actor = {actor.begin(), actor.end()},

@@ -31,7 +31,7 @@ On construction it:
 
 - opens the database file (creates it if absent, `SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE`)
 - enables WAL journal mode
-- sets `PRAGMA foreign_keys = ON` (currently a no-op: no table declares a `FOREIGN KEY` constraint, see below)
+- sets `PRAGMA foreign_keys = ON`, enforcing the `synapses.source`/`synapses.target` and `dreams.neuron` foreign keys declared below
 - loads the sqlite-vec extension (required; throws `std::runtime_error` if loading fails)
 
 `initialize_schema()` creates the `neurons`, `synapses`, and `dreams` tables and all necessary indices. It is idempotent (`CREATE TABLE IF NOT EXISTS`).
@@ -40,11 +40,11 @@ On construction it:
 
 Each class implements the corresponding core abstract interface via a shared `SqliteContext`:
 
-| Class                | Interface      | Notable detail                                                                                                                                                                      |
-| -------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`                                                                                                                                      |
-| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; range query on `moment`; indexed on `(source, target)`; `source`/`target` reference `neurons(name)` by convention only, no `FOREIGN KEY` declared            |
-| `SqliteDreamTable`   | `DreamTable`   | `find()` uses sqlite-vec's `vec0` virtual table (`dreams_vec`) for an exact brute-force KNN scan; `neuron` references `neurons(name)` by convention only, no `FOREIGN KEY` declared |
+| Class                | Interface      | Notable detail                                                                                                                                                                                              |
+| -------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SqliteNeuronTable`  | `NeuronTable`  | Primary key on `name`; range query on `moment`                                                                                                                                                              |
+| `SqliteSynapseTable` | `SynapseTable` | Primary key on `name`; range query on `moment`; indexed on `(source, target)`; `source`/`target` declare `FOREIGN KEY REFERENCES neurons(name)`, enforced by SQLite (`PRAGMA foreign_keys = ON`)            |
+| `SqliteDreamTable`   | `DreamTable`   | `find()` uses sqlite-vec's `vec0` virtual table (`dreams_vec`) for an exact brute-force KNN scan; `neuron` declares `FOREIGN KEY REFERENCES neurons(name)`, enforced by SQLite (`PRAGMA foreign_keys = ON`) |
 
 ### Resonance Formula
 
@@ -104,7 +104,9 @@ CREATE TABLE synapses (
     source  TEXT NOT NULL,
     target  TEXT NOT NULL,
     moment  INTEGER NOT NULL,
-    meta    BLOB
+    meta    BLOB,
+    FOREIGN KEY(source) REFERENCES neurons(name),
+    FOREIGN KEY(target) REFERENCES neurons(name)
 );
 
 CREATE TABLE dreams (
@@ -112,7 +114,8 @@ CREATE TABLE dreams (
     actor   BLOB NOT NULL,
     neuron  TEXT NOT NULL,
     moment  INTEGER NOT NULL,
-    meta    BLOB
+    meta    BLOB,
+    FOREIGN KEY(neuron) REFERENCES neurons(name)
 );
 
 -- sqlite-vec vec0 virtual table; joined to `dreams` by rowid.

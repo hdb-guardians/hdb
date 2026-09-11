@@ -102,7 +102,9 @@ void SqliteContext::initialize_schema() {
       "source TEXT NOT NULL,"
       "target TEXT NOT NULL,"
       "moment INTEGER NOT NULL,"
-      "meta BLOB"
+      "meta BLOB,"
+      "FOREIGN KEY(source) REFERENCES neurons(name),"
+      "FOREIGN KEY(target) REFERENCES neurons(name)"
       ");");
 
   ExecOrThrow(
@@ -120,7 +122,8 @@ void SqliteContext::initialize_schema() {
       "actor BLOB NOT NULL,"
       "neuron TEXT NOT NULL,"
       "moment INTEGER NOT NULL,"
-      "meta BLOB"
+      "meta BLOB,"
+      "FOREIGN KEY(neuron) REFERENCES neurons(name)"
       ");");
 
   ExecOrThrow(

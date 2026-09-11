@@ -5,12 +5,13 @@
 #include <span>
 
 #include <hdb/store/dream_table.hpp>
+#include <hdb/store/neuron_table.hpp>
 
 namespace hdb {
 
 class Thalamus {
  public:
-  explicit Thalamus(DreamTable& table);
+  explicit Thalamus(NeuronTable& neurons, DreamTable& dreams);
 
   std::optional<Dream> Consolidate(
       const Did& name,
@@ -20,6 +21,7 @@ class Thalamus {
       std::optional<std::span<const std::byte>> meta = std::nullopt);
 
  private:
+  NeuronTable& neurons;
   DreamTable& dreams;
 };
 

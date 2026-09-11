@@ -282,11 +282,14 @@ PYBIND11_MODULE(_hdb_core, m) {
 
   py::class_<hdb::Thalamus>(m, "Thalamus")
       .def(
-          py::init([](std::shared_ptr<hdb::DreamTable> dreams) {
-            return std::make_unique<hdb::Thalamus>(*dreams);
+          py::init([](std::shared_ptr<hdb::NeuronTable> neurons,
+                      std::shared_ptr<hdb::DreamTable> dreams) {
+            return std::make_unique<hdb::Thalamus>(*neurons, *dreams);
           }),
+          py::arg("neurons"),
           py::arg("dreams"),
-          py::keep_alive<1, 2>())
+          py::keep_alive<1, 2>(),
+          py::keep_alive<1, 3>())
       .def(
           "consolidate",
           [](hdb::Thalamus& self,

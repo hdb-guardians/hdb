@@ -128,8 +128,8 @@ The `molecule` layer groups orchestration surfaces.
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | `name: Sid`                    | Handle for the `(moment, actor, source, target, meta)` composite.                                                    |
 | `actor: vector<byte>`          | The subject that confirmed this connection. The same two neurons connected by different actors are different events. |
-| `source: Nid`                  | The neuron that fires.                                                                                               |
-| `target: Nid`                  | The neuron that receives.                                                                                            |
+| `source: Nid`                  | The neuron that fires. `Prefrontal::Fire` requires this neuron to already exist.                                     |
+| `target: Nid`                  | The neuron that receives. `Prefrontal::Fire` requires this neuron to already exist.                                  |
 | `moment: Moment`               | When this connection was confirmed. Two synapses between the same neurons at different moments are distinct records. |
 | `meta: optional<vector<byte>>` | Auxiliary data. The core does not read it.                                                                           |
 
@@ -158,11 +158,15 @@ Awaken(name)                        -> optional<Neuron>
 Fire(name, actor, source, target, meta?) -> optional<Synapse>
 ```
 
+`Fire` fails (returns `nullopt`) without inserting if `source` or `target` does not name an existing `Neuron`.
+
 ### Thalamus
 
 ```text
 Consolidate(name, actor, neuron, payload, meta?) -> optional<Dream>
 ```
+
+`Consolidate` fails (returns `nullopt`) without inserting if `neuron` does not name an existing `Neuron`.
 
 ### Hippocampus
 

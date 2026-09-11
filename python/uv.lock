@@ -4,7 +4,7 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "hdb"
-version = "0.1.3a0"
+version = "0.1.3a1"
 source = { editable = "." }
 dependencies = [
     { name = "sqlite-vec" },

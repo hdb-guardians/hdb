@@ -7,7 +7,8 @@
 
 namespace hdb {
 
-Thalamus::Thalamus(DreamTable& table) : dreams(table) {}
+Thalamus::Thalamus(NeuronTable& neurons, DreamTable& dreams)
+    : neurons(neurons), dreams(dreams) {}
 
 std::optional<Dream> Thalamus::Consolidate(
     const Did& name,
@@ -15,6 +16,10 @@ std::optional<Dream> Thalamus::Consolidate(
     const Nid& neuron,
     std::span<const std::byte> payload,
     std::optional<std::span<const std::byte>> meta) {
+  if (!neurons.find_by_id(neuron)) {
+    return std::nullopt;
+  }
+
   Dream dream{
       .name = name,
       .actor = {actor.begin(), actor.end()},
