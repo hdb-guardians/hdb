@@ -137,14 +137,14 @@ There is no edge type. The synapse carries one meaning only: a human-confirmed d
 
 ### Dream
 
-| Field                          | Intent                                                                                                                                                                     |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name: Did`                    | Handle for the `(moment, actor, neuron, payload, meta)` composite.                                                                                                         |
-| `actor: vector<byte>`          | The subject that produced this dream. The same neuron abstracted by different actors yields different perspectives.                                                        |
-| `neuron: Nid`                  | The source neuron this dream originates from. A dream must be rooted in a real thought.                                                                                    |
-| `payload: vector<byte>`        | Semantic vector (embedding) raw bytes. The sqlite-vec ANN search operates on this field. The core does not generate embeddings — that is the outer layer's responsibility. |
-| `moment: Moment`               | When this dream was created.                                                                                                                                               |
-| `meta: optional<vector<byte>>` | Auxiliary data (e.g. embedding model identifier). The core does not read it.                                                                                               |
+| Field                          | Intent                                                                                                                                                                           |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name: Did`                    | Handle for the `(moment, actor, neuron, payload, meta)` composite.                                                                                                               |
+| `actor: vector<byte>`          | The subject that produced this dream. The same neuron abstracted by different actors yields different perspectives.                                                              |
+| `neuron: Nid`                  | The source neuron this dream originates from. A dream must be rooted in a real thought.                                                                                          |
+| `payload: vector<byte>`        | Semantic vector (embedding) raw bytes. The sqlite-vec exact KNN search operates on this field. The core does not generate embeddings — that is the outer layer's responsibility. |
+| `moment: Moment`               | When this dream was created.                                                                                                                                                     |
+| `meta: optional<vector<byte>>` | Auxiliary data (e.g. embedding model identifier). The core does not read it.                                                                                                     |
 
 ## Public Operations
 
